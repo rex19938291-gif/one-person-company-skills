@@ -1,4 +1,4 @@
 interface:
-  display_name: "HTML to Elementor"
-  short_description: "Turn HTML or OD pages into native Elementor plans"
-  default_prompt: "Use $html-to-elementor to convert this HTML or Open Design page into an Elementor-native build blueprint."
+ display_name: "HTML to Elementor"
+ short_description: "Turn HTML or OD pages into native Elementor plans"
+ default_prompt: "Use $html-to-elementor to convert this HTML or Open Design page into an Elementor-native build blueprint."

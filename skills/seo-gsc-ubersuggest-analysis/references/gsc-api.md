@@ -1,6 +1,6 @@
 # GSC API Notes
 
-Use Google Search Console API only after你gives time-boxed approval.
+Use Google Search Console API only after 你 gives time-boxed approval.
 
 ## Scope
 
@@ -20,7 +20,7 @@ Prefer domain properties:
 sc-domain:example.com
 ```
 
-If你approves only one property, every request must check the `siteUrl` exactly matches that property before execution.
+If 你 approves only one property, every request must check the `siteUrl` exactly matches that property before execution.
 
 ## Search Analytics Dimensions
 
@@ -48,7 +48,7 @@ If missing, stop and ask before installing packages.
 
 If the API call fails with `accessNotConfigured` or says Search Console API has not been used in the OAuth client project, the OAuth login may have succeeded but the Google Cloud project behind the client has not enabled Search Console API.
 
-Do not enable the API automatically. Treat this as a Google Cloud configuration change and ask你first. The safe next action is enabling only:
+Do not enable the API automatically. Treat this as a Google Cloud configuration change and ask 你 first. The safe next action is enabling only:
 
 ```text
 searchconsole.googleapis.com

@@ -1,7 +1,7 @@
 interface:
-  display_name: "VSL Meta Ads Workflow"
-  short_description: "VSL 腳本轉 Meta 廣告素材與圖片產出工作流"
-  default_prompt: "Use $vsl-meta-ads-material-workflow to turn a Google Drive VSL script into a Meta ads material plan, copy, images, and a Google Doc."
+ display_name: "VSL Meta Ads Workflow"
+ short_description: "VSL 腳本轉 Meta 廣告素材與圖片產出工作流"
+ default_prompt: "Use $vsl-meta-ads-material-workflow to turn a Google Drive VSL script into a Meta ads material plan, copy, images, and a Google Doc."
 
 policy:
-  allow_implicit_invocation: true
+ allow_implicit_invocation: true

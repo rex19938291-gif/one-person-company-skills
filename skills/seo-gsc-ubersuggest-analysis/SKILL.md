@@ -1,6 +1,6 @@
 ---
 name: seo-gsc-ubersuggest-analysis
-description: "Run a GSC-first SEO research and Traditional Chinese long-form content workflow using direct Google Search Console data, local GSC exports, Ubersuggest SERP and keyword context, verified sources, article-quality checks, and a required humanized Taiwan Traditional Chinese final pass. Use when你asks for keyword research, search-intent analysis, content gaps, SEO titles or outlines, WordPress-ready SEO articles, A/B/C article drafting, or reusable SEO writer handoffs. Use the separate seo-performance-strategy-report skill only for client-facing performance reports and HTML delivery."
+description: "Run a GSC-first SEO research and Traditional Chinese long-form content workflow using direct Google Search Console data, local GSC exports, Ubersuggest SERP and keyword context, verified sources, article-quality checks, and a required humanized Taiwan Traditional Chinese final pass. Use when 你 asks for keyword research, search-intent analysis, content gaps, SEO titles or outlines, WordPress-ready SEO articles, A/B/C article drafting, or reusable SEO writer handoffs. Use the separate seo-performance-strategy-report skill only for client-facing performance reports and HTML delivery."
 ---
 
 # SEO GSC + Ubersuggest Research and Longform Content
@@ -18,7 +18,7 @@ Keep source labels strict. Google Search Console is first-party actual performan
 1. Direct Google Search Console API with `https://www.googleapis.com/auth/webmasters.readonly`.
 2. Existing local GSC/OpenSEO JSON snapshots when direct GSC access is unavailable or not authorized.
 3. Ubersuggest MCP for SERP positions, keyword ideas, search difficulty/intent, competitor pages, and AI Overview presence.
-4. Other tools only after你explicitly approves new installs, OAuth, paid queries, or browser login.
+4. Other tools only after 你 explicitly approves new installs, OAuth, paid queries, or browser login.
 
 Never use Ubersuggest to replace GSC clicks, impressions, CTR, or average position. An AI Overview block does not prove that a target was cited; citation proof requires a returned source URL.
 
@@ -153,7 +153,7 @@ Review pattern clusters rather than banning isolated phrases. Remove only decora
 
 Check intent, keyword placement, slug/title/meta, section transitions, FAQ/CTA, readability, factual support, risk language, commercial honesty, required humanization, protected-content fidelity, and requested length. Return unresolved evidence gaps instead of silently filling them.
 
-If你asks for a client-facing performance report, use `$seo-performance-strategy-report` after the analysis is ready. Keep report HTML, noindex preview, and Cloudflare deployment gates in that separate Skill.
+If 你 asks for a client-facing performance report, use `$seo-performance-strategy-report` after the analysis is ready. Keep report HTML, noindex preview, and Cloudflare deployment gates in that separate Skill.
 
 ## Analysis Buckets for SEO Research
 

@@ -1,4 +1,4 @@
 interface:
-  display_name: "SEO Research + Longform Content"
-  short_description: "GSC、Ubersuggest研究、繁中SEO長文與去AI化終稿"
-  default_prompt: "Use $seo-gsc-ubersuggest-analysis for GSC/Ubersuggest keyword research and a verified, humanized Traditional Chinese SEO article draft."
+ display_name: "SEO Research + Longform Content"
+ short_description: "GSC、Ubersuggest研究、繁中SEO長文與去AI化終稿"
+ default_prompt: "Use $seo-gsc-ubersuggest-analysis for GSC/Ubersuggest keyword research and a verified, humanized Traditional Chinese SEO article draft."

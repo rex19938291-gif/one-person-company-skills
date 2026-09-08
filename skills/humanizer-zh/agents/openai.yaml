@@ -1,7 +1,7 @@
 interface:
-  display_name: "繁中去 AI 味"
-  short_description: "保留事實與作者聲音的台灣繁中改寫與審閱"
-  default_prompt: "Use $humanizer-zh to rewrite this Traditional Chinese draft naturally while preserving every fact and protected detail."
+ display_name: "繁中去 AI 味"
+ short_description: "保留事實與作者聲音的台灣繁中改寫與審閱"
+ default_prompt: "Use $humanizer-zh to rewrite this Traditional Chinese draft naturally while preserving every fact and protected detail."
 
 policy:
-  allow_implicit_invocation: true
+ allow_implicit_invocation: true

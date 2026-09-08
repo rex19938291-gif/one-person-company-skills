@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Summarize a GSC/OpenSEO JSON export folder.
 
-Expected files are the OpenSEO-style JSON exports used in你的 workflows:
+Expected files are the OpenSEO-style JSON exports used in 你的 workflows:
 summary.mcp.json, queries.mcp.json, pages.mcp.json, query_pages.mcp.json,
 dates.mcp.json, devices.mcp.json, countries.mcp.json, and report-summary.json.
 Missing files are tolerated.

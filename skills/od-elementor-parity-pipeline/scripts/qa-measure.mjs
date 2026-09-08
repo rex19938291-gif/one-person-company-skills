@@ -5,7 +5,7 @@
  *
  * Usage:
  * node qa-measure.mjs --url <URL> --width 1440 [--height 900] [--selector '.ipg-sec'] \
- * [--shot out.png] [--wait 6000] [--wait-for '.your-section-class'] [--warmup false] \
+ * [--shot out.png] [--wait 6000] [--wait-for '.C 客戶-resource-open'] [--warmup false] \
  * [--cdp-url http://127.0.0.1:9223]
  *
  * Sandboxed-executor mode: --cdp-url (or QA_CDP_URL env) connects to an

@@ -26,7 +26,7 @@ was learned from a real failure or a real success, not from documentation.
  `limits.monthly_keyword_metrics_updates_used`. It must stay unchanged
  across your calls; cached snapshots (`"newData": false`) cost nothing.
 - Never trigger a SERP/metrics refresh, `searchType: "paid"`, or any action a
- tool marks as costing credits without你的 explicit approval.
+ tool marks as costing credits without 你的 explicit approval.
 - Reading cached data across many keywords is free — batch freely.
 
 ## 2. Language / Location Cookbook (the #1 failure source)

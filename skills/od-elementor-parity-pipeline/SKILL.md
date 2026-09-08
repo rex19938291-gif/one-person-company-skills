@@ -1,6 +1,6 @@
 ---
 name: od-elementor-parity-pipeline
-description: Execute a proven OD/HTML → Elementor-native conversion pipeline on你的 local WordPress OR a remote WP reachable via Novamira-type MCP (execute-php/WP-CLI/upload-link) with 100% visual+animation parity, numeric rhythm QA, and production-ready JSON export. Use when the user asks to 還原/轉換 an Open Design or HTML page into editable native Elementor pages, wants 視覺與動畫 100% 還原, needs Elementor JSON 匯入檔 for a production site, or asks to QA-compare an Elementor build against a reference HTML. Complements the blueprint-level `html-to-elementor` skill (planning) — this skill is the EXECUTION layer: WP-CLI build scripts, Document API saves, theme-builder conditions, CDP QA harness, and import packaging. Trigger phrases: "OD 轉 Elementor 建置", "100% 還原", "Elementor JSON 匯入檔", "節奏比對", "parity pipeline".
+description: Execute a proven OD/HTML → Elementor-native conversion pipeline on 你的 local WordPress OR a remote WP reachable via Novamira-type MCP (execute-php/WP-CLI/upload-link) with 100% visual+animation parity, numeric rhythm QA, and production-ready JSON export. Use when the user asks to 還原/轉換 an Open Design or HTML page into editable native Elementor pages, wants 視覺與動畫 100% 還原, needs Elementor JSON 匯入檔 for a production site, or asks to QA-compare an Elementor build against a reference HTML. Complements the blueprint-level `html-to-elementor` skill (planning) — this skill is the EXECUTION layer: WP-CLI build scripts, Document API saves, theme-builder conditions, CDP QA harness, and import packaging. Trigger phrases: "OD 轉 Elementor 建置", "100% 還原", "Elementor JSON 匯入檔", "節奏比對", "parity pipeline".
 ---
 
 # OD → Elementor Parity Pipeline
@@ -25,13 +25,13 @@ Battle-tested on 2026-07-06 (電商型客戶站 `claude-fable5-od-home`, final p
 
 「以後派量測給 Codex，先開端點、執行者就能自主量測收斂」是**預設操作模式**，不是特例。PM（Claude／擁有沙箱外殼的一方）每次派量測型任務給沙箱執行者時：
 
-1. **派工前先開端點**：`scripts/cdp-endpoint.sh start`（需你一次瀏覽器授權；同一量測輪內只需開一次）。確認 `cdp-endpoint.sh status` 回 200。
+1. **派工前先開端點**：`scripts/cdp-endpoint.sh start`（需 你 一次瀏覽器授權；同一量測輪內只需開一次）。確認 `cdp-endpoint.sh status` 回 200。
 2. **派工 prompt 明載端點**：告訴執行者「端點已在 `http://127.0.0.1:9223`，用 `--cdp-url` 跑 harness，只開/關自己的 tab，別 kill 共用瀏覽器」。
 3. **執行者自主收斂**：改檔 → 重建 → 帶 `--cdp-url` 重量測 → 讀報告 → 依 gate 開自己的下一步處方 → checkpoint 回 handoff。不需回頭等 PM 量測。
 4. **端點生命週期歸 PM**：整輪（含執行者多次重量測）結束後 PM `cdp-endpoint.sh stop`。若執行者回報端點連不上，PM 重開，不由執行者啟動瀏覽器。
 5. **額度前置檢查**：派工前查執行者兩個額度窗（`report-current-usage.js`）；週窗吃緊或歸零時，改由 PM 自己做或排程等恢復（見 Quota-aware bounded dispatch 節）。
 
-## Architecture decisions (follow unless你overrides)
+## Architecture decisions (follow unless 你 overrides)
 
 1. **Build route: WP-CLI + Elementor Document API**, not per-widget MCP calls. One PHP script per document (`wp --user=<admin> eval-file build.php`), rerunnable, deterministic, exportable. MCP is fine for small edits; full pages are 10x faster by script.
 2. **Native-first**: every piece of content is a native widget (heading/text-editor/image/button/icon/icon-list/counter/star-rating/accordion/social-icons/nav-menu/container). HTML widgets ONLY for (a) interactions native Elementor can't do (e.g. crossfade scene carousel) and (b) script-only enhancer blocks (no visible markup). Count and document every exception.
@@ -70,7 +70,7 @@ When an executor (Codex / GLM / other API model) executes and Claude verifies: e
 6. **Visual QA**: harness `--shot` gives true full-page screenshots (CDP `captureBeyondViewport` + lazyload-marking). Crop-compare sensitive areas (hero, card grids, reviews, footer) desktop+mobile. Also verify interactions live: mobile burger, accordion, carousels, counters, scroll-state nav/FAB, no horizontal overflow at 360/390/768/1280/1440. **截圖必須被 PM「親眼讀過」才算跑過此關**（產出檔案≠驗過）；版面/顏色/圖片類缺陷（按鈕位置、區塊底色、孤立清單符號、圖片消失）只有這一關抓得到，任何 DOM/文字比對都會漏。
 7. **Package**: `make-import-package.sh` pattern — zip of `templates/*.json` + all referenced assets at their original `wp-content/uploads/...` relative paths + `IMPORT.md` runbook (upload assets first so JSON URLs resolve; import templates; rebuild menu; remap popup IDs).
 8. **Isolation check**: verify pre-existing pages still render their own header/footer and conditions are untouched.
-9. **Handoff**: update the project `TASK_HANDOFF.md` (完成/待辦/風險/IDs/paths) per你的 protocol.
+9. **Handoff**: update the project `TASK_HANDOFF.md` (完成/待辦/風險/IDs/paths) per 你的 protocol.
 
 ## Bundled tools
 
@@ -148,11 +148,11 @@ PM 對應義務：處方必附實測數字與逐字內容；退回時引用本�
 
 - Codex 沙箱跑 `qa-reference-parity.mjs` 時無法啟動任何瀏覽器（系統 Chrome 簽章無效、快取 Chromium MachPort 權限錯誤）→ 量測從此走**共用 CDP 端點**模式（契約規則 8）：沙箱外 `cdp-endpoint.sh start`，harness 帶 `--cdp-url`。
 - 兩支 harness 已支援：skill 的 `qa-measure.mjs`（`--cdp-url`／`QA_CDP_URL`）與 C 客戶 專案的 `qa-reference-parity.mjs`（`--cdp-url`／`C 客戶_QA_CDP_URL`）。新專案 harness 一律照抄此雙模式（spawn 或 connect-existing）。
-- 端點生命週期歸沙箱外的一方（你或 PM）管理：量測輪開始前 start、結束後 stop；執行者只建/關自己的 tab。
+- 端點生命週期歸沙箱外的一方（你 或 PM）管理：量測輪開始前 start、結束後 stop；執行者只建/關自己的 tab。
 
 ## 視覺 100% 還原契約（2026-07-10 定案，源自 C 客戶 視覺重開輪 — 高度節奏 ≠ 視覺還原）
 
-實案教訓：C 客戶 輪曾同時達成「36/36 section 高度 ±10% 全過＋互動 QA 全過」，但成品完全沒載 source 字型、沒定義任何 `:root` token，配色/字體整層缺失，你一眼退件。**節奏數值只是四通道之一；缺了本節規則，任何模型都會做出「高度對了、長相不對」的頁面。** 本節為機械規則，弱模型照抄也能達標。
+實案教訓：C 客戶 輪曾同時達成「36/36 section 高度 ±10% 全過＋互動 QA 全過」，但成品完全沒載 source 字型、沒定義任何 `:root` token，配色/字體整層缺失，你 一眼退件。**節奏數值只是四通道之一；缺了本節規則，任何模型都會做出「高度對了、長相不對」的頁面。** 本節為機械規則，弱模型照抄也能達標。
 
 ### A. Design-system-first（建置期硬規則，先於一切逐區修）
 
@@ -166,7 +166,7 @@ PM 對應義務：處方必附實測數字與逐字內容；退回時引用本�
 2. **電腦樣式比對**（`qa-style-audit.mjs`）：以文字配對 source↔build，**只量「最內層承載文字」的元素**（子元素含相同文字＝wrapper，跳過）。wrapper 假差是實測過的大坑：C 客戶 曾因掃到 wrapper 虛報 205/305 項差異、差點整輪誤修。門檻：真差 ≈ 0（font/size/weight/style/lh/ls/color/bg/align）。
 3. **截圖親讀**：唯一能抓版面/顏色/圖片缺陷的通道（按鈕位置、區塊底色、孤立清單符號、圖片消失）。審修迴圈用 `qa-crops.mjs` 定點 viewport 圖（快、不 hang）；全頁圖留給交付。**PM 沒讀過圖＝這關沒跑。**
 4. **斷行掃描**（typo-check）＋互動 QA：rhythm＋樣式收斂後各跑一次。
-最終 gate 永遠是你肉眼；四通道只是把一次過的機率拉滿，不得以通道數據代替人工 sign-off 宣告「100%」。
+最終 gate 永遠是 你 肉眼；四通道只是把一次過的機率拉滿，不得以通道數據代替人工 sign-off 宣告「100%」。
 
 ### C. 全頁截圖強韌化（capture-hang 實測解法）
 
@@ -192,7 +192,7 @@ PM 對應義務：處方必附實測數字與逐字內容；退回時引用本�
 - [ ] html=0、rebuild JSON 正常、DB 本輪備份存在
 - [ ]你指過的每一個缺陷都有對應的截圖證據證明已修
 
-## WP site-ops playbook (2026-07-12, header/theme round — applies to ALL edits on你的 WP stack: Blocksy + Elementor Pro + WP Rocket)
+## WP site-ops playbook (2026-07-12, header/theme round — applies to ALL edits on 你的 WP stack: Blocksy + Elementor Pro + WP Rocket)
 
 ### The ONLY safe rebuild pipeline (violating the order = stale-cache ghost bugs)
 Any Elementor template/page rebuild MUST run these steps in this exact order:
@@ -228,18 +228,18 @@ Why: Elementor re-save assigns NEW element IDs; Rocket-cached old HTML + regener
 - Blocksy yields its header/footer to Elementor Pro theme-builder locations (no double header) — but verify `header#header.ct-header` is absent after applying a location template site-wide.
 - lrm login plugin: local port-suffixed hosts trip its domain check alert → mu-plugin `add_filter('lrm/need_validate_domain','__return_false')` LOCAL ONLY.
 
-### Prod-parity method (when你says "跟原始/正式站一致")
+### Prod-parity method (when 你 says "跟原始/正式站一致")
 Never eyeball: load the prod page, read computed values (font-size/weight, colors, element tops, gaps), copy the literal numbers into the build script, rebuild via the pipeline, then measure local the same way. Match content-start positions by the GAP below the header (prod header bottom → first content), not by absolute viewport offsets — different header heights make absolute matching wrong.
 
-### Editor-editable text contract + CJK line-breaking (2026-07-12,你rule — supersedes span-chunking)
-**你edits copy in the Elementor panel (WYSIWYG). Text content in widgets must stay PLAIN: only `<br>` and `<b>/<em>` allowed.** Never bake `<span class="nowrap">` chunking or structural markup into heading/paragraph content — it locks line breaks away from the editor. (nowrap spans are acceptable ONLY for immutable tokens like `2 戶成團`/`95 折` numbers-with-units, and sparingly.)
+### Editor-editable text contract + CJK line-breaking (2026-07-12, 你 rule — supersedes span-chunking)
+**你 edits copy in the Elementor panel (WYSIWYG). Text content in widgets must stay PLAIN: only `<br>` and `<b>/<em>` allowed.** Never bake `<span class="nowrap">` chunking or structural markup into heading/paragraph content — it locks line breaks away from the editor. (nowrap spans are acceptable ONLY for immutable tokens like `2 戶成團`/`95 折` numbers-with-units, and sparingly.)
 Achieve mobile break quality WITHOUT touching content:
 - `text-wrap:pretty` on CJK heading classes — the engine itself prevents single-character orphan lines (「中」 alone) no matter what the editor later types. Note it must be declared AFTER any site-wide `text-wrap:balance` rule of equal specificity, and `balance` is inert on headings containing `<br>` anyway.
 - Tune the font-size clamp floor (e.g. `clamp(22px,5.9vw,40px)`) so each `<br>` segment fits 1–2 lines at 375px; adjust the floor, not the markup.
 - Verify at 375px by walking text nodes with per-char Range rects (grouping by line top) — screenshots alone can miss 1-char orphans.
-- If a specific break is still ugly, fix the COPY (with你) or the font size — not with spans.
+- If a specific break is still ugly, fix the COPY (with 你) or the font size — not with spans.
 
-### Header account dropdown = WP-menu-driven + Nav Menu Roles (2026-07-12,你rule: menus must be editable in 外觀→選單)
+### Header account dropdown = WP-menu-driven + Nav Menu Roles (2026-07-12, 你 rule: menus must be editable in 外觀→選單)
 Never hardcode nav/account links in an HTML widget. Pattern proven on 電商型客戶站:
 - Main nav: Elementor Pro `nav-menu` widget bound to a WP menu slug — already editor-editable; keep design via scoped CSS on the widget wrapper class.
 - Account dropdown (我的帳號): a small **production-deployable** mu-plugin (`電商型客戶站-header-account-menu.php`) registers `[cfab_account_menu]` which wraps `wp_nav_menu(['menu'=>'cfab-account-menu','container'=>false,'menu_class'=>'cfab-haccount-list','depth'=>1,'fallback_cb'=>'__return_empty_string','echo'=>false])` inside the original `<details class="cfab-haccount">` markup; header build script uses a `shortcode` widget (settings key `shortcode`), NOT an html widget.
@@ -264,7 +264,7 @@ WP `shortcode_unautop` 會把「整段只有一個 shortcode」的 `<p>` 拆掉 
 - 階梯計算：先實測一檔（如 z=.78 時 sticky top 實際值），推出幾何式（此站 909z ≤ vh-8）再展開檔位。
 - **驗 sticky 的陷阱**：捲超過 sticky 容器（主欄）底部後卡片會停靠容器底、隨頁面上移——這是正常行為不是 sticky 壞掉；要在容器範圍內取樣。另此站 scroll-behavior:smooth，設 scrollTop 後要等 700ms 再量。
 
-### 電商型客戶站 內頁字級 8 級制（2026-07-13你定案，之後新區塊一律取用）
+### 電商型客戶站 內頁字級 8 級制（2026-07-13 你 定案，之後新區塊一律取用）
 12.5（說明/章標/眉標）｜14（小字/次要按鈕）｜15（內文）｜16（項目標題/FAQ/CTA）｜18（強調數字/副價）｜24（區塊小標/倒數）｜32（區塊大標）｜40（主價格/裝飾編號）。hero 展示型 clamp 除外。改字級鐵則：grep 全檔「所有」出現點（基礎+media+檔尾 !important 覆寫段）一次改齊；live 驗證前先改 Elementor post CSS 的 ver 參數（全站固定值，瀏覽器不會自動重抓）。
 
 ### 本機 php -S Fatal（Curl 30s 死鎖）根因與根除（2026-07-13）
@@ -332,7 +332,8 @@ Novamira 類 MCP 與 SSH-only 兩種遠端環境的完整教戰：機械轉換�
  }
  ```
  子容器若還是不滿版，補 `width/max-width/--width:100%!important`（Elementor 的欄寬走 `--width`）。
-6. **button widget 的字級要打 `.elementor-button-text`，打 `p` 一點作用都沒有**。你的頁面常把整段文案做成 button widget（帶星號 icon 的稀缺說明就是），
+6. **button widget 的字級要打 `.elementor-button-text`，打 `p` 一點作用都沒有**。
+ 你 的頁面常把整段文案做成 button widget（帶星號 icon 的稀缺說明就是），
  看起來像段落但 DOM 裡沒有 `<p>`。同理它的內距在 `.elementor-button`（本案 `20px 50px`，
  左右內距吃掉 100px 可用寬度，一行只剩 16 字，18 字的子句必被切開）。
  量到「字級改了沒反應」時先 `getComputedStyle` 確認實際承載文字的元素是誰。
@@ -385,7 +386,7 @@ return c.backgroundImage.includes("gradient") && (c.webkitTextFillColor==="rgba(
 header/footer 從 Elementor theme-builder 改為佈景主題原生的完整做法：Blocksy 資料結構、三個會覆寫你設定的元件欄位、動態 CSS 快取重生、樣式覆寫層與收尾檢查。
 
 ## 圖片減重（同 html-to-elementor 2026-09-01 條目）
-（2026-09-01 制度化，你指示傳承；Claude 與 Codex 一體適用）
+（2026-09-01 制度化，你 指示傳承；Claude 與 Codex 一體適用）
 
 **教訓**：線上課程型客戶站 sign4 頁曾因單張 2.2MB PNG＋全頁圖片 4.6MB，在記憶體緊的機器上捲動閃白、載入緩慢；EWWW 外掛雖開 webp 但無損模式只壓 27% 且前台改寫吃不到 Elementor 輸出＝形同沒壓。
 

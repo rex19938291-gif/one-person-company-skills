@@ -73,11 +73,11 @@ Elementor 頁面在資料庫（`_elementor_data` post meta），SSH 只給檔案
 2. **WP Rocket 快取會讓觸發無效**。打首頁若命中快取，PHP 根本不執行，mu-plugin 不會被載入。觸發網址**固定帶隨機參數**（`?wpx=<token>`）繞開快取。
 3. **mu-plugin 載入極早**，外掛常數尚未定義。邏輯掛在 `add_action('init', …, 1)` 裡跑，才拿得到 `ELEMENTOR_VERSION`／`FLUENTFORM_VERSION`／已註冊的 CPT。
 
-### C. 安全契約（你2026-08-19 授權範圍）
+### C. 安全契約（你 2026-08-19 授權範圍）
 
 - 一次性程式**跑完必須自刪**，結果檔取回後立刻 `rm`；收工前 `ls /data/wp-content/mu-plugins/` 確認沒有殘留 `.wpx-*`。
 - 腳本正本留本機重用，**網站上不留任何常駐檔**。
-- 「能寫檔進網站目錄」＝「能執行 PHP」。所以 SSH 面板的「停止 SSH」不是可有可無：維運結束就請你按掉，這比 Novamira 常駐權杖更容易被忽略。
+- 「能寫檔進網站目錄」＝「能執行 PHP」。所以 SSH 面板的「停止 SSH」不是可有可無：維運結束就請 你 按掉，這比 Novamira 常駐權杖更容易被忽略。
 - 主機商重啟 SSH 後 IP／port 可能改變，但 `authorized_keys` 在網站持久卷（`$HOME=/data`）不會掉——只需更新 `~/.ssh/config` 的 HostName/Port，不必重跑 ssh-copy-id。
 
 ### D. 跨站搬運前的相容性閘（先驗版本，再動工）
@@ -90,7 +90,7 @@ preg_match_all('/"widgetType":"([a-z0-9_\-]+)"/i', $data, $m); // 統計用到�
 
 只用到 `container` ＋ `text-editor`／`image`／`heading`／`shortcode` ＝ 3.6+ 全支援，跨大版本安全（本輪即是此情況）。出現 v4 atomic widgets（`e-heading`、`e-div-block` 等）＝ 3.x 吃不下，必須先在來源站降級重建或改走 HTML 重轉。
 
-另查目標站缺哪些外掛：來源表單掛了 FluentCRM／ActiveCampaign feed，目標站沒裝就會斷——搬運前逐項確認要不要一起帶，你明確說不用的就從 form_meta 剔除，不要整包照搬。
+另查目標站缺哪些外掛：來源表單掛了 FluentCRM／ActiveCampaign feed，目標站沒裝就會斷——搬運前逐項確認要不要一起帶，你 明確說不用的就從 form_meta 剔除，不要整包照搬。
 
 ### E. 視覺驗收：文字檢查不算驗證（2026-08-19，學院站輪實測）
 
@@ -123,7 +123,7 @@ preg_match_all('/"widgetType":"([a-z0-9_\-]+)"/i', $data, $m); // 統計用到�
 
 `wp-exec.sh` 每次執行開 4 條 SSH 連線（scp、輪詢、取回、清除）。密集連續執行約 20 次後，品牌站端開始在 kex 階段直接 reset：**port 仍通（`nc` 成功）但 `ssh` 握手被拒**，且不會自行恢復。判別＝`kex_exchange_identification: read: Connection reset by peer`。
 
-處理：不要重試轟炸（會延長封鎖）。請你到面板停止再啟動 SSH；`authorized_keys` 在 `$HOME=/data` 的持久卷上不會掉，重啟後只需確認 IP／port 有無變動並更新 `~/.ssh/config`，金鑰不必重設。
+處理：不要重試轟炸（會延長封鎖）。請 你 到面板停止再啟動 SSH；`authorized_keys` 在 `$HOME=/data` 的持久卷上不會掉，重啟後只需確認 IP／port 有無變動並更新 `~/.ssh/config`，金鑰不必重設。
 
 預防（已內建於 `wp-exec.sh`，不需要另外設定）：連線重用參數直接寫在腳本裡，不依賴 `~/.ssh/config`——
 

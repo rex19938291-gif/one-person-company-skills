@@ -1,6 +1,6 @@
 # Phase One Output Contract
 
-Use this contract whenever `$vsl-meta-ads-material-workflow` is producing你的 Phase One VSL-to-Meta-ads deliverable.
+Use this contract whenever `$vsl-meta-ads-material-workflow` is producing 你的 Phase One VSL-to-Meta-ads deliverable.
 
 ## Phase Boundary
 
@@ -111,10 +111,10 @@ Prioritize:
 
 - strongest visual scenes
 - highest audience-intent diversity
-- angles你can judge quickly
+- angles 你 can judge quickly
 - angles likely to become reusable templates
 
-Default output is prompt-first. Generate images only when你explicitly asks, or when the run already has approved generated previews to place into the Google Doc. If images are included, label them as preview references that users can regenerate or adjust.
+Default output is prompt-first. Generate images only when 你 explicitly asks, or when the run already has approved generated previews to place into the Google Doc. If images are included, label them as preview references that users can regenerate or adjust.
 
 ## Image Prompt Contract
 
@@ -124,7 +124,7 @@ Every generated image prompt must include:
 - product/service context from the VSL
 - visual style tied to the source page or brand colors
 - realistic ad composition with space for image-on-ad text
-- no real platform logos unless你explicitly approves
+- no real platform logos unless 你 explicitly approves
 - no watermark
 - no unreadable UI details
 - no brand marks copied from third parties
@@ -174,11 +174,11 @@ Before handoff, verify:
 - prompts and ad copy are visible
 - Phase Two deferral is explicit
 
-If images cannot be inserted into the Google Doc through the available connector path, create the Google Doc with image placeholders and include local/generated image paths. State that limitation plainly. If你decides not to generate more images, do not attempt further image generation; use existing approved previews or prompt-only sections.
+If images cannot be inserted into the Google Doc through the available connector path, create the Google Doc with image placeholders and include local/generated image paths. State that limitation plainly. If 你 decides not to generate more images, do not attempt further image generation; use existing approved previews or prompt-only sections.
 
 ## GPTs Future Extraction
 
-When你later asks to turn this workflow into a student GPTs tool, extract:
+When 你 later asks to turn this workflow into a student GPTs tool, extract:
 
 - source-intake prompt
 - VSL analysis prompt
@@ -188,4 +188,4 @@ When你later asks to turn this workflow into a student GPTs tool, extract:
 - image prompt generation prompt
 - Google Doc formatting prompt or output template
 
-Do not build the student GPTs version during Phase One unless你explicitly asks.
+Do not build the student GPTs version during Phase One unless 你 explicitly asks.

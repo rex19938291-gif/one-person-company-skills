@@ -1,7 +1,7 @@
 # Security Review
 
 Reviewed: 2026-05-30 Asia/Taipei
-Source: Locally authored for你的 responsive frontend workflow.
+Source: Locally authored for 你的 responsive frontend workflow.
 
 ## Decision
 

@@ -1,9 +1,9 @@
 ---
 name: emil-design-eng
-description: "你的動態設計預設：任何『加動畫效果／動態效果／讓頁面更有設計感』的網頁工作一律用這個 skill（含 Open Design 專案與交派 Codex 的頁面設計）。Encodes Emil Kowalski's philosophy on UI polish, component design, animation decisions, and the invisible details that make software feel great. Triggers: 動畫效果, 動態設計, motion, animation, transition, micro-interaction, page polish, 讓頁面更有設計感."
+description: "你 的動態設計預設：任何『加動畫效果／動態效果／讓頁面更有設計感』的網頁工作一律用這個 skill（含 Open Design 專案與交派 Codex 的頁面設計）。Encodes Emil Kowalski's philosophy on UI polish, component design, animation decisions, and the invisible details that make software feel great. Triggers: 動畫效果, 動態設計, motion, animation, transition, micro-interaction, page polish, 讓頁面更有設計感."
 ---
 
-> **你專用路由（2026-08-17）**：他說「想要更多動畫效果」時，預設就是這一套；
+> **你 專用路由（2026-08-17）**：他說「想要更多動畫效果」時，預設就是這一套；
 > `ui-ux-pro-max` 已改成 on-demand，不會再自動介入。已套用的參考實作：
 > A 客戶 A 客戶網站的「emil 動態設計版首頁」（OD 專案 `聰明買車網站`）。
 

@@ -1,4 +1,4 @@
 interface:
-  display_name: "SEO 閱讀體驗優化"
-  short_description: "將 SEO 文章重編成易讀、可掃讀、保留關鍵字與原意的繁中內容"
-  default_prompt: "請用 SEO 閱讀體驗優化 skill 重編這篇文章：保留事實與原意，加入關鍵字、清楚分段、留白與原生項目符號。"
+ display_name: "SEO 閱讀體驗優化"
+ short_description: "將 SEO 文章重編成易讀、可掃讀、保留關鍵字與原意的繁中內容"
+ default_prompt: "請用 SEO 閱讀體驗優化 skill 重編這篇文章：保留事實與原意，加入關鍵字、清楚分段、留白與原生項目符號。"

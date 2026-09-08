@@ -94,7 +94,7 @@ Every exception must be explicit.
 | Style-only HTML widget | Elementor controls cannot express this style | Scoped selector only | Copy/content remains native |
 | Animation/custom JS | Native motion cannot match source behavior | One section only | Text/media remain native |
 
-Forbidden unless你reverses the rule:
+Forbidden unless 你 reverses the rule:
 
 - Full-page HTML widget.
 - Full-section HTML widget for ordinary text/cards/images/buttons.

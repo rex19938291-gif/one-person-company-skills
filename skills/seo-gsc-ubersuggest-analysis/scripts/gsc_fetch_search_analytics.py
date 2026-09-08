@@ -23,7 +23,7 @@ def import_google_deps():
  from googleapiclient.discovery import build
  except Exception as exc: # pragma: no cover - dependency guard
  raise SystemExit(
- "Missing Google API dependencies. Ask你before installing: "
+ "Missing Google API dependencies. Ask 你 before installing: "
  "google-auth google-auth-oauthlib google-api-python-client"
  ) from exc
  return Credentials, InstalledAppFlow, Request, build

@@ -9,7 +9,7 @@ Use this skill to turn a designed HTML/OD page into a maintainable Elementor-nat
 
 ## Core Rule
 
-Default to native Elementor widgets. Treat a full section or full page inside one HTML widget as a failure unless你explicitly approves that exception.
+Default to native Elementor widgets. Treat a full section or full page inside one HTML widget as a failure unless 你 explicitly approves that exception.
 
 Allowed HTML widget uses:
 
@@ -37,7 +37,7 @@ Collect only the sources needed for the active page or section:
 - For OD: prefer the full active artifact bundle when Open Design tools are available; otherwise use local HTML/CSS/asset files.
 - For HTML: identify the entry file, referenced CSS/JS, image assets, and any generated Elementor JSON.
 - For existing Elementor work: inspect the JSON/widget tree and the rendered local preview when available.
-- Do not use Chrome, Browser Use, production WordPress, public tunnels, credentials, or customer/private data unless你has approved that exact scope.
+- Do not use Chrome, Browser Use, production WordPress, public tunnels, credentials, or customer/private data unless 你 has approved that exact scope.
 
 Record asset URLs or file paths, but do not copy secrets or credentials into the blueprint.
 
@@ -120,7 +120,7 @@ Minimum checks before calling the conversion ready:
 - Local preview or rendered output is checked when available.
 - Package/export includes JSON, assets, and a short QA note if this is a handoff deliverable.
 
-For你OD/UI delivery checks, screenshot or viewport evidence is preferred before signoff. If the in-app preview path is blocked, report the blocker instead of switching to Chrome without permission.
+For 你 OD/UI delivery checks, screenshot or viewport evidence is preferred before signoff. If the in-app preview path is blocked, report the blocker instead of switching to Chrome without permission.
 
 ## Iteration Packaging
 
@@ -132,7 +132,7 @@ At the end of each real conversion, write an `Iteration Capsule` into the task h
 - Verification that caught the issue.
 - Whether it belongs in this skill now, later, or only in the project handoff.
 
-Update this skill only when你explicitly asks to fold the lesson back in, or when the current task itself includes an explicit `迭代封裝` instruction. Keep additions generic, non-sensitive, and reusable across future HTML/OD to Elementor work.
+Update this skill only when 你 explicitly asks to fold the lesson back in, or when the current task itself includes an explicit `迭代封裝` instruction. Keep additions generic, non-sensitive, and reusable across future HTML/OD to Elementor work.
 
 ## Iteration Capsule — 2026-08-18 A 客戶 三頁遠端還原輪（已定案的映射增補）
 
@@ -142,7 +142,7 @@ Update this skill only when你explicitly asks to fold the lesson back in, or whe
 4. **動畫共用一份檔**：設計源的結構型選擇器（nth-child／>div 鏈）要在「設計端」改成 marker（data-od-id＋CSS 變數 delay），讓靜態版與 Elementor 版共用同一份動畫 CSS/JS；Elementor 端用 Pro `_attributes` 補 marker。
 5. 遠端站（無本機 WP）可整條走 MCP（execute-php／upload-link），Fluent Forms 用「複製既有表單再剪欄位」最快。營運坑（opcache、sandbox .crashed、lazyload 截圖）同見 pipeline skill。
 
-## 中文斷行驗收標準（你2026-08-20 定案，所有頁面交付前必過）
+## 中文斷行驗收標準（你 2026-08-20 定案，所有頁面交付前必過）
 
 **標準：任何一行都不可以只剩單一個字，也不可以留下不成句的殘詞。**
 具體是三條，缺一不可：
@@ -174,7 +174,8 @@ Update this skill only when你explicitly asks to fold the lesson back in, or whe
  就一定掉一行。<4 字的單一片段不包 span，並把結尾空白換成 ` ` 黏住後面的字。
 - **`background-clip:text` 的節點一律跳過**（漸層字）。切成 inline-block 子節點後漸層
  不再被文字裁切，整段字會消失只剩色塊。切之前從文字節點往上檢查 computed style。
-- **內容保持純文字**：不要把 `<span class="nowrap">` 這類結構寫進 heading/text 的內容，你是在 Elementor 面板裡改文案的，寫死斷行等於把版面鎖住。
+- **內容保持純文字**：不要把 `<span class="nowrap">` 這類結構寫進 heading/text 的內容，
+ 你 是在 Elementor 面板裡改文案的，寫死斷行等於把版面鎖住。
 
 ### 驗收（不是看截圖，是量）
 
@@ -201,7 +202,7 @@ Update this skill only when你explicitly asks to fold the lesson back in, or whe
 ### 長文案被做成 button widget 時也要斷行（2026-08-23）
 
 斷行腳本通常會排除 `button, .elementor-button`（避免切壞按鈕文字）。
-但你的頁面常把整段稀缺說明做成帶 icon 的 button widget，排除掉就會出現
+但 你 的頁面常把整段稀缺說明做成帶 icon 的 button widget，排除掉就會出現
 「教學品／質」這種詞中斷行。規則：`.elementor-button` 內文字去空白後 **超過 24 字**
 就視為段落，照常斷行；選擇器要另外加上 `.elementor-button-text`。
 
@@ -211,7 +212,7 @@ Update this skill only when你explicitly asks to fold the lesson back in, or whe
 然後回報一個很漂亮的 0。本案就這樣誤判過一輪。量之前先確認：
 可見區塊數／頁高與正常瀏覽時一致（例如手動加上解鎖 class 再量）。
 
-## 圖片減重（2026-09-01 制度化，你指示傳承；Claude 與 Codex 一體適用）
+## 圖片減重（2026-09-01 制度化，你 指示傳承；Claude 與 Codex 一體適用）
 
 **教訓**：線上課程型客戶站 sign4 頁曾因單張 2.2MB PNG＋全頁圖片 4.6MB，在記憶體緊的機器上捲動閃白、載入緩慢；EWWW 外掛雖開 webp 但無損模式只壓 27% 且前台改寫吃不到 Elementor 輸出＝形同沒壓。
 
