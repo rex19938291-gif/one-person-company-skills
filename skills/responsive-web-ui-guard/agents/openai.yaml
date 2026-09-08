@@ -1,0 +1,4 @@
+interface:
+  display_name: "Responsive Web UI Guard"
+  short_description: "Prevent mobile responsive layout breakage in web UI work."
+  default_prompt: "Use this skill before building or editing a web interface to keep mobile and desktop layouts readable, non-overflowing, and polished."

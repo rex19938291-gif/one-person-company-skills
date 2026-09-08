@@ -1,0 +1,4 @@
+interface:
+  display_name: "Client Funnel HTML Workflow"
+  short_description: "Build and verify a sourced three-page funnel"
+  default_prompt: "Use $client-funnel-html-workflow to turn approved client sources into a verified three-page funnel through HTML QA and, when authorized, Elementor draft validation."
