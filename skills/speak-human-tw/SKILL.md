@@ -1,6 +1,6 @@
 ---
 name: speak-human-tw
-version: 1.4.2
+version: 1.5.0
 description: |
  「說人話」：繁體中文的去 AI 味改寫 skill。審查與改寫文字，去除 AI 味道、校正中國用語與半形標點，讓文字讀起來像真人寫的。
  觸發時機：用戶說「去 AI 味」「說人話」「這段好 AI」「改自然一點」「幫我潤稿去掉 AI 感」「校對一下再發」，或要求檢查電子報、社群貼文、銷售頁、課程文案、客服回信、簡報、公告、Email 等對外文字的語感。
@@ -12,6 +12,7 @@ last-updated: 2026-09-09
 author: Raymond Hou
 tags: [writing, proofreading, zh-tw, de-ai, humanizer]
 changelog:
+ - "1.5.0 (2026-09-09): 加入定稿差異學習、標題語序與完整性檢查、品牌資料來源優先序、CTA 逐欄核對、滾動更新與 LINE 交付範本。"
  - "1.4.2 (2026-09-09): 加入寫手與編輯分享套件、交稿對照表規則與可攜式文件交付說明；保留語義分段與段落留白。"
  - "1.4.1 (2026-09-08): 依 你 的文章示範，新增語義分段與段落留白；同一論述保留多句，不逐句換行，交稿前檢查過密與過碎。"
  - "1.4.0 (2026-07-10): AI 痕跡 36→38，新增立場真空（第 9 種）、公式化開場（第 21 種），並補上首先／其次／最後、總的來說／綜上所述、這意味著、不僅⋯更⋯ 四組識別信號。humanize.md 從 5 個正向目標擴到 8 個，新增允許岔題、讓立場隨時間改變、允許不收尾，並加上「不要表演不確定」與「人味是作者的，不是你的」兩道防護。benchmark 36→40 條。非互動環境（codex exec 等）預設走「跳過確認、事後摘要」。"
@@ -29,6 +30,8 @@ license: MIT
 核心原則一句話：**先保事實，再去 AI 味，最後才加人味。**
 
 寫手與編輯首次使用可看 [README.md](README.md)。需要完整潤稿交付、改寫對照表或 Google Docs 時，再讀 [references/editor-delivery.md](references/editor-delivery.md)。本包已包含語義分段，不依賴其他 humanizer skill；平台工具僅負責文件讀寫。
+
+品牌文章、新版定稿回饋或 CTA 更新，先讀 [references/brand-and-revision.md](references/brand-and-revision.md)。每次從委託人指定的最新品牌資料讀取事實；私人資料庫不寫死在公開 skill。完整生成邏輯與 LINE 派稿、交稿範本見 [references/writer-guide.md](references/writer-guide.md)。
 
 這不是敏感詞替換器。看到「賦能」不是機械換成「加值」，而是問：這句話拿掉套話之後，真正想說的具體內容是什麼？寫不出具體內容的句子，多半該刪，不該改。
 
