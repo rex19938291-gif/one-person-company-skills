@@ -205,6 +205,8 @@ Why: Elementor re-save assigns NEW element IDs; Rocket-cached old HTML + regener
 
 **快取外掛的辨識（2026-09-10 兩站實測）**：這套快取外掛在不同站上可能以兩種 slug 安裝——原版 `wp-rocket/wp-rocket.php`，或中文改版「火箭快取」`rocket-cache/rocket-cache.php`。**兩者都會定義 `WP_ROCKET_VERSION`，且快取路徑完全相同**（`WP_ROCKET_CACHE_PATH` 仍指向 `wp-content/cache/wp-rocket/`，`WP_ROCKET_MINIFY_CACHE_PATH` 仍是 `cache/min/`），所以上面第 4 步的 `rm` 指令不必改。
 
+**不必登入就能辨識（2026-09-10 三站實測，最省事）**：抓前台 HTML 看結尾註解。中文改版輸出 `Performance optimized by 火箭快取 - Debug: cached@<timestamp>`；原版輸出 `This website is like a Rocket...`。沒有註解就是該頁沒命中快取（或未安裝）。實測三站：兩站為中文改版（`plugins/rocket-cache`），一站為原版（`plugins/wp-rocket`）——**同一批管理的站台不會一致，每站都要各驗一次，不要沿用上一站的結論**。
+
 要改的是**偵測方式**：`is_plugin_active('wp-rocket/wp-rocket.php')` 在中文改版的站上會回 **false**，據此判斷「沒裝快取」是錯的。一律改用 `defined('WP_ROCKET_VERSION')`，或同時檢查兩個 slug。另外實測到裝了中文改版的站上**仍殘留一個停用的 `wp-rocket/` 目錄**，所以用 `is_dir()` 判斷也不可靠——只有 `active_plugins` 與常數算數。
 
 
