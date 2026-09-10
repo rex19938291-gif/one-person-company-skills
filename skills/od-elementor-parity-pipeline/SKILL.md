@@ -203,6 +203,11 @@ Any Elementor template/page rebuild MUST run these steps in this exact order:
 5. warm-hit the pages again.
 Why: Elementor re-save assigns NEW element IDs; Rocket-cached old HTML + regenerated new CSS = selectors match nothing → layout collapses to defaults (`--display` vars empty → e-con renders inline/column). `rocket_clean_domain()` alone misses non-default host variants (Tailscale IP) — always `rm` the dirs.
 
+**快取外掛的辨識（2026-09-10 兩站實測）**：這套快取外掛在不同站上可能以兩種 slug 安裝——原版 `wp-rocket/wp-rocket.php`，或中文改版「火箭快取」`rocket-cache/rocket-cache.php`。**兩者都會定義 `WP_ROCKET_VERSION`，且快取路徑完全相同**（`WP_ROCKET_CACHE_PATH` 仍指向 `wp-content/cache/wp-rocket/`，`WP_ROCKET_MINIFY_CACHE_PATH` 仍是 `cache/min/`），所以上面第 4 步的 `rm` 指令不必改。
+
+要改的是**偵測方式**：`is_plugin_active('wp-rocket/wp-rocket.php')` 在中文改版的站上會回 **false**，據此判斷「沒裝快取」是錯的。一律改用 `defined('WP_ROCKET_VERSION')`，或同時檢查兩個 slug。另外實測到裝了中文改版的站上**仍殘留一個停用的 `wp-rocket/` 目錄**，所以用 `is_dir()` 判斷也不可靠——只有 `active_plugins` 與常數算數。
+
+
 ### Verification traps (each one produced a false conclusion this round)
 - **Sticky/fixed/scroll checks: `window.scrollTo` is a NO-OP on this stack** (body is the scroll container). JS "navTop=0 after scrollTo" is fake data. Verify with REAL mouse-wheel scroll (browser automation `scroll` action) + screenshot/zoom as evidence.
 - **Computed-style reads race CSS transitions** (`transition: color/background .25-.35s`): after toggling a class, wait ≥400ms before `getComputedStyle`, or you read the pre-toggle value.
