@@ -1,6 +1,6 @@
 ---
 name: vsl-meta-ads-material-workflow
-description: "Turn a Google Drive VSL, webinar script, sales script, product page, or campaign brief into a Meta ads material workflow for 你: TOF/MOF/BOF strategy, 24 creative angles, de-AI Chinese ad copy, image prompts, optional first-pass image previews, placement notes, and an outline-friendly Google Doc. Use when 你 asks to 調取 VSL 腳本, 產出廣告素材需求, 建立素材流, 建立 Meta 廣告素材包, or prepare Phase One creative validation before Meta Ads API automation."
+description: 把 Google Drive 的 VSL、講座或銷售腳本、產品頁、活動簡報轉成 Meta 廣告素材流：TOF／MOF／BOF 策略、24 切角、去 AI 味文案、圖片提示與 Google Doc 大綱。用於「調取 VSL 腳本」「產出廣告素材需求」「建立素材包」。
 ---
 
 # VSL Meta Ads Material Workflow

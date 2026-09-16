@@ -1,6 +1,6 @@
 ---
 name: html-to-elementor
-description: Convert HTML, Open Design (OD) artifacts, static pages, or Elementor JSON parity work into an Elementor-native build blueprint and iteration workflow. Use when the user asks to turn HTML/OD into WordPress Elementor native widgets, avoid full-page HTML widgets, produce editable Elementor sections, map an existing design into Elementor containers/widgets, or fold lessons from an OD-to-Elementor conversion back into a reusable process. Trigger phrases include "HTML to Elementor", "OD to Elementor", "轉 Elementor", "Elementor 原生元件", "不要塞 HTML widget", "native-first Elementor", and "迭代封裝".
+description: 把 HTML、Open Design 成品或靜態頁規劃成 Elementor 原生元件的建置藍圖與迭代流程。用於「轉 Elementor」「Elementor 原生元件」「不要塞 HTML widget」；實際建置與 100% 還原走 od-elementor-parity-pipeline。
 ---
 
 # HTML To Elementor

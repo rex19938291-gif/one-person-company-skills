@@ -1,6 +1,6 @@
 ---
 name: seo-gsc-ubersuggest-analysis
-description: "Run a GSC-first SEO research and Traditional Chinese long-form content workflow using direct Google Search Console data, local GSC exports, Ubersuggest SERP and keyword context, verified sources, article-quality checks, and a required humanized Taiwan Traditional Chinese final pass. Use when 你 asks for keyword research, search-intent analysis, content gaps, SEO titles or outlines, WordPress-ready SEO articles, A/B/C article drafting, or reusable SEO writer handoffs. Use the separate seo-performance-strategy-report skill only for client-facing performance reports and HTML delivery."
+description: 以 Google Search Console 資料為主、Ubersuggest 為輔，做關鍵字研究、搜尋意圖、內容缺口、SEO 標題大綱與繁中長文草稿。用於要 SEO 文章、A/B/C 草稿或寫手交接；客戶成效報告改用 seo-performance-strategy-report。
 ---
 
 # SEO GSC + Ubersuggest Research and Longform Content
