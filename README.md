@@ -34,7 +34,7 @@ Agent 會自己把內容抓下來、放到正確的位置，然後照著執行�
 | `annual-content-funnel-system` | 一年 96 篇的社群內容矩陣、Email 與 LINE 跟進序列 | 5-9、5-10、5-11 |
 | `seo-reading-experience` | 文章重新編排、加關鍵字 | X-2 |
 | `seo-gsc-ubersuggest-analysis` | 看懂自己網站的搜尋成效 | X-2 |
-| `zuka-seo-review` | 文章上線前的驗收排查 | X-2 |
+| `seo-draft-review` | 文章上線前的驗收排查 | X-2 |
 
 ## 幾件要先知道的事
 
