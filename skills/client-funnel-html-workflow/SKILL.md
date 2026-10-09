@@ -72,6 +72,7 @@ Build a reviewable three-page client funnel from source collection through copy,
 - Start a loopback-only local server.
 - Validate all three pages at desktop width and at least one mobile breakpoint.
 - Check: correct H1, image load success, no horizontal overflow, no console errors, navigation links, CTA anchors, and preview-form behavior.
+- 必跑 `responsive-web-ui-guard` 的「必過關卡」：用系統 WebKit（iPhone Safari 同引擎）在 360/390/414/768/1024/1440 檢查段落右側留空、標題斷在詞中間、一兩字孤行、置中對齊一致、圓角裁切；正式站驗收用不帶參數的網址並確認快取已更新。
 - Visually compare section rhythm, palette, image crops, and text density against the references.
 - Open the accepted pages in the in-app Browser and finalize only user-facing preview tabs as deliverables.
 - Report exact local paths, preview URL, verification results, and outstanding `上線前確認` items.
