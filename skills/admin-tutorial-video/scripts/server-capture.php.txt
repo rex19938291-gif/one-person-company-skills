@@ -1,0 +1,70 @@
+<?php
+/**
+ * 範例：在已載入 WordPress 的維運環境執行，例如 wp eval-file。
+ * 請先取得站方授權，設定 TUTORIAL_CAPTURE_USER_ID 為專用管理員帳號，
+ * TUTORIAL_CAPTURE_PRIVATE_DIR 為站外、既有、不可公開讀取的目錄。
+ * 不要公開成網址，不要放入 uploads，不要印出 Cookie 或工作階段資訊。
+ * 此範例只讀一般設定頁，不送出表單、不改設定；輸出仍須逐欄去個資。
+ * 網站若有二次驗證、登入限制或安全外掛阻擋，應停止並改用站方核准方式。
+ * 原始頁可能含名稱、網址、隱藏欄位與行內樣式，DOM 清理不等於完成去個資。
+ * 確認後把示意版另存至本機，拍完停用臨時外掛，撤銷工作階段，
+ * 依站方核准方式將暫存檔移至私有封存或垃圾資料夾，切勿保留公開副本。
+ */
+if (!defined('ABSPATH') || !defined('TUTORIAL_CAPTURE_USER_ID') || !defined('TUTORIAL_CAPTURE_PRIVATE_DIR')) {
+ throw new RuntimeException('先設定專用帳號與站外私有目錄');
+}
+$user = get_user_by('id', TUTORIAL_CAPTURE_USER_ID);
+if (!$user || !user_can($user, 'manage_options') || !is_dir(TUTORIAL_CAPTURE_PRIVATE_DIR) || !is_writable(TUTORIAL_CAPTURE_PRIVATE_DIR)) {
+ throw new RuntimeException('帳號或目錄不符合限制');
+}
+if (!class_exists('DOMDocument')) { throw new RuntimeException('需要 PHP DOM 擴充功能'); }
+$url = admin_url('options-general.php');
+$secure = parse_url($url, PHP_URL_SCHEME) === 'https';
+if (!$secure) { throw new RuntimeException('遠端後台須使用 HTTPS'); }
+$sessions = WP_Session_Tokens::get_instance($user->ID);
+$expiration = time() + 120;
+$session = $sessions->create($expiration);
+try {
+ $auth = wp_generate_auth_cookie($user->ID, $expiration, 'secure_auth', $session);
+ $logged = wp_generate_auth_cookie($user->ID, $expiration, 'logged_in', $session);
+ $response = wp_remote_get($url, [
+ 'timeout' => 25, 'redirection' => 0, 'sslverify' => true,
+ 'headers' => ['Cookie' => SECURE_AUTH_COOKIE . '=' . $auth . '; ' . LOGGED_IN_COOKIE . '=' . $logged],
+ ]);
+ if (is_wp_error($response) || wp_remote_retrieve_response_code($response) !== 200) {
+ throw new RuntimeException('讀取失敗；不重試登入或繞過存取限制');
+ }
+ $doc = new DOMDocument();
+ $old = libxml_use_internal_errors(true);
+ try {
+ if (!$doc->loadHTML('<?xml encoding="UTF-8">' . wp_remote_retrieve_body($response), LIBXML_NONET)) {
+ throw new RuntimeException('無法解析頁面');
+ }
+ $xpath = new DOMXPath($doc);
+ foreach ($xpath->query('//script | //input[contains(translate(@name,"NONCE","nonce"),"nonce")] | //input[translate(@type,"PASSWORD","password")="password"] | //base | //iframe | //object | //embed') as $node) {
+ $node->parentNode->removeChild($node);
+ }
+ foreach ($xpath->query('//*') as $node) {
+ $remove = [];
+ foreach ($node->attributes as $attribute) {
+ if (preg_match('/^on|nonce/i', $attribute->name)) { $remove[] = $attribute->name; }
+ }
+ foreach ($remove as $attribute) { $node->removeAttribute($attribute); }
+ if ($node->nodeName === 'form') { $node->removeAttribute('action'); }
+ }
+ foreach ($xpath->query('//a[@href]') as $node) { $node->setAttribute('href', '#'); }
+ foreach ($xpath->query('//processing-instruction()') as $node) { $node->parentNode->removeChild($node); }
+ $html = $doc->saveHTML();
+ } finally { libxml_clear_errors(); libxml_use_internal_errors($old); }
+ // 存成不可執行內容的私有包；站方管理工具讀檔時略過首行再取 HTML。
+ $file = rtrim(TUTORIAL_CAPTURE_PRIVATE_DIR, '/\\') . DIRECTORY_SEPARATOR . 'settings-' . wp_generate_password(16, false, false) . '.php';
+ if (file_put_contents($file, "<?php exit; ?>\n" . $html, LOCK_EX) === false) {
+ throw new RuntimeException('私有存檔失敗');
+ }
+ chmod($file, 0600);
+ echo '已建立私有存檔；需完成去個資檢查後才可拍攝。';
+} finally {
+ // 只撤銷本次建立的工作階段，不登出其他你。
+ $sessions->destroy($session);
+ unset($auth, $logged, $session);
+}

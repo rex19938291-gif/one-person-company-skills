@@ -1,0 +1,15 @@
+{
+  // 改成自己的公開教學專案名稱；部署需要自行取得平台授權。
+  "name": "example-admin-tutorial",
+  "main": "worker.js",
+  "compatibility_date": "2026-10-01",
+  "workers_dev": true,
+  "assets": {
+    "directory": "./public",
+    "binding": "ASSETS",
+    // 全部先經過 Worker，確保 HTML 也有 noindex 回應標頭。
+    "run_worker_first": true
+  }
+  // 選用自訂網域，確認擁有該網域後才啟用：
+  // , "routes": [{ "pattern": "tutorial.example.com", "custom_domain": true }]
+}

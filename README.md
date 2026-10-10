@@ -35,6 +35,7 @@ Agent 會自己把內容抓下來、放到正確的位置，然後照著執行�
 | `seo-reading-experience` | 文章重新編排、加關鍵字 | X-2 |
 | `seo-gsc-ubersuggest-analysis` | 看懂自己網站的搜尋成效 | X-2 |
 | `seo-draft-review` | 文章上線前的驗收排查 | X-2 |
+| `admin-tutorial-video` | 把網站後台操作做成真實畫面、推鏡聚光的 MP4 教學影片，交給客戶或團隊照著做 | 補充 |
 
 ## 幾件要先知道的事
 

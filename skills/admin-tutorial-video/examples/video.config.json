@@ -1,0 +1,133 @@
+{
+ "title": "示範商店後台設定教學",
+ "sub": "查看欄位、調整示意值，再確認儲存結果。",
+ "tags": [
+ "WordPress 後台",
+ "設定頁",
+ "示意資料"
+ ],
+ "ghost": "設定",
+ "manifest": "manifest.json",
+ "imgdir": "captures",
+ "out": "video",
+ "interactive": "walkthrough",
+ "labels": {
+ "meta": "示範商店・後台教學",
+ "intro": "示範商店・操作教學",
+ "monitor": "真實後台・設定頁・欄位皆為示意資料",
+ "timecode": "後台操作・1280×860",
+ "section": "第 {current} 件事／共 {total} 件",
+ "footer": "畫面為真實後台；欄位值為示意資料"
+ },
+ "outro_h": "完成後再確認",
+ "outro": [
+ "修改前先確認所在頁面。",
+ "儲存後確認成功訊息。"
+ ],
+ "outro_panel": {
+ "top": "最後一步",
+ "main": "確認儲存",
+ "bottom": "再檢查畫面"
+ },
+ "theme": {
+ "bg": "#e9ece6",
+ "paper": "#f6f7f3",
+ "ink": "#14201b",
+ "muted": "#4f5c56",
+ "accent": "#1f6e5a",
+ "accent_dark": "#0f4a3c",
+ "focus": "#d93a2b",
+ "grid": "rgba(20,32,27,.16)",
+ "monitor": "#f0f0f1",
+ "shadow": "rgba(20,32,27,.45)",
+ "spot_shadow": "rgba(10,22,17,.42)",
+ "white": "#fff",
+ "light_accent": "#9fc9b8",
+ "intro_text": "#c9d6cf",
+ "tag_text": "#e7f0eb",
+ "intro_rule": "#2f8a72",
+ "section_text": "#d5e3dc",
+ "cursor_stroke": "#111"
+ },
+ "timing": {
+ "intro": 3.4,
+ "section": 3,
+ "step": 4.8,
+ "outro": 6
+ },
+ "zoom": {
+ "min": 1.3,
+ "max": 1.8,
+ "factor": 0.82
+ },
+ "runtime": {
+ "gsap": "https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js",
+ "fonts": "https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&family=IBM+Plex+Mono:wght@400;600&family=League+Gothic&display=swap"
+ },
+ "capture": {
+ "base_url": "http://127.0.0.1:8765/",
+ "browser": "chromium",
+ "timeout": 30,
+ "virtual_time_budget": 6000,
+ "pages": {
+ "settings": "real/settings.html"
+ },
+ "default_page": "settings",
+ "phase_pages": {},
+ "width": 1280,
+ "height": 860,
+ "scale": 2
+ },
+ "cleanup": {
+ "removeSelectors": [
+ ".demo-internal-toolbar"
+ ],
+ "hideSelectors": [
+ "#wpfooter"
+ ],
+ "textReplacements": [
+ {
+ "selector": "#wp-admin-bar-my-account .display-name",
+ "value": "管理員"
+ }
+ ],
+ "clearSelectors": [
+ "input[type=password]"
+ ]
+ },
+ "scenarios": [
+ {
+ "id": "settings",
+ "mark": "1",
+ "title": "調整一般設定",
+ "description": "從一般設定頁確認示意商店名稱與一週起始日。",
+ "page": "settings",
+ "count": 3,
+ "must": "儲存後確認"
+ }
+ ],
+ "overrides": {
+ "settings,0": {
+ "tt": "查看設定頁",
+ "dd": "先確認標題與欄位位置。",
+ "dur": 4.8,
+ "chips": [
+ [
+ "示意資料",
+ "所有欄位使用測試值"
+ ]
+ ]
+ },
+ "settings,1": {
+ "tt": "修改商店名稱",
+ "dd": "填入示範商店，再確認一週起始日。",
+ "dur": 5.4
+ },
+ "settings,2": {
+ "tt": "確認儲存結果",
+ "dd": "按儲存後查看成功訊息。",
+ "dur": 5
+ }
+ },
+ "interactive_max_mb": 6
+}
