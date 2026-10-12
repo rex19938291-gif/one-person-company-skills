@@ -16,6 +16,7 @@ description: 在把 SEO 寫手交回的文章預覽連結轉給業主之前，�
 - `seo-reading-experience`：**怎麼寫好**（正向排版與改寫工具）。本 skill 不取代它。
 - `humanizer-zh`：去 AI 味。
 - 本 skill：**收稿驗收**，只判定與列出退回項，不動寫手的稿。
+- **寫手稿不改語氣（你 2026-10-13）**：口吻不列入退回項，也不套 `seo-reading-experience` 的口吻規則（那份只用在我們自己寫的文章）。需要潤稿時只用去 AI 味的 Skill。
 
 ## 這套標準的來源
 
