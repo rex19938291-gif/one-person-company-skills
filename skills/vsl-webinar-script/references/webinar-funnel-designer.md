@@ -77,7 +77,7 @@
 
 「幫我寫報名頁」
 
-則讀取 references/REFERENCE.md 中的報名頁架構並產出。
+則讀取 references/webinar-funnel-reference.md 中的報名頁架構並產出。
 
 ---
 
@@ -380,7 +380,7 @@ ZZZ願景 = 長期、情緒層級的理想狀態
 
 ## Part 3：四大 Webinar 重點
 
-四段必須遵循 references/REFERENCE.md 中的完整框架。
+四段必須遵循 references/webinar-funnel-reference.md 中的完整框架。
 
 簡化結構為：
 
@@ -518,7 +518,7 @@ CTA 原則：
 
 完整規則請讀取：
 
-references/REFERENCE.md
+references/webinar-funnel-reference.md
 
 問卷目的包括：
 
@@ -556,7 +556,7 @@ references/REFERENCE.md
 
 讀取：
 
-references/REFERENCE.md
+references/webinar-funnel-reference.md
 
 並依照「Webinar 報名頁模板」產出完整文案。
 
@@ -589,7 +589,7 @@ references/REFERENCE.md
 
 讀取：
 
-references/REFERENCE.md
+references/webinar-funnel-reference.md
 
 使用「會後預約諮詢頁模板」。
 
@@ -706,7 +706,7 @@ B2B：
 
 需要以下內容時，讀取：
 
-references/REFERENCE.md
+references/webinar-funnel-reference.md
 
 其中包含：
 

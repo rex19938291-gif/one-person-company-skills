@@ -64,7 +64,7 @@
 
 Elementor 頁面在資料庫（`_elementor_data` post meta），SSH 只給檔案 → **靠 `wp-content/mu-plugins/` 取得 PHP 執行權**：上傳 mu-plugin → HTTP 觸發 → 寫結果 JSON → `@unlink(__FILE__)` 自刪 → SSH 取回結果並清乾淨。等於臨時自建 Novamira，用完即銷毀。
 
-可重用工具（正本）：`~/Documents/WP-SSH橋接工具/bin/wp-exec.sh`
+可重用工具（正本）：`<作者本機工具，未隨技能附上>`
 用法 `wp-exec.sh <ssh-alias> <site-url> <php片段檔> [out.json]`；片段直接寫 PHP、用 `return` 回傳（自動 JSON 序列化，含 `echo`／`error` 欄位）。payload 範例放 `payloads/`。
 
 ### B. 三個必踩的坑（每一條都實測撞過）
@@ -108,7 +108,7 @@ preg_match_all('/"widgetType":"([a-z0-9_\-]+)"/i', $data, $m);  // 統計用到�
 
 本輪犯過的錯：只用 `curl` + `grep` 數 HTTP 狀態、位元組數、CSS link 數量，就回報「三頁已完成」。實際開畫面才發現**佈景預設 header 蓋在上面、自訂 header 範本根本沒套用**，表單也沒渲染。**grep 命中不等於畫面正確**——宣告還原完成前一定要開瀏覽器看。
 
-可重用腳本：`~/Documents/WP-SSH橋接工具/qa/visual-check.js`（貼進內建瀏覽器 `javascript_tool` 執行，單頁回傳結構化結果），門檻寫在同目錄 `README.md`。
+可重用腳本：`<作者本機工具，未隨技能附上>`（貼進內建瀏覽器 `javascript_tool` 執行，單頁回傳結構化結果），門檻寫在同目錄 `README.md`。
 
 四個必踩的量測坑：
 
@@ -134,4 +134,4 @@ preg_match_all('/"widgetType":"([a-z0-9_\-]+)"/i', $data, $m);  // 統計用到�
 
 多次 ssh/scp 共用同一條實體連線；「取回結果」與「清除暫存」也合併成一次遠端指令。此外仍應把多個步驟合併成單一 payload，不要一個小查詢就跑一次。
 
-跨代理版本（Codex 也讀得到）記在 `~/.ai/LESSONS.md`「SSH 連客戶站：每次操作開多條連線會被主機端限流鎖死」；工具說明書在 `~/Documents/WP-SSH橋接工具/README.md`。
+跨代理版本（Codex 也讀得到）記在 作者的經驗筆記（未隨技能附上）「SSH 連客戶站：每次操作開多條連線會被主機端限流鎖死」；工具說明書在 `<作者本機工具，未隨技能附上>`。

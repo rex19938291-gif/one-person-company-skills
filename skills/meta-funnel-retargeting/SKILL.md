@@ -13,7 +13,7 @@ description: 用 TOF/MOF/BOF 三層漏斗與 24 個素材切角，替 你 的高
 
 來源：《零基礎 AI 音樂圓夢計畫》Meta 廣告素材漏斗策略
 （Google Doc `106uTbhYpS35LCeg7C7kZH1xO0ZxpKfd7wqiLcKxQePI`）
-＋ 24 切角規格庫 `~/Documents/線上課程型客戶站-fb-ads-ai-music/spec/creatives.json`。
+＋ 24 切角規格庫 `<作者本機工具，未隨技能附上>`。
 
 ## 三層的分工
 
@@ -60,7 +60,7 @@ description: 用 TOF/MOF/BOF 三層漏斗與 24 個素材切角，替 你 的高
 
 ## 工具與憑證
 
-- `~/Documents/線上課程型客戶站-fb-ads-ai-music/fbads.py` — `fbads.call(path, params, method, data)` 打 Graph API，
+- `<作者本機工具，未隨技能附上>` — `fbads.call(path, params, method, data)` 打 Graph API，
   唯讀免問、寫入要 `--yes`、輸出經 `scrub()` 遮權杖
 - 同目錄 `social.py` — `page_token(page_id)` 取粉專權杖、`pcall()` 用粉專權杖呼叫
 - 權杖在 `.env` 的 `FB_ACCESS_TOKEN`。要換發看 `PROJECT.md`（**Generate 出來是短效的，

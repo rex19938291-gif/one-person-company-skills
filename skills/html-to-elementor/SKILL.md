@@ -181,7 +181,7 @@ Update this skill only when 你 explicitly asks to fold the lesson back in, or w
 
 用字元級 Range 量測還原每個標題／段落的實際行，統計違規元素數，
 **四個寬度（1440 / 1024 / 768 / 390）都要 0** 才算過。
-可重用腳本：`~/Documents/線上課程型客戶站 線上課程型客戶站文創行銷/elementor建置工具/qa/lines.js`
+可重用腳本：`<作者本機工具，未隨技能附上>`
 （貼進 `qa-measure.mjs --eval` 執行，回傳 `{bad, items[]}`）。
 改動前先量一次原始頁當基準——本案原始頁在四個寬度分別有 2 / 11 / 19 / 11 個違規，
 不是「原本很好被我改壞」，是原本就有，收斂到 0 才是交付標準。

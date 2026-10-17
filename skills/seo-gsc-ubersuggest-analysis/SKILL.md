@@ -143,7 +143,7 @@ Prefer government/regulator, official brand, original research/formal document, 
 
 ### 9. Humanize the Traditional Chinese final draft
 
-For every externally facing Traditional Chinese article, invoke `$humanizer-zh` after fact/claim verification and before final SEO review. Read its `references/patterns.md` and `references/taiwan-localization.md`; also read `references/protected-content.md` when the draft contains numbers, product/service claims, CTA, URLs, quotations, prices, dates, or terms.
+For every externally facing Traditional Chinese article, invoke `$humanizer-zh` after fact/claim verification and before final SEO review. Its reference files live inside the `humanizer-zh` skill folder, not in this skill (install both; when they sit side by side the paths are `../humanizer-zh/references/...`). From that folder read `references/patterns.md` and `references/taiwan-localization.md`; also read `references/protected-content.md` when the draft contains numbers, product/service claims, CTA, URLs, quotations, prices, dates, or terms.
 
 Preserve all protected content: verified facts and source labels, core and long-tail keywords, product names, slug/title/meta, URLs, CTA wording, prices, dates, quotations, and commercial or legal terms. Do not invent stories, outcomes, sources, or claims.
 
