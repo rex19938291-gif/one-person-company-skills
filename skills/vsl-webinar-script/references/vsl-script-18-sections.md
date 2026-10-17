@@ -291,7 +291,9 @@
 * 風險太高
 * 不適合一般人
 
-### 新方法你主張什麼替代方案？
+### 新方法
+
+你主張什麼替代方案？
 
 ### Unique Mechanism
 
@@ -949,7 +951,7 @@ Specificity + Logic + Story + Proof。
 
 範例只用來學習 Pattern。
 
-不能把其中的 Confidential Information 搬到另一位你的腳本裡。
+不能把其中的 Confidential Information 搬到另一位使用者的腳本裡。
 
 ---
 

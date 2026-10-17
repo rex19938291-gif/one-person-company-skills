@@ -74,20 +74,20 @@ Use for knowledge explanations, teaching, process guides, introductions, and pro
 Suggested structure:
 
 1. `[核心關鍵字]是什麼？先掌握基本概念`
- - Plain-language definition.
- - Difference from a commonly confused concept.
- - Suitable readers and use cases.
+   - Plain-language definition.
+   - Difference from a commonly confused concept.
+   - Suitable readers and use cases.
 2. `[核心關鍵字]有哪些好處與用途？`
- - Three concrete benefits tied to reader problems.
- - Limitations and conditions.
+   - Three concrete benefits tied to reader problems.
+   - Limitations and conditions.
 3. `[核心關鍵字]怎麼做？完整流程`
- - Confirm goal and constraints.
- - Gather and verify information.
- - Compare or select methods.
- - Execute and record.
- - Review and adjust.
+   - Confirm goal and constraints.
+   - Gather and verify information.
+   - Compare or select methods.
+   - Execute and record.
+   - Review and adjust.
 4. `執行[核心關鍵字]常見錯誤`
- - Explain each error's cause, impact, and correction.
+   - Explain each error's cause, impact, and correction.
 5. FAQ, then an educational or consultation CTA supported by supplied brand facts.
 
 ## B commercial investigation
@@ -97,18 +97,18 @@ Use for recommendations, comparisons, rankings, fee guides, and selection advice
 Suggested structure:
 
 1. `選擇[核心關鍵字]前要先注意什麼？`
- - Need, budget, scope, limitations, and use case.
+   - Need, budget, scope, limitations, and use case.
 2. `[核心關鍵字]推薦評選標準`
- - State criteria before naming items: price, features, suitable audience, convenience, support, region, warranty, and public official information.
+   - State criteria before naming items: price, features, suitable audience, convenience, support, region, warranty, and public official information.
 3. One repeatable block per item:
- - Name and verified description.
- - Supported features.
- - Suitable audience.
- - Current price or `請洽官方`.
- - Caveats and source date when relevant.
+   - Name and verified description.
+   - Supported features.
+   - Suitable audience.
+   - Current price or `請洽官方`.
+   - Caveats and source date when relevant.
 4. Comparison table with only comparable, sourced fields.
 5. `如何從推薦名單中做選擇？`
- - Price-focused, quality-focused, first-time, and special-need paths.
+   - Price-focused, quality-focused, first-time, and special-need paths.
 6. Local conditions when applicable, FAQ, and a non-deceptive own-brand CTA.
 
 Do not call an item “best,” “number one,” or “most recommended” without a current, defensible methodology and source. Prefer `適合重視X的讀者` or `可列入評估`.
@@ -122,9 +122,9 @@ Suggested structure:
 1. Connect the offer to a verified reader pain point without exaggeration.
 2. `為什麼你可能需要[核心關鍵字]？`
 3. `[產品名稱]有哪些核心特色？`
- - Translate each verified feature into a user benefit and use case.
+   - Translate each verified feature into a user benefit and use case.
 4. `[產品名稱]適合哪些人？`
- - State unsuitable conditions or a safer alternative when relevant.
+   - State unsuitable conditions or a safer alternative when relevant.
 5. `怎麼使用或申請？`
 6. `價格與方案` using current official data or explicit placeholders.
 7. Limitations, warranty, after-sales, and FAQ.

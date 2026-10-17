@@ -63,8 +63,8 @@ Elementor 版 header 是 `position:fixed`，所以 `overrides.css` 有 `body[dat
 選單作用中項目、CTA 按鈕、選取反白、焦點外框全是藍的，逐條寫 CSS 去蓋是治標。根源在 theme_mod **`colorPalette`**（8 色）：
 
 ```
-color1 主色／連結／按鈕 color2 hover color3 主要文字 color4 次要文字
-color5 邊框 color6 淺底 color7 頁面底色 color8 純白
+color1 主色／連結／按鈕   color2 hover   color3 主要文字   color4 次要文字
+color5 邊框               color6 淺底    color7 頁面底色   color8 純白
 ```
 
 Blocksy 預設 `color1:#5391FF`。把 8 色換成設計稿 `:root` 的品牌色票即可全站一致；`linkColor`／`buttonColor`／`formBorderColor` 等元件設定值指回 `var(--theme-palette-color-N)`，就會自動跟著走。
@@ -89,9 +89,9 @@ $main = &$find($data);
 
 ```
 "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" \
- --headless=new --disable-gpu --hide-scrollbars --force-device-scale-factor=1 \
- --window-size=<w>,<整頁高> --virtual-time-budget=15000 \
- --screenshot=out.png "<url>"
+  --headless=new --disable-gpu --hide-scrollbars --force-device-scale-factor=1 \
+  --window-size=<w>,<整頁高> --virtual-time-budget=15000 \
+  --screenshot=out.png "<url>"
 ```
 
 `--window-size` 的高度要大於整頁高才截得到下半部，再用 `ffmpeg -vf crop=w:h:x:y` 裁出要看的區段，避免整張大圖進對話。原始設計 HTML 用 `python3 -m http.server` 起在 127.0.0.1 再截（`file://` 會載不到圖片與樣式），即可與線上站做同尺寸對照。

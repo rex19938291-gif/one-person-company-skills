@@ -41,7 +41,7 @@ description: 用 TOF/MOF/BOF 三層漏斗與 24 個素材切角，替 你 的高
 ## 三個操作原則
 
 1. **不要太早細分人工受眾。** 把三層素材丟進少數 Advantage+/ASC，讓系統判斷意圖。
- 高單價案子過早拆會把學習訊號切碎。
+   高單價案子過早拆會把學習訊號切碎。
 2. **一支素材只講一個切角。** 30 秒內不要同時講願景、方法、價格、贈品。
 3. **用哪支贏反推市場在乎什麼**，再往那個方向加碼下一輪素材。
 
@@ -52,19 +52,19 @@ description: 用 TOF/MOF/BOF 三層漏斗與 24 個素材切角，替 你 的高
 ## 開始前的三個檢查（缺一項就先講，不要硬做）
 
 1. **轉換事件 Meta 看得到嗎？** 如果報名／成交發生在 LINE、Messenger 這類站外，
- Meta 收不到轉換訊號，ASC 學不起來，BOF 會很不準。
- 要嘛在報名頁埋 Pixel + Lead 事件，要嘛先講清楚這一輪只能買互動。
+   Meta 收不到轉換訊號，ASC 學不起來，BOF 會很不準。
+   要嘛在報名頁埋 Pixel + Lead 事件，要嘛先講清楚這一輪只能買互動。
 2. **素材數量夠不夠？** 三層至少各 5 支才有東西輪替。不足時先說要補哪一層。
 3. **廣告地區能不能設台灣？** 台灣廣告主驗證未完成前不能設台灣
- （見 `線上課程型客戶站-fb-ads-ai-music/state/*_setup.md` 的 `tw_verified`）。
+   （見 `線上課程型客戶站-fb-ads-ai-music/state/*_setup.md` 的 `tw_verified`）。
 
 ## 工具與憑證
 
 - `~/Documents/線上課程型客戶站-fb-ads-ai-music/fbads.py` — `fbads.call(path, params, method, data)` 打 Graph API，
- 唯讀免問、寫入要 `--yes`、輸出經 `scrub()` 遮權杖
+  唯讀免問、寫入要 `--yes`、輸出經 `scrub()` 遮權杖
 - 同目錄 `social.py` — `page_token(page_id)` 取粉專權杖、`pcall()` 用粉專權杖呼叫
 - 權杖在 `.env` 的 `FB_ACCESS_TOKEN`。要換發看 `PROJECT.md`（**Generate 出來是短效的，
- 一定要按 ⓘ→延長存取權杖**）
+  一定要按 ⓘ→延長存取權杖**）
 
 ## 步驟一：盤點可用貼文，取得 post id
 
@@ -73,7 +73,7 @@ import sys; sys.path.insert(0, "<你的本機路徑>")
 import social
 tok = social.page_token(PAGE_ID)
 d = social.pcall(tok, f"{PAGE_ID}/posts",
- {"fields": "id,created_time,message,permalink_url", "limit": "50"})
+                 {"fields": "id,created_time,message,permalink_url", "limit": "50"})
 ```
 
 回傳的 `id` 就是 `<page_id>_<post_id>` 格式，**那個完整字串就是後面要用的 `object_story_id`**。
@@ -95,14 +95,14 @@ fbads.call(f"{ACCOUNT}/customaudiences", {"fields": "id,name,subtype,retention_d
 
 ```python
 rule = {"inclusions": {"operator": "or", "rules": [{
- "event_sources": [{"type": "page", "id": PAGE_ID}],
- "retention_seconds": DAYS * 86400,
- "filter": {"operator": "and", "filters": [
- {"field": "event", "operator": "eq", "value": "page_engaged"}]},
- "template": "ENGAGEMENT_EVENT"}]}}
+    "event_sources": [{"type": "page", "id": PAGE_ID}],
+    "retention_seconds": DAYS * 86400,
+    "filter": {"operator": "and", "filters": [
+        {"field": "event", "operator": "eq", "value": "page_engaged"}]},
+    "template": "ENGAGEMENT_EVENT"}]}}
 fbads.call(f"{ACCOUNT}/customaudiences", method="POST", data={
- "name": f"{品牌}-粉專互動-{DAYS}天", "subtype": "ENGAGEMENT",
- "rule": json.dumps(rule)})
+    "name": f"{品牌}-粉專互動-{DAYS}天", "subtype": "ENGAGEMENT",
+    "rule": json.dumps(rule)})
 ```
 
 依再行銷池建 6 個：7 / 30 / 90 / 180 / 365 天，加一個「已購買」用來排除。
@@ -130,20 +130,20 @@ fbads.call(f"{ACCOUNT}/customaudiences", method="POST", data={
 ```python
 # 1) 活動
 fbads.call(f"{ACCOUNT}/campaigns", method="POST", data={
- "name": ..., "objective": OBJECTIVE, "status": "PAUSED",
- "special_ad_categories": "[]", "daily_budget": ..., 
- "bid_strategy": "LOWEST_COST_WITHOUT_CAP"})
+    "name": ..., "objective": OBJECTIVE, "status": "PAUSED",
+    "special_ad_categories": "[]", "daily_budget": ..., 
+    "bid_strategy": "LOWEST_COST_WITHOUT_CAP"})
 # 2) 廣告組合（帶 custom_audiences 做分層）
 targeting = {"geo_locations": {"countries": ["TW"], "location_types": ["home", "recent"]},
- "custom_audiences": [{"id": AUD_ID}],
- "excluded_custom_audiences": [{"id": 已購買_AUD_ID}]}
+             "custom_audiences": [{"id": AUD_ID}],
+             "excluded_custom_audiences": [{"id": 已購買_AUD_ID}]}
 # 3) 素材：直接指既有貼文
 fbads.call(f"{ACCOUNT}/adcreatives", method="POST", data={
- "name": ..., "object_story_id": "<page_id>_<post_id>"})
+    "name": ..., "object_story_id": "<page_id>_<post_id>"})
 # 4) 廣告
 fbads.call(f"{ACCOUNT}/ads", method="POST", data={
- "name": ..., "adset_id": ..., "creative": json.dumps({"creative_id": cr}),
- "status": "PAUSED"})
+    "name": ..., "adset_id": ..., "creative": json.dumps({"creative_id": cr}),
+    "status": "PAUSED"})
 ```
 
 建完抓 `preview_shareable_link` 給 你 審。
@@ -178,7 +178,7 @@ fbads.call(f"{ACCOUNT}/ads", method="POST", data={
 1. 抓當月新發布的貼文 id（步驟一）
 2. 對照內容矩陣的「廣告漏斗層」欄，決定它屬於 A／B／C
 3. 在對應活動的廣告組合底下**新增一個 ad**（`object_story_id` 指該貼文），狀態 PAUSED
- —— 不要動既有的 ad，讓舊素材繼續累積互動
+   —— 不要動既有的 ad，讓舊素材繼續累積互動
 4. 檢查每個自訂受眾的 `delivery_status`：過門檻的回報「這個可以開了」
 5. 素材疲勞時**暫停舊 ad，不要刪**（刪掉會失去那則貼文累積的社群證明）
 6. 落地一行紀錄
@@ -199,7 +199,7 @@ fbads.call(f"{ACCOUNT}/ads", method="POST", data={
 - 寫入操作要 `--yes`；唯讀查詢不用問。
 - **不要重建 creative 來投既有貼文**——互動會被打散。
 - **不要為了成效把 CTA 加到 TOF 素材上**。TOF 的任務是共鳴，加了 CTA 就變成 BOF，
- 兩層都做不好。
+  兩層都做不好。
 - 客戶資產留在客戶自己的企業管理平台，不要分享到 你 的平台（風險隔離）。
 - 台灣廣告主驗證未完成前，地區不能設台灣。
 
@@ -207,7 +207,7 @@ fbads.call(f"{ACCOUNT}/ads", method="POST", data={
 
 - **Generate 出來的權杖是短效的（1–2 小時）**，一定要按 ⓘ→延長存取權杖。
 - **缺 `read_insights` 時 insights 端點回空資料而不是報錯**，數字會靜靜變成 0。
- 任何吃 insights 的流程都要先查權限。
+  任何吃 insights 的流程都要先查權限。
 - **Meta 已下架貼文層級的觸及／曝光**（v25.0 實測），FB 也從不提供儲存數。
- 自然貼文只能用分享、留言、心情、點擊衡量。
+  自然貼文只能用分享、留言、心情、點擊衡量。
 - 不要開測試工具的「除錯」按鈕，它會把完整權杖寫進網址列與瀏覽器歷史。

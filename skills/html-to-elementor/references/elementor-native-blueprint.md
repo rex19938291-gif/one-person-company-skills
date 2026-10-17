@@ -56,11 +56,11 @@ Use this shape for each section:
 ```text
 Section: <name>
 Container: <outer settings>
- Container: <inner layout settings>
- Heading: "<copy>" / H2 / style token
- Text Editor: "<copy>" / style token
- Image: <asset path or URL> / alt / sizing
- Button: "<label>" / URL / style token
+  Container: <inner layout settings>
+    Heading: "<copy>" / H2 / style token
+    Text Editor: "<copy>" / style token
+    Image: <asset path or URL> / alt / sizing
+    Button: "<label>" / URL / style token
 ```
 
 For card grids:
@@ -68,15 +68,15 @@ For card grids:
 ```text
 Section: <name>
 Container: cards-grid flex row wrap
- Card pattern: native Container
- Image/Icon
- Heading
- Text Editor
- Button/link if needed
- Duplication plan:
- Card 1:
- Card 2:
- Card 3:
+  Card pattern: native Container
+    Image/Icon
+    Heading
+    Text Editor
+    Button/link if needed
+  Duplication plan:
+    Card 1:
+    Card 2:
+    Card 3:
 ```
 
 ## 6. Asset Map

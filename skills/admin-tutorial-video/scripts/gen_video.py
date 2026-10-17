@@ -26,64 +26,64 @@ CFG["chips"] = {k:v.get("chips",[]) for k,v in CFG["over"].items()}
 T_INTRO, T_SEC, T_STEP, T_OUTRO = (CFG["timing"][k] for k in ("intro", "section", "step", "outro"))
 steps, secs, t = [], [], T_INTRO
 for k, mark in CFG["order"]:
- sc = man[k]
- secs.append({"k": k, "mark": mark, "h": CFG["scen_name"][k], "p": CFG["scen_sub"][k], "must": CFG["must"].get(k, ""), "t": t}); t += T_SEC
- n = len(sc["steps"])
- for i, s in enumerate(sc["steps"]):
- ov = CFG["over"].get((k, i), {})
- st = {"k": k, "i": i, "n": n, "t": round(t, 3), "tt": ov.get("tt", html.unescape(s["tt"])), "dd": ov.get("dd", html.unescape(s["dd"])),
- "chips": CFG["chips"].get((k, i), []), "dur": ov.get("dur", T_STEP),
- "click": s["click"], "z": s["z"], "spotZ": s.get("spotZ"),
- "scen": str(mark) + "　" + CFG["scen_name"][k]}
- for ph in ("pre", "mid", "post"):
- if s.get(ph):
- src = project_path(BASE, s[ph]["img"])
- fn = f"{k}-{i:03d}-{ph}{src.suffix.lower()}"
- shutil.copy(src, os.path.join(out, "assets", fn))
- r = clip_rect(s[ph]["r"])
- st[ph] = {"img": "assets/" + fn, "r": r}
- steps.append(st); t += st["dur"]
+    sc = man[k]
+    secs.append({"k": k, "mark": mark, "h": CFG["scen_name"][k], "p": CFG["scen_sub"][k], "must": CFG["must"].get(k, ""), "t": t}); t += T_SEC
+    n = len(sc["steps"])
+    for i, s in enumerate(sc["steps"]):
+        ov = CFG["over"].get((k, i), {})
+        st = {"k": k, "i": i, "n": n, "t": round(t, 3), "tt": ov.get("tt", html.unescape(s["tt"])), "dd": ov.get("dd", html.unescape(s["dd"])),
+              "chips": CFG["chips"].get((k, i), []), "dur": ov.get("dur", T_STEP),
+              "click": s["click"], "z": s["z"], "spotZ": s.get("spotZ"),
+              "scen": str(mark) + "　" + CFG["scen_name"][k]}
+        for ph in ("pre", "mid", "post"):
+            if s.get(ph):
+                src = project_path(BASE, s[ph]["img"])
+                fn = f"{k}-{i:03d}-{ph}{src.suffix.lower()}"
+                shutil.copy(src, os.path.join(out, "assets", fn))
+                r = clip_rect(s[ph]["r"])
+                st[ph] = {"img": "assets/" + fn, "r": r}
+        steps.append(st); t += st["dur"]
 T_OUT0 = round(t, 3); TOTAL = round(t + T_OUTRO, 3)
 
-def vz(z): # 影片畫面較大，推鏡倍率收斂避免放大過度模糊
- return round(max(CFG["zoom"]["min"], min(CFG["zoom"]["max"], z * CFG["zoom"]["factor"])), 3)
+def vz(z):  # 影片畫面較大，推鏡倍率收斂避免放大過度模糊
+    return round(max(CFG["zoom"]["min"], min(CFG["zoom"]["max"], z * CFG["zoom"]["factor"])), 3)
 for s in steps:
- s["vz"] = vz(s["z"]); s["vzPost"] = vz(s["spotZ"]) if s.get("spotZ") else s["vz"]
+    s["vz"] = vz(s["z"]); s["vzPost"] = vz(s["spotZ"]) if s.get("spotZ") else s["vz"]
 
 imgs = []
 for si, s in enumerate(steps):
- for ph in ("pre", "mid", "post"):
- if s.get(ph):
- imgs.append(f'<img class="shot" id="im-{si}-{ph}" src="{s[ph]["img"]}" alt="">')
+    for ph in ("pre", "mid", "post"):
+        if s.get(ph):
+            imgs.append(f'<img class="shot" id="im-{si}-{ph}" src="{s[ph]["img"]}" alt="">')
 
 caps = []
 for si, s in enumerate(steps):
- scene_steps = [(j, row) for j, row in enumerate(steps) if row["k"] == s["k"]]
- visible = [(j, row) for j, row in scene_steps if abs(row["i"] - s["i"]) <= 2]
- outline = "".join(f'<li class="{ "current" if row["i"] == s["i"] else "" }">{row["i"]+1:02d}　{html.escape(row["tt"])}</li>' for j, row in visible)
- caps.append(f'''<div class="cap" id="cap-{si}">
- <div class="scen">{html.escape(s["scen"])}</div>
- <div class="num"><span class="big">{s["i"]+1:02d}</span><span class="of">／{s["n"]:02d}</span></div>
- <h2 class="tt">{html.escape(s["tt"])}</h2>
- <p class="dd">{html.escape(s["dd"])}</p>
- {('<div class="chips">' + "".join(f'<div class="chip"><code>{html.escape(a)}</code><span>{html.escape(b)}</span></div>' for a, b in s["chips"]) + '</div>') if s["chips"] else ""}
- <ol class="outline">{outline}</ol>
+    scene_steps = [(j, row) for j, row in enumerate(steps) if row["k"] == s["k"]]
+    visible = [(j, row) for j, row in scene_steps if abs(row["i"] - s["i"]) <= 2]
+    outline = "".join(f'<li class="{ "current" if row["i"] == s["i"] else "" }">{row["i"]+1:02d}　{html.escape(row["tt"])}</li>' for j, row in visible)
+    caps.append(f'''<div class="cap" id="cap-{si}">
+  <div class="scen">{html.escape(s["scen"])}</div>
+  <div class="num"><span class="big">{s["i"]+1:02d}</span><span class="of">／{s["n"]:02d}</span></div>
+  <h2 class="tt">{html.escape(s["tt"])}</h2>
+  <p class="dd">{html.escape(s["dd"])}</p>
+  {('<div class="chips">' + "".join(f'<div class="chip"><code>{html.escape(a)}</code><span>{html.escape(b)}</span></div>' for a, b in s["chips"]) + '</div>') if s["chips"] else ""}
+  <ol class="outline">{outline}</ol>
 </div>''')
 
 secs_html = []
 for j, c in enumerate(secs):
- secs_html.append(f'''<section class="clip seccard" id="sec-{j}" data-start="{c["t"]}" data-duration="{T_SEC}" data-track-index="2">
- <div class="sec-panel" id="secp-{j}"></div>
- <div class="sec-inner">
- <div class="sec-mark" id="secm-{j}">{html.escape(str(c["mark"]))}</div>
- <div class="sec-copy">{('<div class="must" id="secmust-'+str(j)+'">'+html.escape(c["must"])+'</div>') if c["must"] else ""}<div class="sec-kicker">{html.escape(CFG["labels"]["section"].format(current=j+1,total=len(secs)))}</div><h2 class="sec-h" id="sech-{j}">{html.escape(c["h"])}</h2><p class="sec-p" id="secq-{j}">{html.escape(c["p"])}</p></div>
- </div>
+    secs_html.append(f'''<section class="clip seccard" id="sec-{j}" data-start="{c["t"]}" data-duration="{T_SEC}" data-track-index="2">
+  <div class="sec-panel" id="secp-{j}"></div>
+  <div class="sec-inner">
+    <div class="sec-mark" id="secm-{j}">{html.escape(str(c["mark"]))}</div>
+    <div class="sec-copy">{('<div class="must" id="secmust-'+str(j)+'">'+html.escape(c["must"])+'</div>') if c["must"] else ""}<div class="sec-kicker">{html.escape(CFG["labels"]["section"].format(current=j+1,total=len(secs)))}</div><h2 class="sec-h" id="sech-{j}">{html.escape(c["h"])}</h2><p class="sec-p" id="secq-{j}">{html.escape(c["p"])}</p></div>
+  </div>
 </section>''')
 
 tags = "".join(f'<span class="tag">{html.escape(x)}</span>' for x in CFG["tags"])
 outro_li = "".join(f'<li class="oli" id="oli-{i}"><span class="ono">{i+1:02d}</span><span>{html.escape(x)}</span></li>' for i, x in enumerate(CFG["outro"]))
 data = json.dumps({"steps": [{k: v for k, v in s.items() if k in ("t", "dur", "click", "vz", "vzPost", "pre", "mid", "post")} for s in steps],
- "secs": [c["t"] for c in secs], "T_STEP": T_STEP, "T_SEC": T_SEC, "T_OUT0": T_OUT0, "TOTAL": TOTAL}, ensure_ascii=False).replace("<", "\\u003c")
+                   "secs": [c["t"] for c in secs], "T_STEP": T_STEP, "T_SEC": T_SEC, "T_OUT0": T_OUT0, "TOTAL": TOTAL}, ensure_ascii=False).replace("<", "\\u003c")
 
 page = f'''<!doctype html>
 <html lang="zh-Hant">
@@ -170,44 +170,44 @@ html,body{{margin:0;background:var(--bg)}}
 </head>
 <body>
 <div id="root" data-composition-id="main" data-start="0" data-width="1920" data-height="1080" data-duration="{TOTAL}">
- <section class="clip" id="bgclip" data-start="0" data-duration="{TOTAL}" data-track-index="0">
- <div class="fill"></div><div class="grid" id="grid"></div><div class="ghost" id="ghost">{html.escape(CFG["ghost"])}</div>
- <div class="reg tl"></div><div class="reg tr"></div><div class="reg bl"></div><div class="reg br"></div>
- </section>
- <section class="clip" id="mainclip" data-start="0" data-duration="{TOTAL}" data-track-index="1">
- <div class="meta">{html.escape(CFG["labels"]["meta"])}</div>
- <div class="tc" id="tc">{html.escape(CFG["labels"]["timecode"])}</div>
- <div class="mon-label"><i></i>{html.escape(CFG["labels"]["monitor"])}</div>
- <div class="monitor"><div class="cam" id="cam">
- {"".join(imgs)}
- <div class="spot" id="spot"><div class="ring"></div></div>
- <div class="ripple" id="ripple"></div>
- <svg class="cursor" id="cursor" viewBox="0 0 24 24"><path d="M4 2l15 9-6.5 1.5L16 20l-3 1.5-3.6-7.6L4 18z" fill="{CFG["theme"]["white"]}" stroke="{CFG["theme"]["cursor_stroke"]}" stroke-width="1.4" stroke-linejoin="round"/></svg>
- </div></div>
- <div class="rail">{"".join(caps)}</div>
- <div class="bar"><i id="barfill"></i></div>
- </section>
- <section class="clip intro" id="intro" data-start="0" data-duration="{T_INTRO}" data-track-index="2">
- <div class="intro-big" id="introbig">{html.escape(CFG["ghost"])}</div>
- <div class="intro-rule" id="introrule"></div>
- <div class="intro-in">
- <div class="k" id="introk">{html.escape(CFG["labels"]["intro"])}</div>
- <h1 id="introh">{html.escape(CFG["title"])}</h1>
- <p id="introp">{html.escape(CFG["sub"])}</p>
- <div class="tags" id="introtags">{tags}</div>
- </div>
- </section>
- {"".join(secs_html)}
- <section class="clip outro" id="outro" data-start="{T_OUT0}" data-duration="{T_OUTRO}" data-track-index="2">
- <div class="outro-panel" id="outropanel"><div class="op-in" id="opin"><span>{html.escape(CFG["outro_panel"]["top"])}</span><b>{html.escape(CFG["outro_panel"]["main"])}</b><span>{html.escape(CFG["outro_panel"]["bottom"])}</span></div></div>
- <div class="outro-ghost" id="outroghost">{html.escape(CFG["ghost"])}</div>
- <div class="outro-in">
- <h2 id="outroh">{html.escape(CFG["outro_h"])}</h2>
- <i class="outro-rule" id="outrorule"></i>
- <ol>{outro_li}</ol>
- <div class="foot">{html.escape(CFG["labels"]["footer"])}</div>
- </div>
- </section>
+  <section class="clip" id="bgclip" data-start="0" data-duration="{TOTAL}" data-track-index="0">
+    <div class="fill"></div><div class="grid" id="grid"></div><div class="ghost" id="ghost">{html.escape(CFG["ghost"])}</div>
+    <div class="reg tl"></div><div class="reg tr"></div><div class="reg bl"></div><div class="reg br"></div>
+  </section>
+  <section class="clip" id="mainclip" data-start="0" data-duration="{TOTAL}" data-track-index="1">
+    <div class="meta">{html.escape(CFG["labels"]["meta"])}</div>
+    <div class="tc" id="tc">{html.escape(CFG["labels"]["timecode"])}</div>
+    <div class="mon-label"><i></i>{html.escape(CFG["labels"]["monitor"])}</div>
+    <div class="monitor"><div class="cam" id="cam">
+      {"".join(imgs)}
+      <div class="spot" id="spot"><div class="ring"></div></div>
+      <div class="ripple" id="ripple"></div>
+      <svg class="cursor" id="cursor" viewBox="0 0 24 24"><path d="M4 2l15 9-6.5 1.5L16 20l-3 1.5-3.6-7.6L4 18z" fill="{CFG["theme"]["white"]}" stroke="{CFG["theme"]["cursor_stroke"]}" stroke-width="1.4" stroke-linejoin="round"/></svg>
+    </div></div>
+    <div class="rail">{"".join(caps)}</div>
+    <div class="bar"><i id="barfill"></i></div>
+  </section>
+  <section class="clip intro" id="intro" data-start="0" data-duration="{T_INTRO}" data-track-index="2">
+    <div class="intro-big" id="introbig">{html.escape(CFG["ghost"])}</div>
+    <div class="intro-rule" id="introrule"></div>
+    <div class="intro-in">
+      <div class="k" id="introk">{html.escape(CFG["labels"]["intro"])}</div>
+      <h1 id="introh">{html.escape(CFG["title"])}</h1>
+      <p id="introp">{html.escape(CFG["sub"])}</p>
+      <div class="tags" id="introtags">{tags}</div>
+    </div>
+  </section>
+  {"".join(secs_html)}
+  <section class="clip outro" id="outro" data-start="{T_OUT0}" data-duration="{T_OUTRO}" data-track-index="2">
+    <div class="outro-panel" id="outropanel"><div class="op-in" id="opin"><span>{html.escape(CFG["outro_panel"]["top"])}</span><b>{html.escape(CFG["outro_panel"]["main"])}</b><span>{html.escape(CFG["outro_panel"]["bottom"])}</span></div></div>
+    <div class="outro-ghost" id="outroghost">{html.escape(CFG["ghost"])}</div>
+    <div class="outro-in">
+      <h2 id="outroh">{html.escape(CFG["outro_h"])}</h2>
+      <i class="outro-rule" id="outrorule"></i>
+      <ol>{outro_li}</ol>
+      <div class="foot">{html.escape(CFG["labels"]["footer"])}</div>
+    </div>
+  </section>
 </div>
 <script>
 window.__timelines = window.__timelines || {{}};
@@ -215,13 +215,13 @@ const D = {data};
 const tl = gsap.timeline({{ paused: true }});
 const W = 1280, H = 860;
 function camT(r, z) {{
- let tx = W/2 - (r.x + r.w/2)*z, ty = H*0.48 - (r.y + r.h/2)*z;
- tx = Math.min(0, Math.max(W - W*z, tx)); ty = Math.min(0, Math.max(H - H*z, ty));
- return {{ x: tx, y: ty, scale: z }};
+  let tx = W/2 - (r.x + r.w/2)*z, ty = H*0.48 - (r.y + r.h/2)*z;
+  tx = Math.min(0, Math.max(W - W*z, tx)); ty = Math.min(0, Math.max(H - H*z, ty));
+  return {{ x: tx, y: ty, scale: z }};
 }}
 function spotT(r) {{ const p = 8; return {{ x: r.x - p, y: r.y - p, width: r.w + 2*p, height: r.h + 2*p }}; }}
 function curPos(s, r) {{
- return s.click ? {{ x: r.x + Math.min(r.w*0.55, r.w - 10), y: r.y + r.h*0.6 }} : {{ x: Math.max(8, r.x - 46), y: r.y + Math.min(40, r.h/2) }};
+  return s.click ? {{ x: r.x + Math.min(r.w*0.55, r.w - 10), y: r.y + r.h*0.6 }} : {{ x: Math.max(8, r.x - 46), y: r.y + Math.min(40, r.h/2) }};
 }}
 // 片頭
 tl.from("#introrule", {{ scaleX: 0, duration: 0.8, ease: "expo.out" }}, 0.1);
@@ -235,51 +235,51 @@ tl.to("#ghost", {{ x: 60, duration: D.TOTAL, ease: "none" }}, 0);
 tl.to("#grid", {{ x: 64, y: 32, duration: D.TOTAL, ease: "none" }}, 0);
 // 章節卡
 D.secs.forEach((t0, j) => {{
- tl.fromTo("#secp-"+j, {{ scaleX: 0 }}, {{ scaleX: 1, duration: 0.55, ease: "expo.inOut" }}, t0);
- tl.from("#secm-"+j, {{ scale: 0.6, opacity: 0, duration: 0.6, ease: "back.out(1.8)" }}, t0 + 0.35);
- tl.from("#sech-"+j, {{ y: 60, opacity: 0, duration: 0.55, ease: "power3.out" }}, t0 + 0.45);
- tl.from("#secq-"+j, {{ y: 24, opacity: 0, duration: 0.5, ease: "power2.out" }}, t0 + 0.65);
- tl.set("#cam", {{ x: 0, y: 0, scale: 1 }}, t0 + 0.6);
- tl.set("#spot", {{ opacity: 0 }}, t0 + 0.6);
- if (document.getElementById("secmust-"+j)) tl.from("#secmust-"+j, {{ scale: 1.6, opacity: 0, rotation: -4, duration: 0.5, ease: "back.out(2.2)" }}, t0 + 0.8);
- tl.to(["#secm-"+j, "#sech-"+j, "#secq-"+j], {{ opacity: 0, duration: 0.25 }}, t0 + D.T_SEC - 0.4);
- tl.to("#secp-"+j, {{ scaleX: 0, transformOrigin: "100% 50%", duration: 0.4, ease: "expo.in" }}, t0 + D.T_SEC - 0.45);
+  tl.fromTo("#secp-"+j, {{ scaleX: 0 }}, {{ scaleX: 1, duration: 0.55, ease: "expo.inOut" }}, t0);
+  tl.from("#secm-"+j, {{ scale: 0.6, opacity: 0, duration: 0.6, ease: "back.out(1.8)" }}, t0 + 0.35);
+  tl.from("#sech-"+j, {{ y: 60, opacity: 0, duration: 0.55, ease: "power3.out" }}, t0 + 0.45);
+  tl.from("#secq-"+j, {{ y: 24, opacity: 0, duration: 0.5, ease: "power2.out" }}, t0 + 0.65);
+  tl.set("#cam", {{ x: 0, y: 0, scale: 1 }}, t0 + 0.6);
+  tl.set("#spot", {{ opacity: 0 }}, t0 + 0.6);
+  if (document.getElementById("secmust-"+j)) tl.from("#secmust-"+j, {{ scale: 1.6, opacity: 0, rotation: -4, duration: 0.5, ease: "back.out(2.2)" }}, t0 + 0.8);
+  tl.to(["#secm-"+j, "#sech-"+j, "#secq-"+j], {{ opacity: 0, duration: 0.25 }}, t0 + D.T_SEC - 0.4);
+  tl.to("#secp-"+j, {{ scaleX: 0, transformOrigin: "100% 50%", duration: 0.4, ease: "expo.in" }}, t0 + D.T_SEC - 0.45);
 }});
 // 步驟
 let prevImg = null;
 D.steps.forEach((s, i) => {{
- const t0 = s.t, r = s.pre.r, fin = s.post || s.pre, fr = fin.r || r;
- const pre = "#im-"+i+"-pre", mid = s.mid ? "#im-"+i+"-mid" : null, post = s.post ? "#im-"+i+"-post" : null;
- tl.set(pre, {{ opacity: 1, zIndex: 3*i+1 }}, t0);
- if (prevImg) tl.set(prevImg, {{ opacity: 0 }}, t0 + 0.05);
- if (i === 0) {{ tl.set("#cam", camT(r, 1), 0); tl.set("#cursor", {{ x: 900, y: 600 }}, 0); }}
- tl.to("#cam", {{ ...camT(r, s.vz), duration: 0.9, ease: "power3.inOut" }}, t0);
- tl.to("#spot", {{ ...spotT(r), opacity: 1, duration: 0.8, ease: "power3.inOut" }}, t0);
- const c = curPos(s, r);
- tl.to("#cursor", {{ x: c.x, y: c.y, duration: 0.8, ease: "power2.inOut" }}, t0 + 0.35);
- // 左側字卡
- tl.fromTo("#cap-"+i, {{ opacity: 0, y: 18 }}, {{ opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }}, t0 + 0.15);
- tl.to("#cap-"+i, {{ opacity: 0, duration: 0.2 }}, t0 + s.dur - 0.2);
- tl.to("#barfill", {{ scaleX: (i+1)/D.steps.length, duration: 0.6, ease: "power2.out" }}, t0 + 0.2);
- let tPost = t0 + 1.5;
- if (s.click) {{
- tl.to("#cursor", {{ scale: 0.82, duration: 0.09, yoyo: true, repeat: 1 }}, t0 + 1.25);
- tl.fromTo("#ripple", {{ x: c.x + 4, y: c.y + 4, scale: 0.3, opacity: 1 }}, {{ scale: 1.6, opacity: 0, duration: 0.55, ease: "power2.out" }}, t0 + 1.3);
- }}
- if (mid) {{ tl.set(mid, {{ zIndex: 3*i+2 }}, t0); tl.to(mid, {{ opacity: 1, duration: 0.2 }}, t0 + 1.4); tPost = t0 + 2.45; }}
- if (post) {{
- tl.set(post, {{ zIndex: 3*i+3 }}, t0);
- tl.to(post, {{ opacity: 1, duration: 0.4, ease: "power1.inOut" }}, tPost);
- if (fr.x !== r.x || fr.y !== r.y || fr.w !== r.w) {{
- tl.to("#cam", {{ ...camT(fr, s.vzPost), duration: 0.8, ease: "power3.inOut" }}, tPost + 0.1);
- tl.to("#spot", {{ ...spotT(fr), duration: 0.7, ease: "power3.inOut" }}, tPost + 0.1);
- const c2 = {{ x: fr.x + Math.min(40, fr.w*0.3), y: fr.y + Math.min(36, fr.h*0.4) }};
- tl.to("#cursor", {{ x: c2.x, y: c2.y, duration: 0.6, ease: "power2.inOut" }}, tPost + 0.2);
- }}
- if (mid) tl.set(mid, {{ opacity: 0 }}, tPost + 0.45);
- tl.set(pre, {{ opacity: 0 }}, tPost + 0.45);
- prevImg = post;
- }} else {{ prevImg = mid || pre; if (mid) tl.set(pre, {{ opacity: 0 }}, t0 + 1.6); }}
+  const t0 = s.t, r = s.pre.r, fin = s.post || s.pre, fr = fin.r || r;
+  const pre = "#im-"+i+"-pre", mid = s.mid ? "#im-"+i+"-mid" : null, post = s.post ? "#im-"+i+"-post" : null;
+  tl.set(pre, {{ opacity: 1, zIndex: 3*i+1 }}, t0);
+  if (prevImg) tl.set(prevImg, {{ opacity: 0 }}, t0 + 0.05);
+  if (i === 0) {{ tl.set("#cam", camT(r, 1), 0); tl.set("#cursor", {{ x: 900, y: 600 }}, 0); }}
+  tl.to("#cam", {{ ...camT(r, s.vz), duration: 0.9, ease: "power3.inOut" }}, t0);
+  tl.to("#spot", {{ ...spotT(r), opacity: 1, duration: 0.8, ease: "power3.inOut" }}, t0);
+  const c = curPos(s, r);
+  tl.to("#cursor", {{ x: c.x, y: c.y, duration: 0.8, ease: "power2.inOut" }}, t0 + 0.35);
+  // 左側字卡
+  tl.fromTo("#cap-"+i, {{ opacity: 0, y: 18 }}, {{ opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }}, t0 + 0.15);
+  tl.to("#cap-"+i, {{ opacity: 0, duration: 0.2 }}, t0 + s.dur - 0.2);
+  tl.to("#barfill", {{ scaleX: (i+1)/D.steps.length, duration: 0.6, ease: "power2.out" }}, t0 + 0.2);
+  let tPost = t0 + 1.5;
+  if (s.click) {{
+    tl.to("#cursor", {{ scale: 0.82, duration: 0.09, yoyo: true, repeat: 1 }}, t0 + 1.25);
+    tl.fromTo("#ripple", {{ x: c.x + 4, y: c.y + 4, scale: 0.3, opacity: 1 }}, {{ scale: 1.6, opacity: 0, duration: 0.55, ease: "power2.out" }}, t0 + 1.3);
+  }}
+  if (mid) {{ tl.set(mid, {{ zIndex: 3*i+2 }}, t0); tl.to(mid, {{ opacity: 1, duration: 0.2 }}, t0 + 1.4); tPost = t0 + 2.45; }}
+  if (post) {{
+    tl.set(post, {{ zIndex: 3*i+3 }}, t0);
+    tl.to(post, {{ opacity: 1, duration: 0.4, ease: "power1.inOut" }}, tPost);
+    if (fr.x !== r.x || fr.y !== r.y || fr.w !== r.w) {{
+      tl.to("#cam", {{ ...camT(fr, s.vzPost), duration: 0.8, ease: "power3.inOut" }}, tPost + 0.1);
+      tl.to("#spot", {{ ...spotT(fr), duration: 0.7, ease: "power3.inOut" }}, tPost + 0.1);
+      const c2 = {{ x: fr.x + Math.min(40, fr.w*0.3), y: fr.y + Math.min(36, fr.h*0.4) }};
+      tl.to("#cursor", {{ x: c2.x, y: c2.y, duration: 0.6, ease: "power2.inOut" }}, tPost + 0.2);
+    }}
+    if (mid) tl.set(mid, {{ opacity: 0 }}, tPost + 0.45);
+    tl.set(pre, {{ opacity: 0 }}, tPost + 0.45);
+    prevImg = post;
+  }} else {{ prevImg = mid || pre; if (mid) tl.set(pre, {{ opacity: 0 }}, t0 + 1.6); }}
 }});
 // 片尾
 tl.from("#outroh", {{ x: -60, opacity: 0, duration: 0.6, ease: "power3.out" }}, D.T_OUT0 + 0.15);

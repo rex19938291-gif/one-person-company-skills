@@ -30,9 +30,9 @@
 2. **`.e-con::before` 背景疊層規則**（content:var(--background-overlay)、width/height:max(100%…)、left/top calc）會把設計的 `::before` 裝飾（光球、圓環）拉成整區大 → compat 加 `::before{content:none;position:static;width:auto;height:auto;left:auto;top:auto;border:0;transition:none;mix-blend-mode:normal;opacity:1}`。**不要**同做 `::after`（低特異性動畫 css 的 ::after 會被誤殺）。
 3. `.elementor-widget{position:relative}` 會攔截葉節點裡 absolute 定位的裝飾層（照片陰影 offset 消失）→ compat 設 `position:static`。
 4. **包裝層搶走 flex/grid item 身分**（本輪最大宗缺陷類）：
- - 設計把 `grid-column` 寫在內層 p/h3 → 死（secret-row 高度爆增 50%）。
- - inline span 靠 flex item 撐尺寸（9px 紅點）→ 塌成 0。
- - 修法＝**外科手術式** `display:contents`：`.該區塊 :is(.elementor-widget,.elementor-widget-container){display:contents}`。**禁止全域套**——contents 的盒子不存在，包裝層上的 reveal opacity/transform 動畫會全滅。
+   - 設計把 `grid-column` 寫在內層 p/h3 → 死（secret-row 高度爆增 50%）。
+   - inline span 靠 flex item 撐尺寸（9px 紅點）→ 塌成 0。
+   - 修法＝**外科手術式** `display:contents`：`.該區塊 :is(.elementor-widget,.elementor-widget-container){display:contents}`。**禁止全域套**——contents 的盒子不存在，包裝層上的 reveal opacity/transform 動畫會全滅。
 5. **object-fit/object-position 寫在圖片 od-id 上** → 屬性掛在包裝層碰不到 img → compat 加繼承鏈（中間隔層必補）：`.elementor-widget-image .elementor-widget-container, .elementor-widget-image img{object-fit:inherit;object-position:inherit}`。img 自身行內值（emx (0,4,0)）照樣蓋過＝正確。
 6. 佈景基礎字級（18px vs 設計 16px）→ compat `body{font-size:16px}`；heading 用 `.elementor-heading-title{font-*:inherit;line-height:inherit;…}` 讓包裝層 class 規則靠繼承生效（Elementor 的 line-height:1 會毀 CJK 標題）。
 7. 動畫 JS 的結構型選擇器（`>div>div:first-child>*:nth-child(n)`）進 Elementor 必斷 → **設計源頭改 marker 式**（od-id＋CSS 變數 delay），兩邊共用同一份動畫檔。JS 對 e-con-inner 加一層「單一子元素就下探」容錯。
@@ -85,7 +85,7 @@ Elementor 頁面在資料庫（`_elementor_data` post meta），SSH 只給檔案
 來源站與目標站的 Elementor 大版本可能不同（實案：funnel 站 4.2.2／Pro 4.2.1 → 學院站 3.34.3／Pro 3.32.1）。**動工前先數元件**：
 
 ```
-preg_match_all('/"widgetType":"([a-z0-9_\-]+)"/i', $data, $m); // 統計用到哪些 widget
+preg_match_all('/"widgetType":"([a-z0-9_\-]+)"/i', $data, $m);  // 統計用到哪些 widget
 ```
 
 只用到 `container` ＋ `text-editor`／`image`／`heading`／`shortcode` ＝ 3.6+ 全支援，跨大版本安全（本輪即是此情況）。出現 v4 atomic widgets（`e-heading`、`e-div-block` 等）＝ 3.x 吃不下，必須先在來源站降級重建或改走 HTML 重轉。
@@ -128,8 +128,8 @@ preg_match_all('/"widgetType":"([a-z0-9_\-]+)"/i', $data, $m); // 統計用到�
 預防（已內建於 `wp-exec.sh`，不需要另外設定）：連線重用參數直接寫在腳本裡，不依賴 `~/.ssh/config`——
 
 ```
--o ControlMaster=auto -o "ControlPath=$HOME/.ssh/cm-%r@%h-%p"
--o ControlPersist=10m -o ServerAliveInterval=30
+-o ControlMaster=auto  -o "ControlPath=$HOME/.ssh/cm-%r@%h-%p"
+-o ControlPersist=10m  -o ServerAliveInterval=30
 ```
 
 多次 ssh/scp 共用同一條實體連線；「取回結果」與「清除暫存」也合併成一次遠端指令。此外仍應把多個步驟合併成單一 payload，不要一個小查詢就跑一次。

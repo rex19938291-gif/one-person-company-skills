@@ -11,84 +11,84 @@
 （`build-page.py` 是本節所有規則的實作）。
 
 1. **頁面自訂 CSS 的選擇器清單不能跨行**。Elementor 存 `_elementor_page_settings.custom_css`
- 時，`.a,\n.b{...}` 只會留下最後一個選擇器，前面的靜默消失（症狀：規則明明在檔案裡、
- `el.matches()` 也成立，但 `getComputedStyle` 不變）。輸出前一律
- `re.sub(r',\s*\n\s*', ',', css)`，compat 層每條規則自己一行。
+   時，`.a,\n.b{...}` 只會留下最後一個選擇器，前面的靜默消失（症狀：規則明明在檔案裡、
+   `el.matches()` 也成立，但 `getComputedStyle` 不變）。輸出前一律
+   `re.sub(r',\s*\n\s*', ',', css)`，compat 層每條規則自己一行。
 2. **頁面上任何 widget 的自訂 CSS 若有語法殘渣，會吃掉頁面自訂 CSS 的第一條規則**。
- 本案 countdown widget 的自訂 CSS 尾端留了裸字 `showaftercountdown`，
- 瀏覽器把它跟下一條規則併成 `showaftercountdown .emxw.emxw.emxw{...}` 而整條失效。
- 對策：頁面自訂 CSS **開頭固定放一條犧牲規則**（如 `.線上課程型客戶站-css-guard{color:inherit}`）。
- 判別法：`document.styleSheets` 裡該規則的 `selectorText` 前面多了不明前綴。
+   本案 countdown widget 的自訂 CSS 尾端留了裸字 `showaftercountdown`，
+   瀏覽器把它跟下一條規則併成 `showaftercountdown .emxw.emxw.emxw{...}` 而整條失效。
+   對策：頁面自訂 CSS **開頭固定放一條犧牲規則**（如 `.線上課程型客戶站-css-guard{color:inherit}`）。
+   判別法：`document.styleSheets` 裡該規則的 `selectorText` 前面多了不明前綴。
 3. **heading widget 的 `title` 會過 `wp_kses_post`**，行內 style 只留 WordPress 白名單屬性：
- `-webkit-background-clip` / `-webkit-text-fill-color` 直接被剝掉 →
- 漸層字（`background:linear-gradient` + `background-clip:text`）變成**實心色塊、文字消失**。
- text-editor widget 不受影響（不過 kses）。對策：轉換時把 heading 內層元素的行內 style
- 一律改成 class ＋ 頁面 CSS 規則（`inline_to_class()`）。這種缺陷高度／樣式比對都抓不到，
- **只有截圖親讀會發現**。
+   `-webkit-background-clip` / `-webkit-text-fill-color` 直接被剝掉 →
+   漸層字（`background:linear-gradient` + `background-clip:text`）變成**實心色塊、文字消失**。
+   text-editor widget 不受影響（不過 kses）。對策：轉換時把 heading 內層元素的行內 style
+   一律改成 class ＋ 頁面 CSS 規則（`inline_to_class()`）。這種缺陷高度／樣式比對都抓不到，
+   **只有截圖親讀會發現**。
 4. **`:first-child` / `:last-child` / `:only-child` 會因 Elementor 包裝層失效**
- （每個葉節點都是自己 widget div 的唯一子節點 → 每個都是 last-child）。
- 對策：轉換時依「設計樹的兄弟順序」打上 `emxfirst`/`emxlast`/`emxonly` 標記 class，
- 再把 CSS 裡的這三個偽類機械替換成對應 class。
+   （每個葉節點都是自己 widget div 的唯一子節點 → 每個都是 last-child）。
+   對策：轉換時依「設計樹的兄弟順序」打上 `emxfirst`/`emxlast`/`emxonly` 標記 class，
+   再把 CSS 裡的這三個偽類機械替換成對應 class。
 
 另外三條同輪的實作要點：
 
 - **原 html widget 的 `_padding`/`_margin`/`_element_width`/`_element_custom_width`/
- `_flex_align_self`（含 `_tablet`/`_mobile`）必須還原**：把轉出來的元素樹包進一個容器，
- 並把這些設定翻成該容器的 CSS（tablet ≤1024、mobile ≤767）。不還原會同時吃掉
- 垂直間距與寬度（實測 `align-self:center` 沒還原時，區塊從 588px 撐成 1440px）。
+  `_flex_align_self`（含 `_tablet`/`_mobile`）必須還原**：把轉出來的元素樹包進一個容器，
+  並把這些設定翻成該容器的 CSS（tablet ≤1024、mobile ≤767）。不還原會同時吃掉
+  垂直間距與寬度（實測 `align-self:center` 沒還原時，區塊從 588px 撐成 1440px）。
 - **`.elementor-heading-title` 的 line-height 要用「原頁實測值」**，不要用 `1`（Elementor 預設，
- 標題會短掉約 1/3）、不要用 `normal`（差 2-3px）、也不要用 `inherit`
- （會吃到佈景 body 的值，本案 1.65 vs 實際 1.5）。做法：先量原頁三種標題的
- `lineHeight/fontSize`，取共同比值寫死。
+  標題會短掉約 1/3）、不要用 `normal`（差 2-3px）、也不要用 `inherit`
+  （會吃到佈景 body 的值，本案 1.65 vs 實際 1.5）。做法：先量原頁三種標題的
+  `lineHeight/fontSize`，取共同比值寫死。
 - **包裝層中和用 `display:contents!important` 且要 3 個 class 疊特異性**
- （`.emxw.emxw.emxw`）；`p:only-child` 的中和要加 `:not([class]):not([style])`，
- 否則會把設計自己的 `<p>` 的 margin 一起殺掉（實測整頁短 5%）。
+  （`.emxw.emxw.emxw`）；`p:only-child` 的中和要加 `:not([class]):not([style])`，
+  否則會把設計自己的 `<p>` 的 margin 一起殺掉（實測整頁短 5%）。
 
 5. **boxed 容器（`e-con-boxed`）的 `--content-width` 會在窄螢幕把內容鎖死**。
- 響應式想把雙欄改直向，只改 `flex-direction:column` 完全沒用——內容仍被鎖在
- `--content-width`（本案 58% → 346px），標題一行只剩 14 字。
- 正確寫法（2026-08-23 實測）：
- ```css
- @media(max-width:1024px){
- .elementor-element-<id>{--content-width:100%!important}
- .elementor-element-<id> > .e-con-inner{flex-direction:column!important;width:100%!important;max-width:100%!important}
- }
- ```
- 子容器若還是不滿版，補 `width/max-width/--width:100%!important`（Elementor 的欄寬走 `--width`）。
+   響應式想把雙欄改直向，只改 `flex-direction:column` 完全沒用——內容仍被鎖在
+   `--content-width`（本案 58% → 346px），標題一行只剩 14 字。
+   正確寫法（2026-08-23 實測）：
+   ```css
+   @media(max-width:1024px){
+    .elementor-element-<id>{--content-width:100%!important}
+    .elementor-element-<id> > .e-con-inner{flex-direction:column!important;width:100%!important;max-width:100%!important}
+   }
+   ```
+   子容器若還是不滿版，補 `width/max-width/--width:100%!important`（Elementor 的欄寬走 `--width`）。
 6. **button widget 的字級要打 `.elementor-button-text`，打 `p` 一點作用都沒有**。
- 你 的頁面常把整段文案做成 button widget（帶星號 icon 的稀缺說明就是），
- 看起來像段落但 DOM 裡沒有 `<p>`。同理它的內距在 `.elementor-button`（本案 `20px 50px`，
- 左右內距吃掉 100px 可用寬度，一行只剩 16 字，18 字的子句必被切開）。
- 量到「字級改了沒反應」時先 `getComputedStyle` 確認實際承載文字的元素是誰。
+   你 的頁面常把整段文案做成 button widget（帶星號 icon 的稀缺說明就是），
+   看起來像段落但 DOM 裡沒有 `<p>`。同理它的內距在 `.elementor-button`（本案 `20px 50px`，
+   左右內距吃掉 100px 可用寬度，一行只剩 16 字，18 字的子句必被切開）。
+   量到「字級改了沒反應」時先 `getComputedStyle` 確認實際承載文字的元素是誰。
 
 7. **上傳型部署（Novamira upload-link 這類）權杖過期時不會失敗**。`curl -sS` 仍 exit 0，
- 伺服器上的 bundle 保持舊版，接著套用就是把舊內容再寫一次——症狀是「CSS 明明改了但畫面沒變」，
- 很容易被誤判成選擇器/優先權問題而愈改愈亂（2026-08-23 實際踩過一輪）。
- **鐵則：每次部署後回讀伺服器上的 `_elementor_page_settings.custom_css`，
- 確認新規則字串真的在裡面，再開始量測。** 順手比對 bundle 檔的 `filemtime` 與現在時間。
+   伺服器上的 bundle 保持舊版，接著套用就是把舊內容再寫一次——症狀是「CSS 明明改了但畫面沒變」，
+   很容易被誤判成選擇器/優先權問題而愈改愈亂（2026-08-23 實際踩過一輪）。
+   **鐵則：每次部署後回讀伺服器上的 `_elementor_page_settings.custom_css`，
+   確認新規則字串真的在裡面，再開始量測。** 順手比對 bundle 檔的 `filemtime` 與現在時間。
 8. **只給圖片 `max-width` 沒有用**。Elementor 會另外輸出 `width`，實際寬度仍是你寫的上限值，
- 在比它窄的欄位裡就衝出容器。正確：`width:auto!important;height:auto!important;
- max-width:min(<上限>,100%)!important`。
+   在比它窄的欄位裡就衝出容器。正確：`width:auto!important;height:auto!important;
+   max-width:min(<上限>,100%)!important`。
 
 9. **沒包在媒體查詢裡的 `!important` 會壓掉 `@media` 裡的同權重規則**。媒體查詢不影響優先權，
- 同選擇器同 `!important` 時是「後者勝」。桌機專用的 flex 值（`align-items` / `align-self` /
- `flex`）一定要包在 `@media(min-width:…)` 裡，否則平板、手機會跟著吃到，
- 症狀是「只有其中一欄沒對齊」（2026-08-23 實測）。
- 另注意：直向堆疊時 cross axis 變成水平，`align-self:flex-start` 會讓該欄靠左而不是靠上。
+   同選擇器同 `!important` 時是「後者勝」。桌機專用的 flex 值（`align-items` / `align-self` /
+   `flex`）一定要包在 `@media(min-width:…)` 裡，否則平板、手機會跟著吃到，
+   症狀是「只有其中一欄沒對齊」（2026-08-23 實測）。
+   另注意：直向堆疊時 cross axis 變成水平，`align-self:flex-start` 會讓該欄靠左而不是靠上。
 
 10. **容器的自訂 class 用 `css_classes`，widget 用 `_css_classes`**。給容器寫 `_css_classes`
- 不會輸出到 HTML，class 整個消失、樣式靜默失效（2026-08-23 實測）。
- 驗證要用 `curl` 抓正式頁 grep class 名，不要只在瀏覽器裡量——瀏覽器會用自己的 HTTP 快取，
- 同一個網址量到的可能是部署前的舊版。**任何部署後驗證一律加 `?v=<timestamp>`。**
+    不會輸出到 HTML，class 整個消失、樣式靜默失效（2026-08-23 實測）。
+    驗證要用 `curl` 抓正式頁 grep class 名，不要只在瀏覽器裡量——瀏覽器會用自己的 HTTP 快取，
+    同一個網址量到的可能是部署前的舊版。**任何部署後驗證一律加 `?v=<timestamp>`。**
 
 11. **Blocksy 的動態 CSS 重生必須跟設定寫入分成兩個 request**。同一個 request 內先
- `update_option('theme_mods_...')` 再 `do_action('blocksy:dynamic-css:refresh-caches')`，
- 產生器讀到的是該 request 已載入的舊值，`uploads/blocksy/css/global.css` 會被用舊內容重寫一次——
- mtime 會更新、色碼替換若等長則檔案大小也不變，非常難察覺（2026-08-23 實測）。
- 做法：第一次請求存設定，第二次請求觸發重生，然後**回讀檔案 grep 新色碼**確認。
- 另注意：手機選單／頁首的顏色多半不在 `colorPalette` 裡，而是硬編碼在 `header_placements`
- 的每個頁首設定內（`offcanvasBackground` / `menuFontColor` / `triggerIconColor`），
- 改調色盤不會動到它們，要逐一指定路徑替換（不要做全域字串取代——同一個色碼可能同時當背景與前景用）。
+    `update_option('theme_mods_...')` 再 `do_action('blocksy:dynamic-css:refresh-caches')`，
+    產生器讀到的是該 request 已載入的舊值，`uploads/blocksy/css/global.css` 會被用舊內容重寫一次——
+    mtime 會更新、色碼替換若等長則檔案大小也不變，非常難察覺（2026-08-23 實測）。
+    做法：第一次請求存設定，第二次請求觸發重生，然後**回讀檔案 grep 新色碼**確認。
+    另注意：手機選單／頁首的顏色多半不在 `colorPalette` 裡，而是硬編碼在 `header_placements`
+    的每個頁首設定內（`offcanvasBackground` / `menuFontColor` / `triggerIconColor`），
+    改調色盤不會動到它們，要逐一指定路徑替換（不要做全域字串取代——同一個色碼可能同時當背景與前景用）。
 
 ## 中文斷行腳本（線上課程型客戶站-cjk-wrap）不可切的節點（2026-08-20）
 

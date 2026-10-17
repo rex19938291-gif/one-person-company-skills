@@ -32,46 +32,46 @@ If 你 names a Google Drive document by title, use the Google Drive connector to
 ## Workflow
 
 1. Gather source material.
- - Read the VSL/script and any product or campaign page 你 provides.
- - Extract conversion goal, offer, free lead magnet, price/value anchor, audience, emotional promise, objections, proof, and CTA.
+   - Read the VSL/script and any product or campaign page 你 provides.
+   - Extract conversion goal, offer, free lead magnet, price/value anchor, audience, emotional promise, objections, proof, and CTA.
 
 2. Build the funnel strategy.
- - Define TOF, MOF, and BOF roles.
- - Include cold-audience development for free-course or lead-magnet opt-in.
- - Include retargeting windows when relevant: 0-7, 8-30, 31-90, 91-180, 181-365, and 366-730 days.
- - Keep Phase Two Meta API automation explicitly out of scope.
+   - Define TOF, MOF, and BOF roles.
+   - Include cold-audience development for free-course or lead-magnet opt-in.
+   - Include retargeting windows when relevant: 0-7, 8-30, 31-90, 91-180, 181-365, and 366-730 days.
+   - Keep Phase Two Meta API automation explicitly out of scope.
 
 3. Create 24 creative angles.
- - Default split: TOF 8, MOF 8, BOF 8.
- - Each angle must have audience, intent, copy angle, image-on-ad text, image prompt, CTA, and ad-operations note.
- - Make the angles diverse enough for Meta Andromeda / Advantage+ to route different user intents.
+   - Default split: TOF 8, MOF 8, BOF 8.
+   - Each angle must have audience, intent, copy angle, image-on-ad text, image prompt, CTA, and ad-operations note.
+   - Make the angles diverse enough for Meta Andromeda / Advantage+ to route different user intents.
 
 4. Select first-pass visual-preview angles.
- - Choose the highest learning-value mix across TOF/MOF/BOF.
- - Include cold-audience opt-in angles first when the campaign has a free-course or lead magnet.
- - Default to prompt-first output. Generate image previews only when 你 explicitly asks or when a current test run already has approved images to place into the Google Doc.
+   - Choose the highest learning-value mix across TOF/MOF/BOF.
+   - Include cold-audience opt-in angles first when the campaign has a free-course or lead magnet.
+   - Default to prompt-first output. Generate image previews only when 你 explicitly asks or when a current test run already has approved images to place into the Google Doc.
 
 5. Write Meta ad copy.
- - Produce primary text, headline, description, CTA, and image-on-ad text.
- - Use `humanizer-zh` principles: direct language, varied rhythm, no inflated AI-style phrasing, no forced three-part structure, no generic hype.
- - Keep the text usable as a first draft in Ads Manager.
+   - Produce primary text, headline, description, CTA, and image-on-ad text.
+   - Use `humanizer-zh` principles: direct language, varied rhythm, no inflated AI-style phrasing, no forced three-part structure, no generic hype.
+   - Keep the text usable as a first draft in Ads Manager.
 
 6. Prepare image assets.
- - Treat AI images as adjustable previews, not locked final art.
- - Use the built-in image generation path only when 你 explicitly asks for generation.
- - Every image prompt must specify Asian people or Asian family/work/lifestyle context as the main visual subject.
- - Match the product/page visual style and avoid real platform logos, payment logos, or brand marks unless 你 provides approval.
+   - Treat AI images as adjustable previews, not locked final art.
+   - Use the built-in image generation path only when 你 explicitly asks for generation.
+   - Every image prompt must specify Asian people or Asian family/work/lifestyle context as the main visual subject.
+   - Match the product/page visual style and avoid real platform logos, payment logos, or brand marks unless 你 provides approval.
 
 7. Build the Google Doc.
- - Use real H1/H2/H3 heading styles.
- - Put a funnel navigation table near the top.
- - Include all 24 angles and any approved preview images available for the run.
- - Include prompts, copy, and ad-operations notes under each generated material.
- - Verify with connector readback. For image-heavy or layout-sensitive documents, also use export/readback checks available in the Google Docs workflow.
+   - Use real H1/H2/H3 heading styles.
+   - Put a funnel navigation table near the top.
+   - Include all 24 angles and any approved preview images available for the run.
+   - Include prompts, copy, and ad-operations notes under each generated material.
+   - Verify with connector readback. For image-heavy or layout-sensitive documents, also use export/readback checks available in the Google Docs workflow.
 
 8. Report Phase One status.
- - Provide the Google Doc link, generated image count, verification performed, and what is intentionally deferred to Phase Two.
- - Do not mark the workflow complete until 你 can inspect the document and assets.
+   - Provide the Google Doc link, generated image count, verification performed, and what is intentionally deferred to Phase Two.
+   - Do not mark the workflow complete until 你 can inspect the document and assets.
 
 ## Output Defaults
 

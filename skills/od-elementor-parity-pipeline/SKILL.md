@@ -75,8 +75,8 @@ When an executor (Codex / GLM / other API model) executes and Claude verifies: e
 ## Bundled tools
 
 - `scripts/qa-measure.mjs` — CDP section-rhythm metrics + full-page screenshots (Node ≥22, no deps). Usage:
- `node qa-measure.mjs --url <URL> --width 1440 [--height 900] [--selector '.sec'] [--shot out.png] [--eval '<js>'] [--wait 8000] [--wait-for '<selector>'] [--warmup false]`
- It force-marks `.e-lazyloaded`, supports async `--eval`, kills its own Chrome. Built-in validity enforcement: warms up the URL once before measuring (default on), waits on `readyState==='complete'` plus optional `--wait-for` selector visibility (max 30s) instead of trusting a fixed sleep, and exits with code 2 when 0 blocks matched — treat exit 2 as "measurement invalid, retry", never as data. Sandboxed-executor mode: `--cdp-url http://127.0.0.1:9223` (or `QA_CDP_URL` env) connects to an already-running shared endpoint instead of spawning Chrome; creates/closes only its own tab.
+  `node qa-measure.mjs --url <URL> --width 1440 [--height 900] [--selector '.sec'] [--shot out.png] [--eval '<js>'] [--wait 8000] [--wait-for '<selector>'] [--warmup false]`
+  It force-marks `.e-lazyloaded`, supports async `--eval`, kills its own Chrome. Built-in validity enforcement: warms up the URL once before measuring (default on), waits on `readyState==='complete'` plus optional `--wait-for` selector visibility (max 30s) instead of trusting a fixed sleep, and exits with code 2 when 0 blocks matched — treat exit 2 as "measurement invalid, retry", never as data. Sandboxed-executor mode: `--cdp-url http://127.0.0.1:9223` (or `QA_CDP_URL` env) connects to an already-running shared endpoint instead of spawning Chrome; creates/closes only its own tab.
 - `scripts/cdp-endpoint.sh start|stop|status` — shared headless-Chrome CDP endpoint (default 127.0.0.1:9223, `CDP_PORT` env to override) for executors whose sandbox cannot launch Chrome. Start it OUTSIDE the sandbox; harnesses connect via `--cdp-url`.
 - `scripts/qa-style-audit.mjs` — 電腦樣式逐元素比對（視覺契約通道 2）：以文字配對 source↔build，只量最內層文字元素（自動跳過 wrapper 假差），比 font/size/weight/style/lh/ls/color/bg/align。`node qa-style-audit.mjs --cdp-url http://127.0.0.1:9223 --a <sourceURL> --b <buildURL> [--width 1440] [--max 60]`。內建 per-URL watchdog＋finally 關 tab（重頁不 hang 不漏 tab）。
 - `scripts/qa-crops.mjs` — 定點 viewport 截圖（視覺契約通道 3 的審修迴圈用）：`node qa-crops.mjs --cdp-url … --url <buildURL> --out <dir> --find "文字1" --find "文字2"` → 每個文字錨點 scrollIntoView 後截一張 viewport 圖（不用 captureBeyondViewport，快且不 hang），給 PM 親讀。
@@ -190,7 +190,7 @@ PM 對應義務：處方必附實測數字與逐字內容；退回時引用本�
 - [ ] 所有截圖 mtime 屬於本輪（無逾時殘留舊檔）
 - [ ] 同組 source/build 截圖同 scale
 - [ ] html=0、rebuild JSON 正常、DB 本輪備份存在
-- [ ]你指過的每一個缺陷都有對應的截圖證據證明已修
+- [ ] 你指過的每一個缺陷都有對應的截圖證據證明已修
 
 ## WP site-ops playbook (2026-07-12, header/theme round — applies to ALL edits on 你的 WP stack: Blocksy + Elementor Pro + WP Rocket)
 
