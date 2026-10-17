@@ -7,7 +7,7 @@ import os
 import re
 import shutil
 from pathlib import Path
-from common import load_config, project_path, clip_rect, validate_manifest
+from common import load_config, project_path, clip_rect, validate_manifest, display_rect, fitted_zoom
 
 parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument("config", help="專案設定檔")
@@ -24,15 +24,43 @@ CFG["must"] = {sc["id"]: sc.get("must", "") for sc in CFG["scenarios"]}
 CFG["over"] = { (k.split(",")[0], int(k.split(",")[1])): v for k,v in CFG["overrides"].items() }
 CFG["chips"] = {k:v.get("chips",[]) for k,v in CFG["over"].items()}
 T_INTRO, T_SEC, T_STEP, T_OUTRO = (CFG["timing"][k] for k in ("intro", "section", "step", "outro"))
+VO_DIR = project_path(BASE, CFG.get('voice', {}).get('directory', 'vo'))
+VO_DIR.mkdir(parents=True, exist_ok=True)
+transcript_file = VO_DIR / 'transcripts.json'
+VO_T = json.loads(transcript_file.read_text()) if transcript_file.exists() else {}
+VO_LINES = []
+VO_AT = {}
+def voiced(vid, text, duration):
+    VO_LINES.append({'id': vid, 'text': text})
+    old = VO_T.get(vid, {})
+    if old and old.get('text') != text:
+        print(f'旁白稿已變更，本次不採用舊秒數，請重錄：{vid}')
+        old = {}
+    sec = old.get('sec', 0)
+    if not isinstance(sec, (int, float)) or not math.isfinite(sec) or sec < 0:
+        raise ValueError(f'錄音秒數不正確：{vid}')
+    return max(duration, sec / 1.15 + 1) if sec else duration
+voice = CFG.get('voice', {})
+T_INTRO = voiced('intro', voice.get('intro', CFG['title']+'。'+CFG['sub']), T_INTRO)
+T_OUTRO = voiced('outro', voice.get('outro', '。'.join(CFG['outro'])), T_OUTRO)
+for sc in CFG['scenarios']:
+    T_SEC = max(T_SEC, voiced('sec-'+sc['id'], sc.get('vo', sc['title']), T_SEC))
+VO_AT['intro'] = 0.35
+
 steps, secs, t = [], [], T_INTRO
 for k, mark in CFG["order"]:
     sc = man[k]
+    VO_AT['sec-'+k] = round(t + 0.4, 3)
     secs.append({"k": k, "mark": mark, "h": CFG["scen_name"][k], "p": CFG["scen_sub"][k], "must": CFG["must"].get(k, ""), "t": t}); t += T_SEC
     n = len(sc["steps"])
     for i, s in enumerate(sc["steps"]):
         ov = CFG["over"].get((k, i), {})
+        vid = f'{k}-{i:02d}'
+        duration = voiced(vid, ov.get('vo', ov.get('tt', s['tt'])+'。'+ov.get('dd', s['dd'])), ov.get('dur', T_STEP))
+        VO_AT[vid] = round(t + 0.4, 3)
         st = {"k": k, "i": i, "n": n, "t": round(t, 3), "tt": ov.get("tt", html.unescape(s["tt"])), "dd": ov.get("dd", html.unescape(s["dd"])),
-              "chips": CFG["chips"].get((k, i), []), "dur": ov.get("dur", T_STEP),
+              "chips": CFG["chips"].get((k, i), []), "dur": duration, "vid": vid,
+              "locp": ov.get("locp", CFG.get("locp", "後台 ›")), "loc": ov.get("loc", CFG.get("loc", {}).get(k, CFG["scen_name"][k])),
               "click": s["click"], "z": s["z"], "spotZ": s.get("spotZ"),
               "scen": str(mark) + "　" + CFG["scen_name"][k]}
         for ph in ("pre", "mid", "post"):
@@ -40,15 +68,17 @@ for k, mark in CFG["order"]:
                 src = project_path(BASE, s[ph]["img"])
                 fn = f"{k}-{i:03d}-{ph}{src.suffix.lower()}"
                 shutil.copy(src, os.path.join(out, "assets", fn))
-                r = clip_rect(s[ph]["r"])
+                r = display_rect(CFG, s[ph]["r"])
+                if i == 0:
+                    r = display_rect(CFG, ov.get("menu_rect", CFG["overview"]["menu_rect"]))
                 st[ph] = {"img": "assets/" + fn, "r": r}
         steps.append(st); t += st["dur"]
 T_OUT0 = round(t, 3); TOTAL = round(t + T_OUTRO, 3)
 
-def vz(z):  # 影片畫面較大，推鏡倍率收斂避免放大過度模糊
-    return round(max(CFG["zoom"]["min"], min(CFG["zoom"]["max"], z * CFG["zoom"]["factor"])), 3)
 for s in steps:
-    s["vz"] = vz(s["z"]); s["vzPost"] = vz(s["spotZ"]) if s.get("spotZ") else s["vz"]
+    s['vz'] = fitted_zoom(CFG, s['z'], s['pre']['r'], s['i'] == 0)
+    s['vzPost'] = fitted_zoom(CFG, s.get('spotZ') or s['z'], s['post']['r'], s['i'] == 0)
+locs = [f'<div class="loc" id="loc-{i}"><span>{html.escape(s["locp"])}</span> <b>{html.escape(s["loc"])}</b></div>' for i,s in enumerate(steps)]
 
 imgs = []
 for si, s in enumerate(steps):
@@ -108,8 +138,11 @@ html,body{{margin:0;background:var(--bg)}}
 .reg.bl{{left:28px;bottom:28px;border-width:0 0 3px 3px}}.reg.br{{right:28px;bottom:28px;border-width:0 3px 3px 0}}
 .meta{{position:absolute;left:72px;top:58px;font-family:"IBM Plex Mono",monospace;font-size:20px;letter-spacing:.08em;color:var(--muted)}}
 .meta b{{color:var(--accent);font-weight:700}}
-.monitor{{position:absolute;left:592px;top:112px;width:1280px;height:860px;border-radius:18px;overflow:hidden;background:{CFG["theme"]["monitor"]};box-shadow:0 0 0 4px var(--ink),0 30px 60px -20px {CFG["theme"]["shadow"]}}}
-.mon-label{{position:absolute;left:592px;top:62px;font-family:"IBM Plex Mono",monospace;font-size:20px;color:var(--muted);letter-spacing:.06em}}
+.monitor{{z-index:0;position:absolute;left:592px;top:112px;width:1280px;height:860px;border-radius:18px;overflow:hidden;background:{CFG["theme"]["monitor"]};box-shadow:0 0 0 4px var(--ink),0 30px 60px -20px {CFG["theme"]["shadow"]}}}
+.loc{{position:absolute;left:592px;top:20px;width:1280px;font-size:29px;line-height:1.35;opacity:0}}.loc span{{color:var(--muted)}}
+.mm{{position:absolute;right:14px;bottom:14px;width:256px;height:172px;z-index:1000005;overflow:hidden;background:var(--paper);border:3px solid var(--paper);opacity:0}}.mm img{{width:256px;height:172px}}.mmrect{{position:absolute;top:0;left:0;border:2px solid var(--hot);box-sizing:border-box}}
+.tt,.dd,.sec-h,.sec-p,.oli,.chip{{word-break:keep-all;overflow-wrap:normal}}
+.mon-label{{display:none;position:absolute;left:592px;top:62px;font-family:"IBM Plex Mono",monospace;font-size:20px;color:var(--muted);letter-spacing:.06em}}
 .mon-label i{{display:inline-block;width:12px;height:12px;border-radius:50%;background:var(--hot);margin-right:10px;vertical-align:1px}}
 .cam{{position:absolute;left:0;top:0;width:1280px;height:860px;transform-origin:0 0}}
 .shot{{position:absolute;left:0;top:0;width:1280px;height:860px;opacity:0}}
@@ -129,7 +162,7 @@ html,body{{margin:0;background:var(--bg)}}
 .dd b{{color:var(--hot);font-weight:700}}
 .bar{{position:absolute;left:72px;top:1000px;width:1800px;height:6px;background:var(--line)}}
 .bar i{{position:absolute;left:0;top:0;width:1800px;height:6px;background:var(--accent);transform-origin:0 0;transform:scaleX(0);display:block}}
-.tc{{position:absolute;right:48px;top:58px;font-family:"IBM Plex Mono",monospace;font-size:20px;color:var(--muted)}}
+.tc{{position:absolute;right:48px;top:1040px;font-family:"IBM Plex Mono",monospace;font-size:20px;color:var(--muted)}}
 .chips{{margin-top:22px;display:grid;gap:9px}}
 .chip{{display:flex;flex-wrap:wrap;gap:4px 12px;align-items:baseline;font-size:24px;line-height:1.35;color:var(--ink)}}
 .chip code{{font-family:"IBM Plex Mono",monospace;font-size:22px;background:var(--paper);border:2px solid var(--accent);color:var(--accent2);padding:2px 10px;border-radius:8px;font-weight:600}}
@@ -183,7 +216,8 @@ html,body{{margin:0;background:var(--bg)}}
       <div class="spot" id="spot"><div class="ring"></div></div>
       <div class="ripple" id="ripple"></div>
       <svg class="cursor" id="cursor" viewBox="0 0 24 24"><path d="M4 2l15 9-6.5 1.5L16 20l-3 1.5-3.6-7.6L4 18z" fill="{CFG["theme"]["white"]}" stroke="{CFG["theme"]["cursor_stroke"]}" stroke-width="1.4" stroke-linejoin="round"/></svg>
-    </div></div>
+    </div><div class="mm" id="mm"><img id="mmimg" alt="整頁位置"><div class="mmrect" id="mmrect"></div></div></div>
+    {"".join(locs)}
     <div class="rail">{"".join(caps)}</div>
     <div class="bar"><i id="barfill"></i></div>
   </section>
@@ -210,6 +244,11 @@ html,body{{margin:0;background:var(--bg)}}
   </section>
 </div>
 <script>
+const segmenter = typeof Intl.Segmenter==='function' ? new Intl.Segmenter('zh-Hant',{{granularity:'word'}}) : null;
+if(segmenter) document.querySelectorAll('.tt,.dd,.sec-h,.sec-p,.oli,.chip').forEach(el=>{{
+  const walker=document.createTreeWalker(el,NodeFilter.SHOW_TEXT),nodes=[];let n;while(n=walker.nextNode())nodes.push(n);
+  nodes.forEach(n=>{{const f=document.createDocumentFragment();Array.from(segmenter.segment(n.nodeValue)).forEach((p,i)=>{{if(i)f.append(document.createElement('wbr'));f.append(document.createTextNode(p.segment));}});n.replaceWith(f);}});
+}});
 window.__timelines = window.__timelines || {{}};
 const D = {data};
 const tl = gsap.timeline({{ paused: true }});
@@ -219,6 +258,7 @@ function camT(r, z) {{
   tx = Math.min(0, Math.max(W - W*z, tx)); ty = Math.min(0, Math.max(H - H*z, ty));
   return {{ x: tx, y: ty, scale: z }};
 }}
+function mmT(r,z) {{ const c=camT(r,z),k=256/W;return {{x:-c.x/z*k,y:-c.y/z*k,width:W/z*k,height:H/z*k}}; }}
 function spotT(r) {{ const p = 8; return {{ x: r.x - p, y: r.y - p, width: r.w + 2*p, height: r.h + 2*p }}; }}
 function curPos(s, r) {{
   return s.click ? {{ x: r.x + Math.min(r.w*0.55, r.w - 10), y: r.y + r.h*0.6 }} : {{ x: Math.max(8, r.x - 46), y: r.y + Math.min(40, r.h/2) }};
@@ -236,9 +276,10 @@ tl.to("#grid", {{ x: 64, y: 32, duration: D.TOTAL, ease: "none" }}, 0);
 // 章節卡
 D.secs.forEach((t0, j) => {{
   tl.fromTo("#secp-"+j, {{ scaleX: 0 }}, {{ scaleX: 1, duration: 0.55, ease: "expo.inOut" }}, t0);
-  tl.from("#secm-"+j, {{ scale: 0.6, opacity: 0, duration: 0.6, ease: "back.out(1.8)" }}, t0 + 0.35);
-  tl.from("#sech-"+j, {{ y: 60, opacity: 0, duration: 0.55, ease: "power3.out" }}, t0 + 0.45);
-  tl.from("#secq-"+j, {{ y: 24, opacity: 0, duration: 0.5, ease: "power2.out" }}, t0 + 0.65);
+  tl.from("#secm-"+j, {{ scale: 0.6, opacity: 0, duration: 0.6, ease: "back.out(1.8)" }}, t0 + 0.6);
+  tl.from("#sech-"+j, {{ y: 60, opacity: 0, duration: 0.55, ease: "power3.out" }}, t0 + 0.65);
+  tl.from("#secq-"+j, {{ y: 24, opacity: 0, duration: 0.5, ease: "power2.out" }}, t0 + 0.85);
+  tl.set("#mm", {{opacity:0}}, t0);
   tl.set("#cam", {{ x: 0, y: 0, scale: 1 }}, t0 + 0.6);
   tl.set("#spot", {{ opacity: 0 }}, t0 + 0.6);
   if (document.getElementById("secmust-"+j)) tl.from("#secmust-"+j, {{ scale: 1.6, opacity: 0, rotation: -4, duration: 0.5, ease: "back.out(2.2)" }}, t0 + 0.8);
@@ -250,13 +291,19 @@ let prevImg = null;
 D.steps.forEach((s, i) => {{
   const t0 = s.t, r = s.pre.r, fin = s.post || s.pre, fr = fin.r || r;
   const pre = "#im-"+i+"-pre", mid = s.mid ? "#im-"+i+"-mid" : null, post = s.post ? "#im-"+i+"-post" : null;
-  tl.set(pre, {{ opacity: 1, zIndex: 3*i+1 }}, t0);
-  if (prevImg) tl.set(prevImg, {{ opacity: 0 }}, t0 + 0.05);
+  tl.set(pre, {{ opacity: 0, zIndex: 3*i+1 }}, t0);
+  tl.to(pre, {{ opacity: 1, duration: 0.18, immediateRender:false }}, t0);
+  if (prevImg) tl.set(prevImg, {{ opacity: 0 }}, t0 + 0.18);
   if (i === 0) {{ tl.set("#cam", camT(r, 1), 0); tl.set("#cursor", {{ x: 900, y: 600 }}, 0); }}
   tl.to("#cam", {{ ...camT(r, s.vz), duration: 0.9, ease: "power3.inOut" }}, t0);
   tl.to("#spot", {{ ...spotT(r), opacity: 1, duration: 0.8, ease: "power3.inOut" }}, t0);
   const c = curPos(s, r);
   tl.to("#cursor", {{ x: c.x, y: c.y, duration: 0.8, ease: "power2.inOut" }}, t0 + 0.35);
+  tl.fromTo("#loc-"+i, {{opacity:0}}, {{opacity:1,duration:0.18,immediateRender:false}}, t0);
+  tl.to("#loc-"+i, {{opacity:0,duration:0.15}}, t0+s.dur-0.15);
+  tl.set("#mmimg", {{attr:{{src:s.pre.img}}}}, t0);
+  tl.to("#mmrect", {{...mmT(r,s.vz),duration:0.9}}, t0);
+  tl.to("#mm", {{opacity:s.vz>1.05?1:0,duration:0.18}}, t0);
   // 左側字卡
   tl.fromTo("#cap-"+i, {{ opacity: 0, y: 18 }}, {{ opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }}, t0 + 0.15);
   tl.to("#cap-"+i, {{ opacity: 0, duration: 0.2 }}, t0 + s.dur - 0.2);
@@ -264,20 +311,23 @@ D.steps.forEach((s, i) => {{
   let tPost = t0 + 1.5;
   if (s.click) {{
     tl.to("#cursor", {{ scale: 0.82, duration: 0.09, yoyo: true, repeat: 1 }}, t0 + 1.25);
-    tl.fromTo("#ripple", {{ x: c.x + 4, y: c.y + 4, scale: 0.3, opacity: 1 }}, {{ scale: 1.6, opacity: 0, duration: 0.55, ease: "power2.out" }}, t0 + 1.3);
+    tl.fromTo("#ripple", {{ x: c.x + 4, y: c.y + 4, scale: 0.3, opacity: 1 }}, {{ scale: 1.6, opacity: 0, duration: 0.55, ease: "power2.out", immediateRender:false }}, t0 + 1.3);
   }}
-  if (mid) {{ tl.set(mid, {{ zIndex: 3*i+2 }}, t0); tl.to(mid, {{ opacity: 1, duration: 0.2 }}, t0 + 1.4); tPost = t0 + 2.45; }}
+  if (mid) {{ tl.set(mid, {{ zIndex: 3*i+2 }}, t0); tl.to(mid, {{ opacity: 1, duration: 0.18 }}, t0 + 1.4); tPost = t0 + 2.45; }}
   if (post) {{
     tl.set(post, {{ zIndex: 3*i+3 }}, t0);
-    tl.to(post, {{ opacity: 1, duration: 0.4, ease: "power1.inOut" }}, tPost);
-    if (fr.x !== r.x || fr.y !== r.y || fr.w !== r.w) {{
+    tl.set("#mmimg", {{attr:{{src:s.post.img}}}}, tPost);
+    tl.to("#mmrect", {{...mmT(fr,s.vzPost),duration:0.8}}, tPost);
+    tl.to("#mm", {{opacity:s.vzPost>1.05?1:0,duration:0.18}}, tPost);
+    tl.to(post, {{ opacity: 1, duration: 0.18, ease: "power1.inOut" }}, tPost);
+    if (fr.x !== r.x || fr.y !== r.y || fr.w !== r.w || fr.h !== r.h || s.vzPost !== s.vz) {{
       tl.to("#cam", {{ ...camT(fr, s.vzPost), duration: 0.8, ease: "power3.inOut" }}, tPost + 0.1);
       tl.to("#spot", {{ ...spotT(fr), duration: 0.7, ease: "power3.inOut" }}, tPost + 0.1);
       const c2 = {{ x: fr.x + Math.min(40, fr.w*0.3), y: fr.y + Math.min(36, fr.h*0.4) }};
       tl.to("#cursor", {{ x: c2.x, y: c2.y, duration: 0.6, ease: "power2.inOut" }}, tPost + 0.2);
     }}
-    if (mid) tl.set(mid, {{ opacity: 0 }}, tPost + 0.45);
-    tl.set(pre, {{ opacity: 0 }}, tPost + 0.45);
+    if (mid) tl.set(mid, {{ opacity: 0 }}, tPost + 0.18);
+    tl.set(pre, {{ opacity: 0 }}, tPost + 0.18);
     prevImg = post;
   }} else {{ prevImg = mid || pre; if (mid) tl.set(pre, {{ opacity: 0 }}, t0 + 1.6); }}
 }});
@@ -293,4 +343,12 @@ window.__timelines["main"] = tl;
 </body>
 </html>'''
 open(os.path.join(out, "index.html"), "w", encoding="utf-8").write(page)
+# 音效時間點（scripts/add_sfx.py 用）：點擊步驟在波紋出現時 click-soft，章節卡展開時 whoosh-short
+sfx = [{"t": round(c["t"], 3), "name": "whoosh-short"} for c in secs]
+sfx += [{"t": round(st["t"] + 1.3, 3), "name": "click-soft"} for st in steps if st["click"]]
+(out / "sfx.json").write_text(json.dumps({"total": TOTAL, "cues": sorted(sfx, key=lambda c: c["t"])}, indent=1), encoding="utf-8")
 print("產生完成", "steps", len(steps), "secs", len(secs), "duration", TOTAL, "imgs", len(imgs))
+
+VO_AT['outro'] = T_OUT0 + 0.4
+(VO_DIR/'lines.json').write_text(json.dumps(VO_LINES, ensure_ascii=False, indent=2)+'\n')
+(VO_DIR/'timing.json').write_text(json.dumps({'total':TOTAL,'speed':1.15,'at':VO_AT}, indent=2)+'\n')

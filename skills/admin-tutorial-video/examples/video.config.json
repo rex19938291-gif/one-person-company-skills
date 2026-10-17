@@ -40,14 +40,15 @@
     "grid": "rgba(20,32,27,.16)",
     "monitor": "#f0f0f1",
     "shadow": "rgba(20,32,27,.45)",
-    "spot_shadow": "rgba(10,22,17,.42)",
+    "spot_shadow": "rgba(0,0,0,.16)",
     "white": "#fff",
     "light_accent": "#9fc9b8",
     "intro_text": "#c9d6cf",
     "tag_text": "#e7f0eb",
     "intro_rule": "#2f8a72",
     "section_text": "#d5e3dc",
-    "cursor_stroke": "#111"
+    "cursor_stroke": "#111",
+    "phone_body": "#202b3d"
   },
   "timing": {
     "intro": 3.4,
@@ -103,7 +104,8 @@
       "description": "從一般設定頁確認示意商店名稱與一週起始日。",
       "page": "settings",
       "count": 3,
-      "must": "儲存後確認"
+      "must": "儲存後確認",
+      "vo": "第一件事，調整一般設定，儲存後記得確認結果。"
     }
   ],
   "overrides": {
@@ -116,18 +118,38 @@
           "示意資料",
           "所有欄位使用測試值"
         ]
-      ]
+      ],
+      "vo": "先看整頁，從左側選單找到設定，再查看一般設定頁。"
     },
     "settings,1": {
       "tt": "修改商店名稱",
       "dd": "填入示範商店，再確認一週起始日。",
-      "dur": 5.4
+      "dur": 5.4,
+      "vo": "填入示範商店的名稱，接著確認一週起始日是否正確。"
     },
     "settings,2": {
       "tt": "確認儲存結果",
       "dd": "按儲存後查看成功訊息。",
-      "dur": 5
+      "dur": 5,
+      "vo": "按下儲存以後，查看成功訊息，確認剛才的修改已生效。"
     }
   },
-  "interactive_max_mb": 6
+  "interactive_max_mb": 6,
+  "locp": "WordPress 後台 › 設定 ›",
+  "loc": {
+    "settings": "一般設定"
+  },
+  "overview": {
+    "menu_rect": {
+      "x": 0,
+      "y": 240,
+      "w": 160,
+      "h": 40
+    }
+  },
+  "voice": {
+    "directory": "vo",
+    "intro": "一起查看示範商店的設定，再確認修改後的結果。",
+    "outro": "儲存以後，記得確認成功訊息，再離開這個頁面。"
+  }
 }

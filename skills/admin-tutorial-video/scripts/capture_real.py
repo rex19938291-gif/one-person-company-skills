@@ -18,7 +18,7 @@ def command(cfg, profile):
     if not browser:
         raise RuntimeError("找不到瀏覽器，請設定 capture.browser 為執行檔位置")
     return [browser, "--headless=new", "--disable-gpu", "--hide-scrollbars",
-            f"--user-data-dir={profile}", "--window-size=1280,860",
+            f"--user-data-dir={profile}", f"--window-size={cap['width']},{cap['height']}",
             "--force-device-scale-factor=2",
             f"--virtual-time-budget={cap['virtual_time_budget']}"]
 
@@ -49,7 +49,7 @@ def dump(cfg, url):
     if not match:
         raise RuntimeError("找不到步驟座標輸出")
     data = json.loads(match[1])
-    clip_rect(data["r"])
+    clip_rect(data["r"], cfg["capture"]["width"], cfg["capture"]["height"])
     return data
 
 
@@ -60,7 +60,7 @@ def shot(cfg, url, destination):
         run_browser(cfg, [f"--screenshot={png}", url], png)
         with png.open("rb") as file:
             header = file.read(24)
-        if header[:8] != b"\x89PNG\r\n\x1a\n" or len(header) < 24 or struct.unpack(">II", header[16:24]) != (2560, 1720):
+        if header[:8] != b"\x89PNG\r\n\x1a\n" or len(header) < 24 or struct.unpack(">II", header[16:24]) != (cfg["capture"]["width"]*2, cfg["capture"]["height"]*2):
             raise RuntimeError("截圖不是完整的兩倍解析度 PNG")
         shutil.copyfile(png, destination)
 

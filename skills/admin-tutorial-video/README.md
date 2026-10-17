@@ -1,13 +1,13 @@
 # 網站後台教學影片
 
-把真實後台畫面做成推鏡、聚光、游標點擊與字卡的 MP4。內容與色票由專案設定檔控制，不需要修改產生器。也能產生逐步切換的互動教學頁。
+把真實後台畫面做成推鏡、聚光、游標點擊、字卡、逐句旁白與背景音樂的 MP4。內容與色票由專案設定檔控制，不需要修改產生器。也能產生逐步切換的互動教學頁。
 
 ## 需求
 
-- Node.js 22 以上、Python 3.9 以上、ffmpeg、Chrome／Chromium。
+- Node.js 22.4 以上、Python 3.9 以上、ffmpeg、Chrome／Chromium。
 - 第三方工具 [HyperFrames](https://hyperframes.dev)，指令為 `npx hyperframes`。安裝前取得你授權，完成後先跑 `npx hyperframes doctor`。
 - 影片使用 GSAP；完整範例提供固定版本的程式與字型網址。離線使用時改成專案內的素材路徑，並把檔案放到影片輸出目錄。此技能不會自動下載或安裝依賴。
-- Pillow 選用；沒有 Pillow 仍能產生影片，互動版則直接複製 PNG。影片產生器保留兩倍解析度，不壓縮原始素材。
+- 手機合成與互動版需要 Pillow；影片產生與混音使用 Python 標準函式庫。影片產生器保留兩倍解析度，不壓縮原始素材。
 - 已去個資的真實後台 HTML 與樣式。這個資料夾不含登入資料，不會登入網站、送出表單或自動部署。
 
 ## 專案準備
@@ -61,7 +61,7 @@ python3 -m http.server 8765 --bind 127.0.0.1 --directory project
 python3 scripts/capture_real.py project/video.config.json
 ```
 
-輸出 `project/captures/`、`project/manifest.json` 與 `project/manifest-errors.json`。拍攝逐步續行，任何失敗都寫入錯誤清單，最後回傳非零結束碼。清單有失敗時先檢查對应頁面，不要渲染。每次重拍前備份既有素材與清單，避免覆蓋唯一驗收版本。完成後關閉自己啟動的本機伺服器。
+輸出 `project/captures/`、`project/manifest.json` 與 `project/manifest-errors.json`。拍攝逐步續行，任何失敗都寫入錯誤清單，最後回傳非零結束碼。清單有失敗時先檢查對應頁面，不要渲染。每次重拍前備份既有素材與清單，避免覆蓋唯一驗收版本。完成後關閉自己啟動的本機伺服器。
 
 ### ２．產生
 
@@ -70,7 +70,7 @@ python3 scripts/gen_video.py project/video.config.json
 python3 scripts/build_real.py project/video.config.json
 ```
 
-影片專案：`project/video/index.html`。互動教學：`project/walkthrough/index.html` 與其 `assets/`，整包一起交付。互動版預設含素材上限 6 MB，超過時先壓縮或拆情境。
+影片專案：`project/video/index.html`。互動教學：`project/walkthrough/index.html` 與其 `img/`，整包一起交付。互動版預設含素材上限 6 MB，超過時先壓縮或拆情境。
 
 快速測試產生器可用假的純色素材，完全不讀真實後台：
 
@@ -101,6 +101,61 @@ ffmpeg -ss 1.8 -i tutorial.mp4 -frames:v 1 cover.jpg
 
 渲染後再抽三個時間點確認焦點、字卡與畫面狀態。純色假素材測試不涵蓋這項視覺驗收。
 
+### ４．加點擊與換章音效（選用）
+
+`gen_video.py` 已在輸出資料夾寫好 `sfx.json`。在 `project/` 執行（有旁白或背景音樂就先混好，再加音效）：
+
+```bash
+python3 /path/to/skill/scripts/add_sfx.py video/sfx.json video/tutorial.mp4 tutorial-sfx.mp4
+ffprobe -v error -show_entries stream=codec_type,duration -of csv=p=0 tutorial-sfx.mp4
+```
+
+音軌與影片長度要一致，並抽聽第一個點擊。音效資料夾預設為 HyperFrames hyperframes-media 內附音效庫；沒有安裝時用 `--sfx-dir 自己的資料夾` 指定，檔名須為 `click-soft.mp3`、`whoosh-short.mp3`。使用前確認音效授權。
+
+## 旁白 → 延長秒數 → 混音
+
+先在 `overrides` 各步加入 `vo`，章節用 `scenarios[].vo`，片頭／片尾用 `voice.intro`、`voice.outro`。一句 15–40 字，數字寫念法，不念符號或變數。初次產生影片會同時匯出 `project/vo/lines.json`。
+
+先透過終端機安全設定 `GEMINI_API_KEY`，勿把金鑰貼進指令紀錄或設定檔。取得文字外傳與錄音費用授權後執行：
+
+```bash
+node scripts/vo/tts_gemini_live.mjs project/vo/lines.json project/vo
+# 也可加模型與音色參數，或設定 VO_MODEL、VO_VOICE
+python3 scripts/gen_video.py project/video.config.json
+# 依更新後的專案重新渲染 silent.mp4，然後混音
+python3 scripts/vo/mix_vo.py project/vo project/video/silent.mp4 project/tutorial-voice-v1.mp4
+```
+
+預設模型 `models/gemini-3.8-live`、音色 `Achernar` 均可換；帳戶若不支援就改為服務提供的名稱。每句產生 WAV 與 `transcripts.json`，文字、模型、音色未變且秒數正常的錄音會重用。原始錄音每秒字數須介於 2.2–7，超出重錄；轉寫可能缺漏，須實際聽驗，必要時經授權用另一模型獨立轉寫抽驗。
+
+重跑產生器後，每步至少是 `max(原秒數, 錄音秒數/1.15+1)`，時間表存 `vo/timing.json`。混音按時間表排句、以 1.15 倍播放旁白，影片直接複製不重壓。
+
+使用自己取得授權的背景音樂，接長到影片秒數後混音：
+
+```bash
+python3 scripts/vo/loop_bgm.py project/music-source.wav 60 project/music-loop.wav
+STEM=project/check python3 scripts/vo/mix_vo.py project/vo project/video/silent.mp4 project/tutorial-music-v2.mp4 1.15 project/music-loop.wav
+# 分別量測講話與空檔區間；下列僅示範一秒區間的 RMS／峰值
+ffmpeg -ss 1 -t 1 -i project/check-vo.wav -af volumedetect -f null -
+ffmpeg -ss 1 -t 1 -i project/check-bg.wav -af volumedetect -f null -
+```
+
+旁白 −16 LUFS，音樂 −24.7 LUFS、TP −9，再隨人聲壓低（threshold 0.03、ratio 3）。講話時人聲比音樂約 15–21 dB、空檔音樂約 −26 dB 可作區段量測參考；仍須實際聽驗。正弦波只適合測試輸出，不能用來驗收說話聽感。
+
+音樂可從 [Pixabay Music](https://pixabay.com/music/) 選擇。[授權摘要](https://pixabay.com/service/license-summary/)允許免費、免標註及加工，但仍須遵守限制；Content ID 曲目上傳 YouTube 可能收到聲明。網站擋自動下載時，請你自己按下載；不要繞過驗證。把來源頁、授權頁、下載日期、條款原文及 Content ID 情形記在專案 `LICENSES.md`，見 [授權紀錄範本](LICENSES.md)。本技能不附任何音樂檔。不建議自己合成，容易像催眠曲，有雜訊或節拍器聲。
+
+## 手機與位置路徑
+
+位置大字使用 `locp`＋`loc`，可各步覆寫；每段第一步只框 `overview.menu_rect` 並保留整頁，放大時出現小地圖。主題配色集中在 `theme`。表格框要含欄名與列名，請在拍攝步驟自行設定正確目標。
+
+手機先拍 390×844、scale 3，將 `capture` 改為 1600×1075、scale 2，再合成：
+
+```bash
+python3 scripts/compose_phone.py project/video.config.json project/phone.png project/phone-framed.png --rect project/phone-rect.json --rect-output project/canvas-rect.json
+```
+
+輸出 3200×2150 中央手機外框；框座標先轉成畫布 CSS 座標，影片與互動版再乘 0.8。需登入的第三方後台改用標有「示意畫面」的自製頁，不用官方商標圖檔、不做真 QR，資料留本機。示意圖不能當作正式站成功證據。
+
 ## 設定欄位
 
 | 欄位 | 用途 |
@@ -108,7 +163,7 @@ ffmpeg -ss 1.8 -i tutorial.mp4 -frames:v 1 cover.jpg
 | `title`、`sub`、`tags`、`ghost` | 片頭與背景文字 |
 | `labels` | 資訊列、監看標籤、章節格式與片尾註記 |
 | `scenarios` | `id`、`mark`、`title`、`description`、`page`、`count`、選用 `must` |
-| `overrides` | 鍵如 `settings,1`，第二個值從零起算；可覆寫 `tt`、`dd`、`dur`、`chips` |
+| `overrides` | 鍵如 `settings,1`，第二個值從零起算；可覆寫 `tt`、`dd`、`dur`、`chips`、`vo`、`locp`、`loc`、`menu_rect` |
 | `outro_h`、`outro`、`outro_panel` | 片尾標題、提醒與右側大字 |
 | `theme` | 範例完整列出產生器所需的全部色值；保留鍵名，只改值 |
 | `timing`、`zoom` | 秒數與推鏡限制；每步須留足閱讀時間 |
@@ -118,7 +173,7 @@ ffmpeg -ss 1.8 -i tutorial.mp4 -frames:v 1 cover.jpg
 | `manifest`、`imgdir`、`out`、`interactive` | 同一專案內的清單、素材、影片與互動版路徑 |
 | `runtime` | 字型樣式與 GSAP 位址，可改為本機素材 |
 
-manifest 每個情境包含 `h`、`p` 與 `steps`。每步包含 `tt`、`dd`、`click`、`z`、可選 `spotZ` 與 `live`。`pre`、`post` 必填；`live` 為真時 `mid` 也必填。每張圖包含 `img` 與 `r`：`x`、`y`、`w`、`h` 均為 1280×860 視窗的 CSS 像素，不是兩倍圖檔像素。
+manifest 每個情境包含 `h`、`p` 與 `steps`。每步包含 `tt`、`dd`、`click`、`z`、可選 `spotZ` 與 `live`。`pre`、`post` 必填；`live` 為真時 `mid` 也必填。每張圖包含 `img` 與 `r`：`x`、`y`、`w`、`h` 均為 `capture.width`×`capture.height` 視窗的 CSS 像素（1280×860 或 1600×1075；後者自動乘 0.8），不是兩倍圖檔像素。
 
 完整方法、步驟鉤子與拍攝常見問題見 [SKILL.md](SKILL.md)。
 
@@ -132,21 +187,27 @@ manifest 每個情境包含 `h`、`p` 與 `steps`。每步包含 `tt`、`dd`、`
 curl -s -D - -o /dev/null -H 'Range: bytes=0-99' https://tutorial.example.com/tutorial.mp4
 ```
 
-確認 206 與 `Content-Range: bytes 0-99/…`，一般頁面也應有 `X-Robots-Tag`。noindex 不是權限保護，不能上傳仍含私人資料的影片。大型影片不要使用範例 Worker 的全檔記憶體切片方式。
+確認 206 與 `Content-Range: bytes 0-99/…`，一般頁面也應有 `X-Robots-Tag`。noindex 不是權限保護，不能上傳仍含私人資料的影片。大型影片不要使用範例 Worker 的全檔記憶體切片方式。Workers 靜態檔每檔上限 25 MiB；長片交付前另用 `ffmpeg -i in.mp4 -c:v libx264 -crf 28 -preset medium -c:a copy -movflags +faststart tutorial-v3.mp4`，確認小於 26,214,400 位元組；仍超過就拆片。每版換新檔名避免快取，整站回應與每頁都要 noindex。
 
 ## 腳本
 
 | 檔案 | 用途 |
 |---|---|
+| `scripts/vo/tts_gemini_live.mjs` | 逐句錄音、變更重錄與字數秒數篩檢 |
+| `scripts/vo/mix_vo.py` | 排旁白、音量標準化、音樂隨人聲壓低與分軌 |
+| `scripts/vo/loop_bgm.py` | 音樂交叉淡化接長 |
+| `scripts/compose_phone.py` | 手機外框合成與座標換算 |
+| `scripts/interactive/build.py`、`player.html` | 通用互動版與獨立 JPG |
 | `scripts/common.py` | 設定、專案路徑與素材座標檢查 |
 | `scripts/capture_real.py` | 本機全視窗兩倍拍攝，失敗留紀錄並續行 |
 | `scripts/gen_video.py` | 從設定與素材產生可 seek 的影片專案 |
 | `scripts/build_real.py` | 產生可切步驟與拍攝階段的互動教學頁 |
-| `scripts/make_fixture.py` | 產生三張假圖与測試清單，不讀後台 |
+| `scripts/make_fixture.py` | 產生三張假圖與測試清單，不讀後台 |
+| `scripts/add_sfx.py` | 依 `sfx.json` 把點擊與換章音效疊進 MP4，影片不重壓 |
 | `scripts/real/lib.js` | 清理、捲動、焦點座標與 render 鉤子 |
 | `scripts/real/example-steps.js` | 真實一般設定頁的本機示意操作 |
 | `scripts/real/dom-dump-temp-muplugin.php` | 受管理員與 nonce 保護的臨時私有存檔範例 |
 | `scripts/server-capture.php.txt` | 短效工作階段讀取與撤銷範例，不會自動執行 |
 | `deploy/worker.js` | Range 與 noindex 回應範例 |
 
-不含任何原案例素材、正式設定或帳號資料。舊的單一情境步驟、平台專用圖片轉檔、舊版組裝與播放器模板未帶入。
+不含任何原案例素材、正式設定或帳號資料。不附任何音樂或原案例畫面。
