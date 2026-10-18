@@ -7,6 +7,10 @@ description: 把 HTML、Open Design 成品或靜態頁規劃成 Elementor 原生
 
 Use this skill to turn a designed HTML/OD page into a maintainable Elementor-native plan before any build or import work. The goal is client-editable Elementor structure, not a static webpage wrapped in Elementor.
 
+## 業主可編輯規格（必讀，2026-10-18 你 指示）
+
+規劃藍圖時就要照 `od-elementor-parity-pipeline` 的「業主可編輯還原規格」（`~/.agents/skills/od-elementor-parity-pipeline/references/native-editable-restore-spec.md`）逐項對映：標題、段落、按鈕連結、媒體庫照片（含替代文字與多尺寸）、卡片連結、問答、清單、短碼、頁首頁尾範本與後台入口、編輯器預覽一致。藍圖裡每個區塊要標出業主在面板能改什麼；只能保留網頁碼的區塊（純裝飾）要列清單。只還原樣式、業主改不了文字照片連結的藍圖一律退回。
+
 ## Core Rule
 
 Default to native Elementor widgets. Treat a full section or full page inside one HTML widget as a failure unless 你 explicitly approves that exception.
