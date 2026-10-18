@@ -1,12 +1,24 @@
 ---
 name: od-elementor-parity-pipeline
-description: Execute a proven OD/HTML → Elementor-native conversion pipeline on 你的 local WordPress OR a remote WP reachable via Novamira-type MCP (execute-php/WP-CLI/upload-link) with 100% visual+animation parity, numeric rhythm QA, and production-ready JSON export. Use when the user asks to 還原/轉換 an Open Design or HTML page into editable native Elementor pages, wants 視覺與動畫 100% 還原, needs Elementor JSON 匯入檔 for a production site, or asks to QA-compare an Elementor build against a reference HTML. Complements the blueprint-level `html-to-elementor` skill (planning) — this skill is the EXECUTION layer: WP-CLI build scripts, Document API saves, theme-builder conditions, CDP QA harness, and import packaging. Trigger phrases: "OD 轉 Elementor 建置", "100% 還原", "Elementor JSON 匯入檔", "節奏比對", "parity pipeline".
+description: Execute a proven OD/HTML → Elementor-native conversion pipeline on 你的 local WordPress OR a remote WP reachable via Novamira-type MCP (execute-php/WP-CLI/upload-link) with 100% visual+animation parity, numeric rhythm QA, and production-ready JSON export. Use when the user asks to 還原/轉換 an Open Design or HTML page into editable native Elementor pages, wants 視覺與動畫 100% 還原, needs Elementor JSON 匯入檔 for a production site, or asks to QA-compare an Elementor build against a reference HTML. Mandatory spec: every restore must leave text/images/links/header/footer editable in the Elementor panel (see 業主可編輯還原規格). Complements the blueprint-level `html-to-elementor` skill (planning) — this skill is the EXECUTION layer: WP-CLI build scripts, Document API saves, theme-builder conditions, CDP QA harness, and import packaging. Trigger phrases: "OD 轉 Elementor 建置", "100% 還原", "還原到 WordPress", "網站還原", "原生元件", "業主可以自己改", "Elementor JSON 匯入檔", "節奏比對", "parity pipeline".
 ---
 
 # OD → Elementor Parity Pipeline
 
 Battle-tested on 2026-07-06 (電商型客戶站 `claude-fable5-od-home`, final parity: full-page height diff +0.1% desktop / -0.2% mobile, per-section ≤2.8%). Reference implementation lives at
 `<你的本機路徑>` — read its `scripts/` before writing new ones; copy and adapt rather than reinvent.
+
+## 業主可編輯還原規格（2026-10-17 B 客戶定案；你 2026-10-18 指示：所有前端 UI 還原到 WordPress 一律照做）
+
+**只還原樣式不算完成。** 交付時業主必須能在 Elementor 面板換文字、換照片、改連結，頁首頁尾也一樣。開工前先讀 `references/native-editable-restore-spec.md`，工具在 `scripts/native-restore/`（README 有對照表）。不可省略的重點：
+
+1. 標題＝標題元件（一頁一個 H1）、段落＝文字編輯器、按鈕與文字連結＝按鈕元件（連結在面板）、照片＝圖片元件從媒體庫選（媒體庫填替代文字、登記多尺寸檔）、卡片連結＝容器標籤 a、問答＝切換元件、清單＝圖示清單、自動資料＝短碼元件。只有無文字的裝飾可保留網頁碼，且要列清單。
+2. 頁首頁尾＝佈景主題建構器範本（include/general），選單、預約按鈕、社群、地址電話全部原生化；業主後台要有「頁首頁尾」入口。
+3. 前台結構不能變時用「原生元件存值＋樣板（data-zbt）組回」，轉換時自我檢查樣板＋設定值＝原網頁碼。
+4. 編輯器預覽要和前台一致：逐元素編輯 CSS（只在 .elementor-editor-active 生效）、元素 ID 每份文件不重複、預覽模式補載頁首樣式；用 `$e.run` 實測改字、換圖、改連結。
+5. 草稿先建、前台逐行比對、業主修改比對、備份（含頁面設定 wp_slash）、逐頁切換並更新頁面修改時間、四通道驗收（輸出、截圖、WebKit 六寬度孤字 0、速度），沒全過就還原。
+6. 問答結構化資料從頁面問答元件產生；首頁只一個 Organization；結構化資料輸出加 JSON_HEX_TAG。
+7. 外掛修改要 Codex 唯讀審查到 P0/P1 清零、你 本人按同意、部署前後逐字比對。
 
 ## Model-agnostic execution contract（任何 PM／執行模型都適用）
 
