@@ -30,6 +30,7 @@ Agent 會自己把內容抓下來、放到正確的位置，然後照著執行�
 | `od-elementor-parity-pipeline` | 上面那件事的完整執行工具，含量測與驗收腳本 | 3-6、3-7 |
 | `humanizer-zh` | 把 AI 寫出來的中文改成像人講的話 | 1-2、2-4 |
 | `meta-funnel-retargeting` | 三層漏斗再行銷、分層受眾、暫停的廣告草稿 | 5-3 |
+| `meta-ads-optimize-monitor` | 廣告開跑後的監控與優化：先讀專案策略再規劃、盤中加預算與每日結算規則、操作與回報排程範本、多專案儀表板 | 補充 |
 | `vsl-meta-ads-material-workflow` | 從 VSL 腳本產出 24 個切角的廣告素材需求 | 5-4 |
 | `annual-content-funnel-system` | 一年 96 篇的社群內容矩陣、Email 與 LINE 跟進序列 | 5-9、5-10、5-11 |
 | `seo-reading-experience` | 文章重新編排、加關鍵字 | X-2 |
