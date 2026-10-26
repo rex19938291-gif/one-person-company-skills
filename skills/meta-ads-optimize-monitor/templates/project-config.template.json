@@ -63,6 +63,36 @@
       "tracking_gap_results": 3
     }
   },
+  "funnel": {
+    "type": "<lead | purchase>",
+    "events": {
+      "landing": "landing_page_view",
+      "lead": "offsite_conversion.fb_pixel_lead",
+      "view_content": "<購買型才填，例如 offsite_conversion.fb_pixel_view_content；名單型 null>",
+      "initiate_checkout": "<購買型才填，例如 offsite_conversion.fb_pixel_initiate_checkout；名單型 null>",
+      "purchase": "<購買型才填，例如 offsite_conversion.fb_pixel_purchase；名單型 null>"
+    },
+    "site_sources": {
+      "lead": "<網站名單實收來源，同 site.signup_source>",
+      "attend": "<出席紀錄來源，沒有就 null>",
+      "purchase": "<網站成交筆數來源，沒有就 null>",
+      "revenue": "<網站營收來源，沒有就 null>"
+    },
+    "windows_days": [7, 30],
+    "min_spend_per_ad": 150,
+    "min_landing_views": 30,
+    "min_conversions_for_rate": 5,
+    "creative_gap_ratio": 1.5,
+    "tracking_gap_ratio": 0.2,
+    "benchmarks": {
+      "click_to_landing": 0.85,
+      "landing_to_lead": 0.15,
+      "checkout_to_purchase": "<購買型才填，例如 0.35；名單型 null>",
+      "note": "起點值，累積 30 天以上改用本專案近 90 天中位數或最好的一週"
+    },
+    "weekly_day": "monday",
+    "log": "<分段診斷週報紀錄檔，例如 docs/漏斗分段診斷紀錄.md>"
+  },
   "notify": {
     "channel": "queue_only",
     "options_note": "queue_only | telegram | email | slack | line_messaging | custom_command",
