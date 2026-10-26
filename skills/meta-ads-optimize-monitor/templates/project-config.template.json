@@ -1,0 +1,77 @@
+{
+  "project": {
+    "id": "<小寫英數代號，用於排程與儀表板>",
+    "name": "<專案中文名>",
+    "timezone": "Asia/Taipei",
+    "start_date": "YYYY-MM-DD",
+    "end_date": null,
+    "mode": "<full_auto | add_only | monitor_only>"
+  },
+  "meta": {
+    "ad_account": "act_<帳號編號>",
+    "access": "<official_connector | own_api_tool>",
+    "result_action_type": "<例如 offsite_conversion.fb_pixel_lead>",
+    "purchase_action_type": "<例如 offsite_conversion.fb_pixel_purchase，沒有就 null>",
+    "budget_level": "<adset | campaign>",
+    "units": [
+      { "role": "main", "name": "<主組合中文名>", "id": "<組合或活動編號>" },
+      { "role": "test", "name": "<新素材測試組合中文名>", "id": "<編號，沒有就 null>" }
+    ],
+    "exclude_audiences": ["<已購買者受眾名稱>"]
+  },
+  "site": {
+    "signup_source": "<網站表單編號或統計分頁，用來核對實收>",
+    "signup_pages": ["<報名頁網址>"],
+    "test_data_rule": "<測試資料怎麼辨識與排除>"
+  },
+  "records": {
+    "sheet_id": "<紀錄試算表編號，沒有就 null>",
+    "log_tabs": { "ops": "<操作紀錄分頁>", "daily": "<每日數字分頁>", "adjust": "<調整紀錄分頁>" },
+    "local_log": "<本機紀錄檔路徑，沒有試算表時用>",
+    "decision_queue": "docs/待決策佇列.md"
+  },
+  "goals": {
+    "result_target": null,
+    "sessions": [ { "label": "<場次>", "date": "YYYY-MM-DD", "capacity": null } ],
+    "cost_cap_per_result": null,
+    "total_budget": null,
+    "hard_cap": null,
+    "roi_rule": "<例如 近 30 天營收 >= 廣告費 才加預算；沒有就 null>"
+  },
+  "thresholds": {
+    "intraday_window": "08:00-21:59",
+    "raise_pct": 20,
+    "raise_spend_ratio": 0.85,
+    "raise_min_results_today": 3,
+    "raise_cost_ratio": 0.8,
+    "raise_min_hours_between": 2,
+    "raise_max_per_day": 2,
+    "brake_enabled": false,
+    "brake_window": "12:00-21:59",
+    "brake_spend_ratio": 0.5,
+    "brake_cost_threshold": null,
+    "brake_floor_budget": null,
+    "lower_pct": 20,
+    "unit_budget_ceiling": null,
+    "insight": {
+      "concentration_share": 0.8,
+      "starved_impressions": 50,
+      "fatigue_cost_multiple": 2,
+      "fatigue_frequency": 2.5,
+      "cpc_spike_multiple": 1.5,
+      "landing_drop_ratio": 0.5,
+      "tracking_gap_results": 3
+    }
+  },
+  "notify": {
+    "channel": "queue_only",
+    "options_note": "queue_only | telegram | email | slack | line_messaging | custom_command",
+    "target": null,
+    "label_prefix": "【<專案名稱> 廣告回報】"
+  },
+  "schedules": {
+    "ops": "<操作排程名稱>",
+    "report": "<回報排程名稱>",
+    "report_time": "09:20"
+  }
+}

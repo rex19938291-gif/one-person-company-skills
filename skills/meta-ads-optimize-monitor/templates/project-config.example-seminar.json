@@ -1,0 +1,83 @@
+{
+  "project": {
+    "id": "seminar-demo",
+    "name": "示範講座招生",
+    "timezone": "Asia/Taipei",
+    "start_date": "2026-01-05",
+    "end_date": "2026-02-28",
+    "mode": "full_auto"
+  },
+  "meta": {
+    "ad_account": "act_<帳號編號>",
+    "access": "official_connector",
+    "result_action_type": "offsite_conversion.fb_pixel_lead",
+    "purchase_action_type": null,
+    "budget_level": "adset",
+    "units": [
+      { "role": "main", "name": "開發轉換（21–45 歲）", "id": "<組合編號>" },
+      { "role": "main", "name": "開發轉換（46–60 歲）", "id": "<組合編號>" },
+      { "role": "test", "name": "新素材測試組合", "id": "<組合編號>" }
+    ],
+    "exclude_audiences": ["已報名者 180 天"]
+  },
+  "site": {
+    "signup_source": "網站報名表單筆數＋試算表「場次人數」分頁（已扣測試）",
+    "signup_pages": ["https://example.com/seminar/"],
+    "test_data_rule": "試算表「測試名單」分頁＋姓名含「測試」或 test"
+  },
+  "records": {
+    "sheet_id": "<試算表編號>",
+    "log_tabs": { "ops": "審查監控", "daily": "每日數字", "adjust": "每日調整紀錄" },
+    "local_log": null,
+    "decision_queue": "docs/待決策佇列.md"
+  },
+  "goals": {
+    "result_target": 200,
+    "sessions": [
+      { "label": "第一場", "date": "2026-02-10", "capacity": 50 },
+      { "label": "第二場", "date": "2026-02-12", "capacity": 50 },
+      { "label": "第三場", "date": "2026-02-15", "capacity": 50 },
+      { "label": "第四場", "date": "2026-02-22", "capacity": 50 }
+    ],
+    "cost_cap_per_result": 125,
+    "total_budget": 25000,
+    "hard_cap": 22400,
+    "roi_rule": null
+  },
+  "thresholds": {
+    "intraday_window": "08:00-21:59",
+    "raise_pct": 20,
+    "raise_spend_ratio": 0.85,
+    "raise_min_results_today": 3,
+    "raise_cost_ratio": 0.8,
+    "raise_min_hours_between": 2,
+    "raise_max_per_day": 2,
+    "brake_enabled": true,
+    "brake_window": "12:00-21:59",
+    "brake_spend_ratio": 0.5,
+    "brake_cost_threshold": 200,
+    "brake_floor_budget": 200,
+    "lower_pct": 20,
+    "unit_budget_ceiling": 3000,
+    "insight": {
+      "concentration_share": 0.8,
+      "starved_impressions": 50,
+      "fatigue_cost_multiple": 2,
+      "fatigue_frequency": 2.5,
+      "cpc_spike_multiple": 1.5,
+      "landing_drop_ratio": 0.5,
+      "tracking_gap_results": 3
+    }
+  },
+  "notify": {
+    "channel": "queue_only",
+    "options_note": "queue_only | telegram | email | slack | line_messaging | custom_command",
+    "target": null,
+    "label_prefix": "【示範講座 廣告回報】"
+  },
+  "schedules": {
+    "ops": "seminar-demo-ads-ops-monitor",
+    "report": "seminar-demo-ads-daily-report",
+    "report_time": "09:20"
+  }
+}
