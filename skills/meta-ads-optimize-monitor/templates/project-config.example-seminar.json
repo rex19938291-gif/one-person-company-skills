@@ -90,9 +90,17 @@
     "min_conversions_for_rate": 5,
     "creative_gap_ratio": 1.5,
     "tracking_gap_ratio": 0.2,
+    "source_mismatch_ratio": 0.2,
+    "visitor_source": {
+      "tool": "ga4",
+      "unit": "users",
+      "filter": "utm_source=facebook 且 utm_medium=paid",
+      "creative_param": "utm_content",
+      "property": "<資源編號>"
+    },
     "benchmarks": {
       "click_to_landing": 0.85,
-      "landing_to_lead": 0.15,
+      "landing_to_lead": 0.10,
       "checkout_to_purchase": null,
       "note": "起點值，累積 30 天以上改用本專案近 90 天中位數或最好的一週"
     },
