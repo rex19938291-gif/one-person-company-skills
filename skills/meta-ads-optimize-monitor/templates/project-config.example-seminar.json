@@ -70,6 +70,7 @@
     }
   },
   "funnel": {
+    "basis": "site",
     "type": "lead",
     "events": {
       "landing": "landing_page_view",
@@ -80,6 +81,8 @@
     },
     "site_sources": {
       "lead": "網站報名表單筆數（已扣測試）",
+      "view_content": "<購買型：網站端看商品頁數字來源，沒有就 null（平台事件只進核對表）>",
+      "checkout": "<購買型：網站端開始結帳數字來源，沒有就 null>",
       "attend": null,
       "purchase": null,
       "revenue": null
@@ -96,10 +99,11 @@
       "unit": "users",
       "filter": "utm_source=facebook 且 utm_medium=paid",
       "creative_param": "utm_content",
+      "load_signal": "<網站端載入訊號，例如 GA4 page_view 或自訂載入事件；速度工具手機實測>",
       "property": "<資源編號>"
     },
     "benchmarks": {
-      "click_to_landing": 0.85,
+      "click_to_landing": 0.8,
       "landing_to_lead": 0.10,
       "checkout_to_purchase": null,
       "note": "起點值，累積 30 天以上改用本專案近 90 天中位數或最好的一週"
