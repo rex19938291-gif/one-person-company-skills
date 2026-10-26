@@ -96,6 +96,7 @@
       "checkout_to_purchase": null,
       "note": "起點值，累積 30 天以上改用本專案近 90 天中位數或最好的一週"
     },
+    "change_log": "docs/漏斗分界點紀錄.md",
     "weekly_day": "monday",
     "log": "docs/漏斗分段診斷紀錄.md"
   },
