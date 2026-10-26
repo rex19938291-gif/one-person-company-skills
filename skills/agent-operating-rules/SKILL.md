@@ -20,6 +20,7 @@ description: 把一套「一人公司」代理工作規範安裝到 Claude Code 
 | `rules/adapter-codex.md` | 只有 Codex 才需要的差異 |
 | `templates/TASK_HANDOFF.md` | 專案交接檔範本 |
 | `templates/待決策佇列.md` | 專案待決策佇列範本 |
+| `templates/審查分級標準.md` | 派審查時貼在派工詞最前面的分級標準 |
 | `docs/skill-dependencies.md` | 其他 skill 怎麼標示依賴本規範，以及與廣告類 skill 的互動 |
 
 ## 安裝流程（寫入全域設定屬高風險，每一步都要照做）
@@ -49,7 +50,7 @@ description: 把一套「一人公司」代理工作規範安裝到 Claude Code 
 2. 把內容包在標記之間寫入：
 
    ```markdown
-   <!-- agent-operating-rules:start v1.0.0 -->
+   <!-- agent-operating-rules:start v1.1.0 -->
    （core-rules.md 全文）
 
    （對應 adapter 全文）
