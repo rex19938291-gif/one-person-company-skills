@@ -11,7 +11,7 @@
 
 ```
 請幫我安裝這個 Skill：
-https://github.com/rex19938291-gif/one-person-company-skills/tree/main/skills/vsl-webinar-script
+https://github.com/rex19938291-gif/one-person-company-skills/tree/main/skills/meta-ads-optimize-monitor
 安裝完成後，用它幫我產出 VSL 腳本。
 ```
 
