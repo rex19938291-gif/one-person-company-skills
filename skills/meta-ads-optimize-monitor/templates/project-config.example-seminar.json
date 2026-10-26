@@ -99,7 +99,16 @@
       "unit": "users",
       "filter": "utm_source=facebook 且 utm_medium=paid",
       "creative_param": "utm_content",
-      "load_signal": "<網站端載入訊號，例如 GA4 page_view 或自訂載入事件；速度工具手機實測>",
+      "load_signal": "GA4 page_view＋速度工具手機實測",
+      "exclude": {
+        "countries_outside_target": true,
+        "datacenter_countries": ["US", "IE", "SE"],
+        "screen_resolutions": ["2000x2000"],
+        "max_engagement_seconds": 1,
+        "flag_utm_content_of_inactive_ads": true,
+        "internal": "<內部 IP>",
+        "note": "新素材上線當天特別要排除；主表註明排除人數"
+      },
       "property": "<資源編號>"
     },
     "benchmarks": {
