@@ -23,7 +23,7 @@
 
 ### 樣式覆寫層
 
-Blocksy 以 CSS 變數輸出配色，一般選擇器壓不過（頁尾底色改不動就是這個）。解法＝在同一條規則裡覆寫變數並補 `!important`：`footer.ct-footer{--theme-palette-color-8:#453739;background-color:#453739!important}`。
+Blocksy 以 CSS 變數輸出配色，一般選擇器壓不過（頁尾底色改不動就是這個）。解法＝在同一條規則裡覆寫變數並補 `!important`：`footer.ct-footer{--theme-palette-color-8:#3A3A3A;background-color:#3A3A3A!important}`。
 
 樣式寫進 `wp_update_custom_css_post($css, ['stylesheet' => get_stylesheet()])`——即後台「外觀→自訂→額外 CSS」，屬佈景主題層，客戶日後可自行編輯。加分隔註解當標記，重跑時先 `strpos` 切掉舊段落，維持可重複執行。
 

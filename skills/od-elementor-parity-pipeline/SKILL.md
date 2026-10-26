@@ -1,11 +1,11 @@
 ---
 name: od-elementor-parity-pipeline
-description: Execute a proven OD/HTML → Elementor-native conversion pipeline on 你的 local WordPress OR a remote WP reachable via Novamira-type MCP (execute-php/WP-CLI/upload-link) with 100% visual+animation parity, numeric rhythm QA, and production-ready JSON export. Use when the user asks to 還原/轉換 an Open Design or HTML page into editable native Elementor pages, wants 視覺與動畫 100% 還原, needs Elementor JSON 匯入檔 for a production site, or asks to QA-compare an Elementor build against a reference HTML. Mandatory spec: every restore must leave text/images/links/header/footer editable in the Elementor panel (see 業主可編輯還原規格). Complements the blueprint-level `html-to-elementor` skill (planning) — this skill is the EXECUTION layer: WP-CLI build scripts, Document API saves, theme-builder conditions, CDP QA harness, and import packaging. Trigger phrases: "OD 轉 Elementor 建置", "100% 還原", "還原到 WordPress", "網站還原", "原生元件", "業主可以自己改", "Elementor JSON 匯入檔", "節奏比對", "parity pipeline".
+description: Execute a proven OD/HTML → Elementor-native conversion pipeline on the user's local WordPress OR a remote WP reachable via Novamira-type MCP (execute-php/WP-CLI/upload-link) with 100% visual+animation parity, numeric rhythm QA, and production-ready JSON export. Use when the user asks to 還原/轉換 an Open Design or HTML page into editable native Elementor pages, wants 視覺與動畫 100% 還原, needs Elementor JSON 匯入檔 for a production site, or asks to QA-compare an Elementor build against a reference HTML. Mandatory spec: every restore must leave text/images/links/header/footer editable in the Elementor panel (see 業主可編輯還原規格). Complements the blueprint-level `html-to-elementor` skill (planning) — this skill is the EXECUTION layer: WP-CLI build scripts, Document API saves, theme-builder conditions, CDP QA harness, and import packaging. Trigger phrases: "OD 轉 Elementor 建置", "100% 還原", "還原到 WordPress", "網站還原", "原生元件", "業主可以自己改", "Elementor JSON 匯入檔", "節奏比對", "parity pipeline".
 ---
 
 # OD → Elementor Parity Pipeline
 
-Battle-tested on 2026-07-06 (電商型客戶站 `claude-fable5-od-home`, final parity: full-page height diff +0.1% desktop / -0.2% mobile, per-section ≤2.8%). Reference implementation lives at
+Battle-tested on 2026-07-06 (電商型客戶站 `od-home`, final parity: full-page height diff +0.1% desktop / -0.2% mobile, per-section ≤2.8%). Reference implementation lives at
 `<你的本機路徑>` — read its `scripts/` before writing new ones; copy and adapt rather than reinvent.
 
 ## 業主可編輯還原規格（2026-10-17 B 客戶定案；你 2026-10-18 指示：所有前端 UI 還原到 WordPress 一律照做）
@@ -14,42 +14,42 @@ Battle-tested on 2026-07-06 (電商型客戶站 `claude-fable5-od-home`, final p
 
 1. 標題＝標題元件（一頁一個 H1）、段落＝文字編輯器、按鈕與文字連結＝按鈕元件（連結在面板）、照片＝圖片元件從媒體庫選（媒體庫填替代文字、登記多尺寸檔）、卡片連結＝容器標籤 a、問答＝切換元件、清單＝圖示清單、自動資料＝短碼元件。只有無文字的裝飾可保留網頁碼，且要列清單。
 2. 頁首頁尾＝佈景主題建構器範本（include/general），選單、預約按鈕、社群、地址電話全部原生化；業主後台要有「頁首頁尾」入口。
-3. 前台結構不能變時用「原生元件存值＋樣板（data-zbt）組回」，轉換時自我檢查樣板＋設定值＝原網頁碼。
+3. 前台結構不能變時用「原生元件存值＋樣板（data-nrt）組回」，轉換時自我檢查樣板＋設定值＝原網頁碼。
 4. 編輯器預覽要和前台一致：逐元素編輯 CSS（只在 .elementor-editor-active 生效）、元素 ID 每份文件不重複、預覽模式補載頁首樣式；用 `$e.run` 實測改字、換圖、改連結。
 5. 草稿先建、前台逐行比對、業主修改比對、備份（含頁面設定 wp_slash）、逐頁切換並更新頁面修改時間、四通道驗收（輸出、截圖、WebKit 六寬度孤字 0、速度），沒全過就還原。
 6. 問答結構化資料從頁面問答元件產生；首頁只一個 Organization；結構化資料輸出加 JSON_HEX_TAG。
-7. 外掛修改要 Codex 唯讀審查到 P0/P1 清零、你 本人按同意、部署前後逐字比對。
+7. 外掛修改要 Codex 唯讀審查到 P0/P1 清零、你本人按同意、部署前後逐字比對。
 
 ## Model-agnostic execution contract（任何 PM／執行模型都適用）
 
-本 skill 會由不同模型輪替擔任 PM（Fable 5 / Opus 4.8）與執行者（Codex / GLM 5.2 / 其他 API 模型）。品質不能依賴模型的聰明程度，必須依賴下列機械規則 — 較弱的模型照抄也能穩定達標：
+本 skill 會由不同模型輪替擔任 PM（較強的主控模型）與執行者（Codex / 其他 API 模型）。品質不能依賴模型的聰明程度，必須依賴下列機械規則 — 較弱的模型照抄也能穩定達標：
 
 1. **每一輪開工前重讀本檔的 gate 數字**（兩階門檻、量測有效性規則），不要憑上一輪記憶。長 context 中段的模型（尤其外接 API 模型）最容易忘 gate。
 2. **量測有效性由 harness 強制，不靠自律**：`qa-measure.mjs` 內建暖機（預設開）、`--wait-for <selector>` readiness 等待、0 blocks 時 exit code 2。exit 2 ＝該輪量測作廢，重跑；**任何模型都不得根據 exit 2 的輸出開處方**。
-3. **每條處方必須是字面值**：selector＋屬性＋目標數值＋出處（reference 行號或量測數字）。「對齊 reference」「調整間距」這類自然語言處方一律退回重寫。這條對 GLM 類模型是硬性：它們對模糊指令的發散率最高。
+3. **每條處方必須是字面值**：selector＋屬性＋目標數值＋出處（reference 行號或量測數字）。「對齊 reference」「調整間距」這類自然語言處方一律退回重寫。這條對 較弱的模型是硬性：它們對模糊指令的發散率最高。
 4. **claim 之前先有證據**：回報「已修好」前必附本輪量測輸出（或無法量測時的 grep 證明＋原因）。任何模型宣稱未量測的 parity 數字＝立即退件。
 5. **每完成一步就寫 checkpoint 到 TASK_HANDOFF.md**（改了什麼檔＋量測結果＋下一步），格式照 handoff-template。這讓額度中斷、模型切換、session 重啟都可無損接續 — 輪替使用多模型時這是唯一的共用狀態。
 6. **有界批次派工**：給執行者的任務一律「N 步做完即停」，不開放式迴圈。步驟順序固定：量測有效性 → 全域修 → 逐區修 → 再量測 → 停。
-7. **工具呼叫低信任預設**（外接模型適用）：派給 GLM／新模型的任務，PM 驗收時必須實際檢查檔案 diff 與量測輸出，不接受執行者的文字描述作為完成證據；`--resume-last` 類續傳指令失敗會偽裝成功，永遠先驗檔案再 rebuild。
+7. **工具呼叫低信任預設**（外接模型適用）：派給新模型的任務，PM 驗收時必須實際檢查檔案 diff 與量測輸出，不接受執行者的文字描述作為完成證據；`--resume-last` 類續傳指令失敗會偽裝成功，永遠先驗檔案再 rebuild。
 8. **沙箱執行者的同等量測能力（共用 CDP 端點）**：執行者沙箱通常不能自己 spawn Chrome（症狀：Chrome「invalid code signature」、Chromium MachPort permission 錯誤 — 2026-07-08 C 客戶 輪 Codex 實測），但通常可連 localhost TCP（Codex 已實證可打 127.0.0.1 的 HTTP）。解法是把「啟動 Chrome」和「量測」解耦：沙箱外先 `scripts/cdp-endpoint.sh start`（headless Chrome，僅綁 127.0.0.1:9223，含 `--allow-file-access-from-files` 供 file:// reference 量測），執行者跑任何 harness 時帶 `--cdp-url http://127.0.0.1:9223`（`qa-measure.mjs` 亦讀 `QA_CDP_URL` env；專案 harness 依此模式支援 `--cdp-url`／專屬 env）。此模式下 harness 只建立並關閉自己的 tab，**絕不 kill 共用瀏覽器**；整輪量測結束由端點擁有者 `stop`。執行者遇到「量不了」時先檢查端點是否在跑（`cdp-endpoint.sh status`），不要嘗試自行啟動瀏覽器或繞道。
 
 ### 派量測給沙箱執行者的標準流程（PM 職責，2026-07-08 定案）
 
 「以後派量測給 Codex，先開端點、執行者就能自主量測收斂」是**預設操作模式**，不是特例。PM（Claude／擁有沙箱外殼的一方）每次派量測型任務給沙箱執行者時：
 
-1. **派工前先開端點**：`scripts/cdp-endpoint.sh start`（需 你 一次瀏覽器授權；同一量測輪內只需開一次）。確認 `cdp-endpoint.sh status` 回 200。
+1. **派工前先開端點**：`scripts/cdp-endpoint.sh start`（需你一次瀏覽器授權；同一量測輪內只需開一次）。確認 `cdp-endpoint.sh status` 回 200。
 2. **派工 prompt 明載端點**：告訴執行者「端點已在 `http://127.0.0.1:9223`，用 `--cdp-url` 跑 harness，只開/關自己的 tab，別 kill 共用瀏覽器」。
 3. **執行者自主收斂**：改檔 → 重建 → 帶 `--cdp-url` 重量測 → 讀報告 → 依 gate 開自己的下一步處方 → checkpoint 回 handoff。不需回頭等 PM 量測。
 4. **端點生命週期歸 PM**：整輪（含執行者多次重量測）結束後 PM `cdp-endpoint.sh stop`。若執行者回報端點連不上，PM 重開，不由執行者啟動瀏覽器。
-5. **額度前置檢查**：派工前查執行者兩個額度窗（`report-current-usage.js`）；週窗吃緊或歸零時，改由 PM 自己做或排程等恢復（見 Quota-aware bounded dispatch 節）。
+5. **額度前置檢查**：派工前查執行者兩個額度窗；週窗吃緊或歸零時，改由 PM 自己做或排程等恢復（見 Quota-aware bounded dispatch 節）。
 
-## Architecture decisions (follow unless 你 overrides)
+## Architecture decisions (follow unless the user overrides)
 
 1. **Build route: WP-CLI + Elementor Document API**, not per-widget MCP calls. One PHP script per document (`wp --user=<admin> eval-file build.php`), rerunnable, deterministic, exportable. MCP is fine for small edits; full pages are 10x faster by script.
 2. **Native-first**: every piece of content is a native widget (heading/text-editor/image/button/icon/icon-list/counter/star-rating/accordion/social-icons/nav-menu/container). HTML widgets ONLY for (a) interactions native Elementor can't do (e.g. crossfade scene carousel) and (b) script-only enhancer blocks (no visible markup). Count and document every exception.
-3. **Styling: page/template-level Custom CSS** (Elementor Pro native feature, NOT an HTML widget) carrying namespaced classes (e.g. `cfab-*`) set via widget/container class settings. Copy the reference CSS values wholesale, retargeted to Elementor markup.
+3. **Styling: page/template-level Custom CSS** (Elementor Pro native feature, NOT an HTML widget) carrying namespaced classes (e.g. `demo-*`) set via widget/container class settings. Copy the reference CSS values wholesale, retargeted to Elementor markup.
 4. **Header/Footer: Elementor Pro Theme Builder** `elementor_library` posts with `_elementor_template_type` = header/footer, staged first on noindex test pages via `_elementor_conditions = ["include/singular/page/<ID>"]`, then switched to `["include/general"]` (whole site) once parity is measured — **你 2026-10-13 standing rule: every OD→WP restore ships header/footer as sitewide Theme Builder templates, never baked into each page; legal/other pages get the same brand chrome.** Pages use `elementor_header_footer` (not `elementor_canvas`, which suppresses Theme Builder locations). Regenerate Pro conditions cache after setting. Gotchas from B 客戶 (2026-10-13): (a) if the OD page scrolls inside an inner container (`position:fixed/absolute; overflow:auto`), the footer location renders outside it — prefer window scroll at build time; otherwise move the footer wrapper into the scroller with a small footer script and make the header `position:fixed` with z-index below intro/lightbox overlays; (b) remove the page's own nav and the hero's `margin-top:-<navH>px` compensation; (c) frontend filters that unwrap widgets must also run while `elementor/theme/before_do_header|footer` → `after_do_*` is rendering; (d) asset `?ver=` must hash **all** asset files, not substr of concatenated md5s (that only reflects the first file, so CSS edits never bust cache).
-5. **JS behaviors** (reveal, typewriter, marquee, parallax, scroll-state nav): reproduce the reference JS verbatim-adapted in ONE script-only HTML widget per scope (page enhancer on page; nav scroll in header). Progressive enhancement: JS adds a marker class (e.g. `cfab-js` on `<html>`) and hidden-until-reveal CSS only applies under that class.
+5. **JS behaviors** (reveal, typewriter, marquee, parallax, scroll-state nav): reproduce the reference JS verbatim-adapted in ONE script-only HTML widget per scope (page enhancer on page; nav scroll in header). Progressive enhancement: JS adds a marker class (e.g. `demo-js` on `<html>`) and hidden-until-reveal CSS only applies under that class.
 
 ## Hard-won gotchas (violating these wastes hours)
 
@@ -70,7 +70,7 @@ Battle-tested on 2026-07-06 (電商型客戶站 `claude-fable5-od-home`, final p
 
 ## PM/executor split (Claude PM + any executor)
 
-When an executor (Codex / GLM / other API model) executes and Claude verifies: executor sandboxes usually cannot reach the DB socket or a browser — Claude runs `wp eval-file` rebuilds and this harness, the executor edits files. Prescriptions must be literal (exact selectors + values + where to append); "align to reference" instructions without numbers do not converge — weaker executors diverge fastest on vague prescriptions. Send measured facts, receive file edits, rebuild, re-measure. PM always verifies the actual file diff, never the executor's summary.
+When an executor (Codex / other API model) executes and Claude verifies: executor sandboxes usually cannot reach the DB socket or a browser — Claude runs `wp eval-file` rebuilds and this harness, the executor edits files. Prescriptions must be literal (exact selectors + values + where to append); "align to reference" instructions without numbers do not converge — weaker executors diverge fastest on vague prescriptions. Send measured facts, receive file edits, rebuild, re-measure. PM always verifies the actual file diff, never the executor's summary.
 
 ## Pipeline stages
 
@@ -82,7 +82,7 @@ When an executor (Codex / GLM / other API model) executes and Claude verifies: e
 6. **Visual QA**（中文頁另須通過 `responsive-web-ui-guard` 的「中文排版與 iPhone Safari」規則與「必過關卡」：系統 WebKit 斷行檢查、一般網址＋清快取後驗收）: harness `--shot` gives true full-page screenshots (CDP `captureBeyondViewport` + lazyload-marking). Crop-compare sensitive areas (hero, card grids, reviews, footer) desktop+mobile. Also verify interactions live: mobile burger, accordion, carousels, counters, scroll-state nav/FAB, no horizontal overflow at 360/390/768/1280/1440. **截圖必須被 PM「親眼讀過」才算跑過此關**（產出檔案≠驗過）；版面/顏色/圖片類缺陷（按鈕位置、區塊底色、孤立清單符號、圖片消失）只有這一關抓得到，任何 DOM/文字比對都會漏。
 7. **Package**: `make-import-package.sh` pattern — zip of `templates/*.json` + all referenced assets at their original `wp-content/uploads/...` relative paths + `IMPORT.md` runbook (upload assets first so JSON URLs resolve; import templates; rebuild menu; remap popup IDs).
 8. **Isolation check**: verify pre-existing pages still render their own header/footer and conditions are untouched.
-9. **Handoff**: update the project `TASK_HANDOFF.md` (完成/待辦/風險/IDs/paths) per 你的 protocol.
+9. **Handoff**: update the project `TASK_HANDOFF.md` (完成/待辦/風險/IDs/paths) per the user's protocol.
 
 ## Bundled tools
 
@@ -98,7 +98,7 @@ When an executor (Codex / GLM / other API model) executes and Claude verifies: e
 
 Never touch production, existing pages/templates, or the static homepage without explicit approval. No public tunnels, no credentials in output. HTML-widget exceptions must be listed in the final report with reasons. Report the parity numbers honestly (per-section table), never claim unmeasured "100%".
 
-## Executor self-review checklist（任何執行者：Codex / GLM / 其他模型，交付前逐項自檢，任一不過就先修再回報）
+## Executor self-review checklist（任何執行者：Codex / 其他模型，交付前逐項自檢，任一不過就先修再回報）
 
 本清單來自實案退回記錄（2026-07-07 電商型客戶站 Phase 2/B），每一條都對應一次真實退件：
 
@@ -113,7 +113,7 @@ PM 對應義務：處方必附實測數字與逐字內容；退回時引用本�
 
 ## Typography QA (added 2026-07-07, C4 round)
 
-- **Programmatic line-break scan beats screenshots**: run the harness with `--eval "$(cat typo-check.js)"` where typo-check.js walks headings/paragraphs, uses Range API per-character rects to reconstruct line boxes, and flags (a) last line with ≤1 CJK char (孤字尾行), (b) lines starting with CJK punctuation. Reference copy: `elementor-templates/claude-fable5-od-20260706/qa/c4/typo-check.js`. Exclude intentional label-value two-line pairs before prescribing.
+- **Programmatic line-break scan beats screenshots**: run the harness with `--eval "$(cat typo-check.js)"` where typo-check.js walks headings/paragraphs, uses Range API per-character rects to reconstruct line boxes, and flags (a) last line with ≤1 CJK char (孤字尾行), (b) lines starting with CJK punctuation. Reference copy: `elementor-templates/od-20260706/qa/c4/typo-check.js`. Exclude intentional label-value two-line pairs before prescribing.
 - Fix order: `text-wrap:balance` (headings) → `<span class="ns-nowrap">` on tail phrases/label-colon groups (deterministic) → max-width tuning (last resort; re-measure rhythm after).
 - Verify gate: re-scan to count=0 AND page rhythm drift ≤1% (text-wrap fixes must not shift section heights). If a page mounts a NON-branch template (e.g. site footer 28088 on the thanks page), its issues are out of scope — do not restyle foreign templates.
 - **zsh does NOT word-split unquoted variables**: `for spec in "a b"; do set -- $spec` silently passes the whole string as $1 (loop appears to hang/fail). Use explicit function args or arrays.
@@ -160,11 +160,11 @@ PM 對應義務：處方必附實測數字與逐字內容；退回時引用本�
 
 - Codex 沙箱跑 `qa-reference-parity.mjs` 時無法啟動任何瀏覽器（系統 Chrome 簽章無效、快取 Chromium MachPort 權限錯誤）→ 量測從此走**共用 CDP 端點**模式（契約規則 8）：沙箱外 `cdp-endpoint.sh start`，harness 帶 `--cdp-url`。
 - 兩支 harness 已支援：skill 的 `qa-measure.mjs`（`--cdp-url`／`QA_CDP_URL`）與 C 客戶 專案的 `qa-reference-parity.mjs`（`--cdp-url`／`C 客戶_QA_CDP_URL`）。新專案 harness 一律照抄此雙模式（spawn 或 connect-existing）。
-- 端點生命週期歸沙箱外的一方（你 或 PM）管理：量測輪開始前 start、結束後 stop；執行者只建/關自己的 tab。
+- 端點生命週期歸沙箱外的一方（你或 PM）管理：量測輪開始前 start、結束後 stop；執行者只建/關自己的 tab。
 
 ## 視覺 100% 還原契約（2026-07-10 定案，源自 C 客戶 視覺重開輪 — 高度節奏 ≠ 視覺還原）
 
-實案教訓：C 客戶 輪曾同時達成「36/36 section 高度 ±10% 全過＋互動 QA 全過」，但成品完全沒載 source 字型、沒定義任何 `:root` token，配色/字體整層缺失，你 一眼退件。**節奏數值只是四通道之一；缺了本節規則，任何模型都會做出「高度對了、長相不對」的頁面。** 本節為機械規則，弱模型照抄也能達標。
+實案教訓：C 客戶 輪曾同時達成「36/36 section 高度 ±10% 全過＋互動 QA 全過」，但成品完全沒載 source 字型、沒定義任何 `:root` token，配色/字體整層缺失，你一眼退件。**節奏數值只是四通道之一；缺了本節規則，任何模型都會做出「高度對了、長相不對」的頁面。** 本節為機械規則，弱模型照抄也能達標。
 
 ### A. Design-system-first（建置期硬規則，先於一切逐區修）
 
@@ -178,7 +178,7 @@ PM 對應義務：處方必附實測數字與逐字內容；退回時引用本�
 2. **電腦樣式比對**（`qa-style-audit.mjs`）：以文字配對 source↔build，**只量「最內層承載文字」的元素**（子元素含相同文字＝wrapper，跳過）。wrapper 假差是實測過的大坑：C 客戶 曾因掃到 wrapper 虛報 205/305 項差異、差點整輪誤修。門檻：真差 ≈ 0（font/size/weight/style/lh/ls/color/bg/align）。
 3. **截圖親讀**：唯一能抓版面/顏色/圖片缺陷的通道（按鈕位置、區塊底色、孤立清單符號、圖片消失）。審修迴圈用 `qa-crops.mjs` 定點 viewport 圖（快、不 hang）；全頁圖留給交付。**PM 沒讀過圖＝這關沒跑。**
 4. **斷行掃描**（typo-check）＋互動 QA：rhythm＋樣式收斂後各跑一次。
-最終 gate 永遠是 你 肉眼；四通道只是把一次過的機率拉滿，不得以通道數據代替人工 sign-off 宣告「100%」。
+最終 gate 永遠是你肉眼；四通道只是把一次過的機率拉滿，不得以通道數據代替人工 sign-off 宣告「100%」。
 
 ### C. 全頁截圖強韌化（capture-hang 實測解法）
 
@@ -204,12 +204,12 @@ PM 對應義務：處方必附實測數字與逐字內容；退回時引用本�
 - [ ] html=0、rebuild JSON 正常、DB 本輪備份存在
 - [ ] 你指過的每一個缺陷都有對應的截圖證據證明已修
 
-## WP site-ops playbook (2026-07-12, header/theme round — applies to ALL edits on 你的 WP stack: Blocksy + Elementor Pro + WP Rocket)
+## WP site-ops playbook (2026-07-12, header/theme round — applies to ALL edits on the user's WP stack: Blocksy + Elementor Pro + WP Rocket)
 
-重建管線順序、驗證陷阱、Blocksy sticky 失效、雙模態 header、WP Rocket delay-JS、可編輯文字與 CJK 斷行、選單權限、Loop-grid 分頁、電商型客戶站 字級 8 級制、本機 php -S Fatal —— 全部在 `references/wp-site-ops-playbook.md`，改 你 的 WP 站之前先讀那一份。
+重建管線順序、驗證陷阱、Blocksy sticky 失效、雙模態 header、WP Rocket delay-JS、可編輯文字與 CJK 斷行、選單權限、Loop-grid 分頁、電商型客戶站 字級 8 級制、本機 php -S Fatal —— 全部在 `references/wp-site-ops-playbook.md`，改你的 WP 站之前先讀那一份。
 
 ### SEO 寫進建置腳本（2026-07-13）
-Rank Math SEO 不另設獨立步驟——各頁 meta title/description 直接 append 在該頁建置腳本末尾（`update_post_meta($pid,'rank_math_title'/'rank_math_description',…)`，接在 cfab_save_document 之後）；CPT 全域標題格式（`rank-math-options-titles` 的 `pt_<cpt>_title`/`_description`）寫進 01-setup。這樣重建/遷移自動帶 SEO，且值就近好維護。CPT 格式用短品牌結尾，勿用 %sitename%（會展開超長站名被 Google 截斷）。
+Rank Math SEO 不另設獨立步驟——各頁 meta title/description 直接 append 在該頁建置腳本末尾（`update_post_meta($pid,'rank_math_title'/'rank_math_description',…)`，接在 demo_save_document 之後）；CPT 全域標題格式（`rank-math-options-titles` 的 `pt_<cpt>_title`/`_description`）寫進 01-setup。這樣重建/遷移自動帶 SEO，且值就近好維護。CPT 格式用短品牌結尾，勿用 %sitename%（會展開超長站名被 Google 截斷）。
 
 ## 遠端建置路線（MCP／SSH-only）（詳見 `references/remote-build-routes.md`）
 
@@ -221,7 +221,7 @@ HTML widget 就地換成原生元素樹時踩過的十一個硬坑（頁面 CSS 
 heading 過 kses 剝掉漸層字、`:first-child` 因包裝層失效、boxed 容器 `--content-width` 鎖死響應式、
 button 字級要打 `.elementor-button-text`、上傳型部署權杖過期不報錯、`!important` 壓掉 `@media`、
 容器用 `css_classes` 而 widget 用 `_css_classes`、Blocksy 動態 CSS 要兩個 request）、
-`線上課程型客戶站-cjk-wrap` 不可切的節點，以及圖片一律 WebP q80／整頁 <500KB 的減重規則。
+`site-cjk-wrap` 不可切的節點，以及圖片一律 WebP q80／整頁 <500KB 的減重規則。
 
 ## Elementor 範本 → Blocksy 原生 header/footer（詳見 `references/blocksy-native-header-footer.md`）
 

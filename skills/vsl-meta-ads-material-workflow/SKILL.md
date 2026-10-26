@@ -5,9 +5,9 @@ description: 把 Google Drive 的 VSL、講座或銷售腳本、產品頁、活�
 
 # VSL Meta Ads Material Workflow
 
-Use this skill to convert a VSL or sales script into a Phase One Meta ads creative package for 你.
+Use this skill to convert a VSL or sales script into a Phase One Meta ads creative package for the user.
 
-Phase One means: strategy, copy, image prompts, optional generated-image previews, and a Google Doc for 你的 review. Do not connect to Meta Ads API, create ad drafts, touch Business Manager, or publish ads in Phase One.
+Phase One means: strategy, copy, image prompts, optional generated-image previews, and a Google Doc for the user's review. Do not connect to Meta Ads API, create ad drafts, touch Business Manager, or publish ads in Phase One.
 
 ## Required Reference
 
@@ -25,14 +25,14 @@ Accept any of these as source material:
 - sales script or webinar script
 - activity page or product page
 - campaign brief
-- 你的 spoken notes about audience, pain points, offer, funnel, or retargeting windows
+- the user's spoken notes about audience, pain points, offer, funnel, or retargeting windows
 
-If 你 names a Google Drive document by title, use the Google Drive connector to find and read the exact document before planning content. If multiple candidates match, ask 你 to choose.
+If the user names a Google Drive document by title, use the Google Drive connector to find and read the exact document before planning content. If multiple candidates match, ask the user to choose.
 
 ## Workflow
 
 1. Gather source material.
-   - Read the VSL/script and any product or campaign page 你 provides.
+   - Read the VSL/script and any product or campaign page the user provides.
    - Extract conversion goal, offer, free lead magnet, price/value anchor, audience, emotional promise, objections, proof, and CTA.
 
 2. Build the funnel strategy.
@@ -49,7 +49,7 @@ If 你 names a Google Drive document by title, use the Google Drive connector to
 4. Select first-pass visual-preview angles.
    - Choose the highest learning-value mix across TOF/MOF/BOF.
    - Include cold-audience opt-in angles first when the campaign has a free-course or lead magnet.
-   - Default to prompt-first output. Generate image previews only when 你 explicitly asks or when a current test run already has approved images to place into the Google Doc.
+   - Default to prompt-first output. Generate image previews only when the user explicitly asks or when a current test run already has approved images to place into the Google Doc.
 
 5. Write Meta ad copy.
    - Produce primary text, headline, description, CTA, and image-on-ad text.
@@ -58,9 +58,9 @@ If 你 names a Google Drive document by title, use the Google Drive connector to
 
 6. Prepare image assets.
    - Treat AI images as adjustable previews, not locked final art.
-   - Use the built-in image generation path only when 你 explicitly asks for generation.
+   - Use the built-in image generation path only when the user explicitly asks for generation.
    - Every image prompt must specify Asian people or Asian family/work/lifestyle context as the main visual subject.
-   - Match the product/page visual style and avoid real platform logos, payment logos, or brand marks unless 你 provides approval.
+   - Match the product/page visual style and avoid real platform logos, payment logos, or brand marks unless the user provides approval.
 
 7. Build the Google Doc.
    - Use real H1/H2/H3 heading styles.
@@ -71,12 +71,12 @@ If 你 names a Google Drive document by title, use the Google Drive connector to
 
 8. Report Phase One status.
    - Provide the Google Doc link, generated image count, verification performed, and what is intentionally deferred to Phase Two.
-   - Do not mark the workflow complete until 你 can inspect the document and assets.
+   - Do not mark the workflow complete until the user can inspect the document and assets.
 
 ## Output Defaults
 
 - Language: Traditional Chinese.
-- Document audience: course lecturer, marketer, or 你 preparing ad production.
+- Document audience: course lecturer, marketer, or the user preparing ad production.
 - Tone: practical, operator-ready, not academic.
 - First-pass image count: prompt-first by default; optional preview images only when requested or already generated for validation.
 - Full creative-angle count: 24.
@@ -89,5 +89,5 @@ The output is not finished if it is only a strategy memo. It must be usable for 
 
 - A lecturer can record from it.
 - A designer or user can create from the prompts and adjust visual direction manually.
-- 你 can judge copy and image quality from it.
+- the user can judge copy and image quality from it.
 - A future Phase Two agent can map the material into Meta campaign/ad set/ad draft automation.

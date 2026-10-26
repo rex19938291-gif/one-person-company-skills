@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""zb-u 文字元件（整段網頁碼）→ 原生元件。前台由外掛 zb-native.php 依樣板 data-zbt 組回相同網頁碼。"""
+"""nr-u 文字元件（整段網頁碼）→ 原生元件。前台由外掛 nr-native.php 依樣板 data-nrt 組回相同網頁碼。"""
 import json, re, random, base64, sys, html as H
 sys.path.insert(0, __file__.rsplit('/', 1)[0])
 from dom import DomBuilder, Node, VOID
@@ -54,7 +54,7 @@ def edattrs(n):
     for k, v in n.attrs:
         if k == 'class': cls = v or ''; continue
         if k == 'id': eid_ = v or ''; continue
-        if k in ('href', 'src', 'srcset', 'sizes', 'alt', 'target', 'rel', 'loading', 'decoding', 'fetchpriority', 'width', 'height', 'data-zb-lazy'): continue
+        if k in ('href', 'src', 'srcset', 'sizes', 'alt', 'target', 'rel', 'loading', 'decoding', 'fetchpriority', 'width', 'height', 'data-nr-lazy'): continue
         if k == 'style': st = v or ''; continue
         if v is not None and ('\n' in v or '|' in v): continue
         lines.append(f'{k}|{"" if v is None else v}')
@@ -62,7 +62,7 @@ def edattrs(n):
     if 'display' not in st:
         st = ('display: inline-block; ' if n.tag == 'img' else 'display: inline; ' if n.tag in INL else '') + st
     if st: lines.append('style|' + st)
-    lines.append('data-zbtag|' + n.tag)
+    lines.append('data-nrtag|' + n.tag)
     return cls, eid_, lines
 
 ZH = ['一','二','三','四','五','六','七','八','九','十','十一','十二']
@@ -97,8 +97,8 @@ def widget(wt, settings, tpl, extra_attrs=(), nav='', n=None):
         got = fill(tpl, settings)
         if got != ser(n): raise AssertionError('樣板還原不一致 ' + wt + ' ' + ser(n)[:160] + ' ≠ ' + got[:160])
     cls, eid_, el = edattrs(n)
-    lines = ['data-zbt|' + b64(tpl)] + [f'{k}|{v}' for k, v in extra_attrs] + el
-    st = {'_css_classes': ('zb-n ' + cls).strip(), '_attributes': '\n'.join(lines)}
+    lines = ['data-nrt|' + b64(tpl)] + [f'{k}|{v}' for k, v in extra_attrs] + el
+    st = {'_css_classes': ('nr-n ' + cls).strip(), '_attributes': '\n'.join(lines)}
     if eid_: st['_element_id'] = eid_
     if nav: st['_title'] = nav
     st.update(settings)
@@ -107,7 +107,7 @@ def widget(wt, settings, tpl, extra_attrs=(), nav='', n=None):
 
 def raw(h, nav):
     stat('raw')
-    st = {'editor': h, '_css_classes': 'zb-u'}
+    st = {'editor': h, '_css_classes': 'nr-u'}
     if nav: st['_title'] = nav
     return {'id': eid(), 'elType': 'widget', 'widgetType': 'text-editor', 'settings': st, 'elements': []}
 
@@ -144,9 +144,9 @@ def walk_nodes(n):
 def conv(n):
     """回傳元件清單（可能 1 個或多個）"""
     if isinstance(n, tuple):
-        m = re.fullmatch(r'(\s*)(\[zb_\w+[^\]]*\])(\s*)', n[1])
+        m = re.fullmatch(r'(\s*)(\[nr_\w+[^\]]*\])(\s*)', n[1])
         if m:
-            nm = {'zb_google_reviews': '自動：Google 評論', 'zb_ig_news': '自動：IG 最新消息', 'zb_ig_arrows': '自動：IG 左右箭頭', 'zb_store_rating': '自動：門市評分'}.get(re.match(r'\[(\w+)', m.group(2)).group(1), '自動區塊')
+            nm = {'nr_google_reviews': '自動：Google 評論', 'nr_ig_news': '自動：IG 最新消息', 'nr_ig_arrows': '自動：IG 左右箭頭', 'nr_store_rating': '自動：門市評分'}.get(re.match(r'\[(\w+)', m.group(2)).group(1), '自動區塊')
             w_ = widget('shortcode', {'shortcode': m.group(2)}, m.group(1) + '{{shortcode}}' + m.group(3), nav=nm)
             assert fill(m.group(1) + '{{shortcode}}' + m.group(3), w_['settings']) == n[1]
             return [w_]
@@ -157,7 +157,7 @@ def conv(n):
         i = att_id(src)
         if i is None: return [raw(ser(n), '照片（媒體庫外）')]
         return [widget('image', {'image': {'id': i, 'url': src, 'alt': a.get('alt', ''), 'source': 'library'}, 'image_size': 'full'},
-                       ser(n), [('data-zbi', str(i))] + ([('data-zbfill', '1')] if re.search(r'(^|;)\s*width:\s*100%', a.get('style') or '') else []), title(a.get('alt', ''), '照片：'), n=n)]
+                       ser(n), [('data-nri', str(i))] + ([('data-nrfill', '1')] if re.search(r'(^|;)\s*width:\s*100%', a.get('style') or '') else []), title(a.get('alt', ''), '照片：'), n=n)]
     if not has_text(n) and not any(isinstance(c, Node) and c.tag in ('img',) for c in n.children) and not n.elements():
         return [raw(ser(n), '裝飾')]
     if t in ('h1','h2','h3','h4','h5','h6') or (t in ('span','div') and has_text(n) and inline_only(n)):
@@ -206,7 +206,7 @@ def conv(n):
                 cap = caps[0]
                 tpl = ser(n).replace(ser(cap), opentag(cap) + '{{caption}}' + close(cap), 1)
                 return [widget('image', {'image': {'id': i, 'url': a2.get('src'), 'alt': a2.get('alt', ''), 'source': 'library'}, 'image_size': 'full',
-                                         'caption_source': 'custom', 'caption': inner(cap)}, tpl, [('data-zbi', str(i)), ('data-zbfig', '1')], title(text_of(cap), '照片：'), n=n)]
+                                         'caption_source': 'custom', 'caption': inner(cap)}, tpl, [('data-nri', str(i)), ('data-nrfig', '1')], title(text_of(cap), '照片：'), n=n)]
         return [raw(ser(n), title(text_of(n), '網頁碼：'))]
     if t in ('ol', 'ul') and all(isinstance(c, Node) and c.tag == 'li' for c in n.children if not (isinstance(c, tuple) and not c[1].strip())):
         lis = n.elements()
@@ -249,7 +249,7 @@ def conv(n):
 def conv_tree(els):
     out = []
     for e in els:
-        if e['elType'] == 'widget' and e['widgetType'] == 'text-editor' and 'zb-u' in (e['settings'].get('_css_classes') or ''):
+        if e['elType'] == 'widget' and e['widgetType'] == 'text-editor' and 'nr-u' in (e['settings'].get('_css_classes') or ''):
             h = e['settings']['editor']
             b = DomBuilder(); b.feed(h)
             assert inner(b.root) == h, 'roundtrip ' + h[:120]

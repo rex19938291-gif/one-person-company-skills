@@ -7,7 +7,7 @@ open('payloads/259-render-cmp-body.php','w').write(php)
 subprocess.run(['python3','nv-get.py','payloads/259-render-cmp-body.php',f'native/cmp/{tag}.json'],check=True)
 d=json.load(open(f'native/cmp/{tag}.json'))
 def norm(s,i): 
-    s=s.replace(str(i),'PID'); s=re.sub(r'(page-id-|postid-)\d+',r'\1N',s); s=re.sub(r'zbr=\d+','',s); s=re.sub(r'\b[0-9a-f]{10}\b','H',s)
+    s=s.replace(str(i),'PID'); s=re.sub(r'(page-id-|postid-)\d+',r'\1N',s); s=re.sub(r'nrr=\d+','',s); s=re.sub(r'\b[0-9a-f]{10}\b','H',s)
     return re.sub(r'>\s*<','>\n<',s).split('\n')
 for a,b in pairs:
     x,y=norm(d[str(a)]['a'],a),norm(d[str(a)]['b'],b)

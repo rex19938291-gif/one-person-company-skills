@@ -59,7 +59,7 @@ def rows_for(folder: Path, prefix: str, window: str) -> list[dict[str, Any]]:
 def bucket_queries(rows: list[dict[str, Any]]) -> dict[str, dict[str, float]]:
     patterns = {
         "brand": re.compile(r"(電商型客戶站|i place|電商型客戶站|愛普雷斯)", re.I),
-        "local": re.compile(r"(台中|北屯|西屯|南屯|七期|台北|新竹|桃園|台南|高雄)"),
+        "local": re.compile(r"(台北|新北|桃園|新竹|台中|台南|在地|附近)"),
         "commercial": re.compile(r"(費用|價格|預算|推薦|規劃|方案|安裝|團購|系統|公司|品牌)"),
         "informational": re.compile(r"(是什麼|怎麼|如何|入門|教學|diy|優缺點|比較|homekit|網關|零火線|aqara|matter|thread)", re.I),
     }

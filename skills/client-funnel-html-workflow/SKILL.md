@@ -1,6 +1,6 @@
 ---
 name: client-funnel-html-workflow
-description: Turn client interviews, Drive source folders, brand references, example funnel pages, and existing draft copy into verified Traditional Chinese homepage, brand-story/about, and free-course landing-page HTML previews. Use when 你 asks to reproduce the structure of reference pages, improve incomplete website copy, derive a visual system, generate or optimize client imagery, build responsive static HTML, show an in-app Browser preview, or prepare the result for later Elementor conversion.
+description: Turn client interviews, Drive source folders, brand references, example funnel pages, and existing draft copy into verified Traditional Chinese homepage, brand-story/about, and free-course landing-page HTML previews. Use when the user asks to reproduce the structure of reference pages, improve incomplete website copy, derive a visual system, generate or optimize client imagery, build responsive static HTML, show an in-app Browser preview, or prepare the result for later Elementor conversion.
 ---
 
 # Client Funnel HTML Workflow
@@ -45,7 +45,7 @@ Build a reviewable three-page client funnel from source collection through copy,
 
 - Translate the client’s palette reference into named tokens: ink, primary, secondary, accent, surface, border, and CTA.
 - Preserve accessible contrast and do not introduce unrelated high-saturation colors.
-- Use `你-web-design-guidelines`, `frontend-design`, and `responsive-web-ui-guard` for implementation decisions.
+- Use `web-design-guidelines`, `frontend-design`, and `responsive-web-ui-guard` for implementation decisions.
 - Prefer restrained radius, coherent spacing, semantic headings, and one primary CTA hierarchy.
 
 ### 6. Prepare and generate imagery
@@ -85,7 +85,7 @@ Build a reviewable three-page client funnel from source collection through copy,
 
 ## Stop gates
 
-Stop and ask 你 only when a decision changes public claims, identity matching, external data transmission, production writes, deployment, paid generation volume, or use of sensitive/private material outside the provided scope. Continue with clearly labeled placeholders for ordinary non-blocking gaps.
+Stop and ask the user only when a decision changes public claims, identity matching, external data transmission, production writes, deployment, paid generation volume, or use of sensitive/private material outside the provided scope. Continue with clearly labeled placeholders for ordinary non-blocking gaps.
 
 ## References
 

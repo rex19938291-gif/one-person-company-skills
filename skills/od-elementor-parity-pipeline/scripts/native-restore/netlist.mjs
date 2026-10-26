@@ -2,7 +2,7 @@
 import { spawn, execSync } from 'node:child_process';
 const [U, MODE = 'mobile'] = process.argv.slice(2); const mob = MODE === 'mobile';
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
-const PORT = 9500 + Math.floor(Math.random() * 300), dir = `/tmp/zbnet-${PORT}`;
+const PORT = 9500 + Math.floor(Math.random() * 300), dir = `/tmp/nrnet-${PORT}`;
 const ch = spawn('/Applications/Google Chrome.app/Contents/MacOS/Google Chrome', [`--remote-debugging-port=${PORT}`, '--headless=new', `--user-data-dir=${dir}`, '--no-first-run', 'about:blank'], { stdio: 'ignore' });
 let w; for (let i = 0; i < 50 && !w; i++) { try { w = (await (await fetch(`http://127.0.0.1:${PORT}/json/list`)).json()).find((x) => x.type === 'page')?.webSocketDebuggerUrl; } catch {} await sleep(200); }
 const ws = new WebSocket(w); await new Promise((r) => (ws.onopen = r)); let id = 0; const pend = new Map(); const req = {}; 

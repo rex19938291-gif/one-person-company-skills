@@ -1,7 +1,7 @@
 # Ubersuggest MCP Playbook (verified end-to-end 2026-07-17)
 
-Operational knowledge verified by a successful full run (Claude session,
-行銷團隊marketing.com Taiwan analysis). Follow this exactly; every rule below
+Operational knowledge verified by a successful full run (a Taiwan-market
+domain analysis). Follow this exactly; every rule below
 was learned from a real failure or a real success, not from documentation.
 
 ## 0. Availability Gate (run FIRST, machine-checkable)
@@ -13,8 +13,8 @@ was learned from a real failure or a real success, not from documentation.
    - Do NOT retry inside the same desktop task: the MCP tool list is frozen
      at task creation and can never hot-add a server. Only a genuinely new
      task can see a repaired connection.
-   - Hand off to `<你的本機路徑>`
-     (root-cause diagnosis + ordered next steps live there).
+   - Record the failure in your project handoff and repair the MCP
+     connection (re-authorize) in a separate task.
    - An empty keyword array or empty tool list without a completed tool call
      is invalid evidence for any SEO conclusion. Never report "no volume" or
      "no AI Overview" from it.
@@ -26,7 +26,7 @@ was learned from a real failure or a real success, not from documentation.
   `limits.monthly_keyword_metrics_updates_used`. It must stay unchanged
   across your calls; cached snapshots (`"newData": false`) cost nothing.
 - Never trigger a SERP/metrics refresh, `searchType: "paid"`, or any action a
-  tool marks as costing credits without 你的 explicit approval.
+  tool marks as costing credits without the user's explicit approval.
 - Reading cached data across many keywords is free — batch freely.
 
 ## 2. Language / Location Cookbook (the #1 failure source)
@@ -83,19 +83,12 @@ combo". Always disambiguate with a control domain on the SAME combo (e.g.
    verdict WITH snapshot date and confidence, citation-proof statement,
    quota-untouched statement.
 
-## 5. Known Environment State (2026-07-17, evening update)
+## 5. Keeping the Connection Healthy
 
-- Claude's Ubersuggest MCP connection works (URL-only config, this playbook
-  was proven through it).
-- Codex's connection is REPAIRED and end-to-end verified (2026-07-17 20:21):
-  a fresh headless `codex exec` process exposed the tools, `auth_status`
-  returned tier1, and a free `keyword_overview` zh_tw/2158 query returned
-  real data. Repair history: `ubersuggest-mcp-oauth-repair.md` task card.
-- Standing cautions that keep it working:
-  - Desktop tasks created BEFORE a repair/login have frozen tool snapshots
-    and will never show the namespace — always use a new task after any
-    MCP/auth change.
-  - Verify with ONE fresh process at a time; batched checks race the
-    rotating refresh token and can kill the session.
-  - After any Homebrew codex upgrade, expect one re-login before the first
-    Ubersuggest use.
+- Desktop/agent tasks created BEFORE a repair or re-login have frozen tool
+  snapshots and will never show the namespace — always start a new task after
+  any MCP/auth change.
+- Verify with ONE fresh process at a time; batched checks race the rotating
+  refresh token and can kill the session.
+- After upgrading the agent CLI, expect one re-login before the first
+  Ubersuggest use.

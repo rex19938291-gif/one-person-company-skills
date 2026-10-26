@@ -1,7 +1,7 @@
 """孤字修正：依 WebKit 檢查結果，把句尾幾個字包成不斷行。只改元件設定裡的文字，不動樣板。
 用法：python3 orphanfix.py <頁面代號> <輸入 n3.json> <輸出 n4.json>"""
 import json, re, sys, glob, html
-PAGE = {'home': '27575', 'story': '31152', 'career': '31155', 'terms-2': '27927', 'privacy-policy-2': '3', 'yuanlin': '31296', 'changhua': '31299', 'beitun': '31302'}
+# <頁面代號> 對應 wk/<頁面代號>.txt（WebKit 孤字檢查輸出），代號自訂即可，例如 home、about。
 page, src, dst = sys.argv[1:4]
 targets = {}
 for line in open(f'wk/{page}.txt'):

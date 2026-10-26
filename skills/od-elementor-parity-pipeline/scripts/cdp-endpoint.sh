@@ -1,6 +1,6 @@
 #!/bin/zsh
 # Shared headless-Chrome CDP endpoint for sandboxed executors (Codex subagents,
-# GLM, any API model) that cannot spawn Chrome themselves (symptoms: "invalid
+# any API model) that cannot spawn Chrome themselves (symptoms: "invalid
 # code signature", MachPort permission errors).
 #
 # Start this OUTSIDE the sandbox, then run any harness with:

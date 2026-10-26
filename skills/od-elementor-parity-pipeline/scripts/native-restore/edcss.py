@@ -66,12 +66,12 @@ def gen(els):
             if sty and '{' not in sty and '}' not in sty:
                 rules.append(f"{P}{e['id']}{{{sty}}}")
             wt = e.get('widgetType')
-            if e['elType'] == 'widget' and wt in ('toggle', 'icon-list') and a.get('data-zbt'):
-                rules.extend(rep_rules(e['id'], wt, base64.b64decode(a['data-zbt']).decode()))
-            if e['elType'] == 'widget' and wt == 'image' and 'data-zbfig' in a:
-                rules.extend(fig_rules(e['id'], base64.b64decode(a['data-zbt']).decode()))
+            if e['elType'] == 'widget' and wt in ('toggle', 'icon-list') and a.get('data-nrt'):
+                rules.extend(rep_rules(e['id'], wt, base64.b64decode(a['data-nrt']).decode()))
+            if e['elType'] == 'widget' and wt == 'image' and 'data-nrfig' in a:
+                rules.extend(fig_rules(e['id'], base64.b64decode(a['data-nrt']).decode()))
             if e['elType'] == 'widget' and e.get('widgetType') == 'image':
-                fill = 'data-zbfill' in a
+                fill = 'data-nrfill' in a
                 rules.append(f"{P}{e['id']} img{{display:block;{'width:100%;height:100%' if fill else 'height:100%;width:auto;max-width:none'};object-fit:inherit;object-position:inherit;border-radius:inherit}}")
             walk(e.get('elements', []))
     walk(els)

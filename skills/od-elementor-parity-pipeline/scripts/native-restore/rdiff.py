@@ -2,7 +2,7 @@ import sys,json,re,difflib
 d=json.load(open(sys.argv[1])); pairs=json.loads(sys.argv[2])
 def norm(s,i):
     s=re.sub(r'<div id="wpadminbar".*?<!-- #wpadminbar -->|<div id="wpadminbar".*?</div>\s*</div>\s*(?=<)', '', s, flags=re.S)
-    s=s.replace(str(i),'PID'); s=re.sub(r'(page-id-|postid-)\d+',r'\1N',s); s=re.sub(r'zbr(=|%3D)\d+','',s); s=re.sub(r'\b[0-9a-f]{10}\b','H',s)
+    s=s.replace(str(i),'PID'); s=re.sub(r'(page-id-|postid-)\d+',r'\1N',s); s=re.sub(r'nrr(=|%3D)\d+','',s); s=re.sub(r'\b[0-9a-f]{10}\b','H',s)
     return re.sub(r'>\s*<','>\n<',s).split('\n')
 for a,b in pairs:
     x,y=norm(d[str(a)]['a'],a),norm(d[str(a)]['b'],b)

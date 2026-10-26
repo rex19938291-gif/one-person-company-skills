@@ -3,7 +3,7 @@ import { spawn, execSync } from 'node:child_process';
 import { writeFileSync, readFileSync } from 'node:fs';
 const [URL_, OUT, W = '1440', CK, WAIT = '25', JSF] = process.argv.slice(2);
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
-const PORT = 9500 + Math.floor(Math.random() * 300), dir = `/tmp/zbed-${PORT}`;
+const PORT = 9500 + Math.floor(Math.random() * 300), dir = `/tmp/nred-${PORT}`;
 const ch = spawn('/Applications/Google Chrome.app/Contents/MacOS/Google Chrome', [`--remote-debugging-port=${PORT}`, '--headless=new', '--hide-scrollbars', `--user-data-dir=${dir}`, '--no-first-run', 'about:blank'], { stdio: 'ignore' });
 let wsUrl; for (let i = 0; i < 50 && !wsUrl; i++) { try { wsUrl = (await (await fetch(`http://127.0.0.1:${PORT}/json/list`)).json()).find((x) => x.type === 'page')?.webSocketDebuggerUrl; } catch {} await sleep(200); }
 const ws = new WebSocket(wsUrl); await new Promise((r) => (ws.onopen = r));

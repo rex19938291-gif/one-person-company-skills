@@ -43,9 +43,9 @@ let remoteTargetId = null;
 
 const chrome = CDP_BASE ? null : spawn(CHROME, [
   `--remote-debugging-port=${PORT}`, '--headless=new', '--disable-gpu', '--hide-scrollbars',
-  `--user-data-dir=/tmp/cfab-cdp-${PORT}`, '--no-first-run', 'about:blank',
+  `--user-data-dir=/tmp/demo-cdp-${PORT}`, '--no-first-run', 'about:blank',
 ], { stdio: 'ignore' });
-const cleanup = () => { if (chrome) try { chrome.kill('SIGKILL'); execSync(`rm -rf /tmp/cfab-cdp-${PORT}`); } catch {} };
+const cleanup = () => { if (chrome) try { chrome.kill('SIGKILL'); execSync(`rm -rf /tmp/demo-cdp-${PORT}`); } catch {} };
 process.on('exit', cleanup);
 async function finish(code) {
   if (CDP_BASE && remoteTargetId) { try { await fetch(`${CDP_BASE}/json/close/${remoteTargetId}`); } catch {} }

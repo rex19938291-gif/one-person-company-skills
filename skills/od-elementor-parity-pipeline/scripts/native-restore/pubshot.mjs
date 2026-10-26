@@ -2,7 +2,7 @@
 import { spawn, execSync } from 'node:child_process'; import { writeFileSync } from 'node:fs';
 const [U, OUT, W, N] = process.argv.slice(2); const mob = +W < 800;
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
-const PORT = 9500 + Math.floor(Math.random() * 300), dir = `/tmp/zbps-${PORT}`;
+const PORT = 9500 + Math.floor(Math.random() * 300), dir = `/tmp/nrps-${PORT}`;
 const ch = spawn('/Applications/Google Chrome.app/Contents/MacOS/Google Chrome', [`--remote-debugging-port=${PORT}`, '--headless=new', '--hide-scrollbars', `--user-data-dir=${dir}`, '--no-first-run', 'about:blank'], { stdio: 'ignore' });
 let ws_; for (let i = 0; i < 50 && !ws_; i++) { try { ws_ = (await (await fetch(`http://127.0.0.1:${PORT}/json/list`)).json()).find((x) => x.type === 'page')?.webSocketDebuggerUrl; } catch {} await sleep(200); }
 const ws = new WebSocket(ws_); await new Promise((r) => (ws.onopen = r)); let id = 0; const pend = new Map();

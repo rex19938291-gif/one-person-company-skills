@@ -18,7 +18,7 @@ Keep source labels strict. Google Search Console is first-party actual performan
 1. Direct Google Search Console API with `https://www.googleapis.com/auth/webmasters.readonly`.
 2. Existing local GSC/OpenSEO JSON snapshots when direct GSC access is unavailable or not authorized.
 3. Ubersuggest MCP for SERP positions, keyword ideas, search difficulty/intent, competitor pages, and AI Overview presence.
-4. Other tools only after 你 explicitly approves new installs, OAuth, paid queries, or browser login.
+4. Other tools only after the user explicitly approves new installs, OAuth, paid queries, or browser login.
 
 Never use Ubersuggest to replace GSC clicks, impressions, CTR, or average position. An AI Overview block does not prove that a target was cited; citation proof requires a returned source URL.
 
@@ -153,7 +153,7 @@ Review pattern clusters rather than banning isolated phrases. Remove only decora
 
 Check intent, keyword placement, slug/title/meta, section transitions, FAQ/CTA, readability, factual support, risk language, commercial honesty, required humanization, protected-content fidelity, and requested length. Return unresolved evidence gaps instead of silently filling them.
 
-If 你 asks for a client-facing performance report, use `$seo-performance-strategy-report` after the analysis is ready. Keep report HTML, noindex preview, and Cloudflare deployment gates in that separate Skill.
+If the user asks for a client-facing performance report, use `$seo-performance-strategy-report` after the analysis is ready. Keep report HTML, noindex preview, and Cloudflare deployment gates in that separate Skill.
 
 ## Analysis Buckets for SEO Research
 

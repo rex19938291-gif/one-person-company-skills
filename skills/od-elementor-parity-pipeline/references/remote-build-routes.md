@@ -4,7 +4,7 @@
 
 ## 遠端 WP（MCP／無本機 WP）建置路線＋Elementor 4.x 容器包裝層 cascade 教戰（2026-08-18，A 客戶 funnel 輪定案）
 
-本輪把三頁攤平 HTML 100% 還原到「遠端」模板站（無 SSH、無本機 WP），證明整條 pipeline 可以走 Novamira 類 MCP（execute-php／run-wp-cli／write-file／create-upload-link）完成。參考實作與可重用工具：`A 客戶A 客戶/網站與SEO/elementor建置工具/`（funnel-mcp.sh＝JSON-RPC 包裝、fphp.sh＝PHP 執行器、convert.py＝機械轉換器、build/＝產出物）。
+本輪把三頁攤平 HTML 100% 還原到「遠端」模板站（無 SSH、無本機 WP），證明整條 pipeline 可以走 Novamira 類 MCP（execute-php／run-wp-cli／write-file／create-upload-link）完成。參考實作需要自備四樣工具：MCP 的 JSON-RPC 包裝腳本、PHP 執行器、機械轉換器（下節 convert.py 的規則）、產出物資料夾。
 
 ### A. 機械轉換器（convert.py）—— 弱模型照抄也能建整頁
 
@@ -54,9 +54,9 @@
 - 內建瀏覽器 App 分頁背景時 **rAF 凍結**：`motion-started` 沒加、transition currentTime 卡 0＝環境問題不是頁面 bug，截一張圖強制渲染即恢復；分頁曾出現 viewport 0×0（量測全部失真），resize_window 重設後再量。
 - 比對節奏基準：兩站同視口逐 section 高度，粗門檻 ±10%、目標 ±3%；**字級/欄寬型全域偏差先修**（一條 body font-size 就能同時收斂多個 section），再逐區。
 
-## SSH-only 遠端站建置路線（2026-08-19，品牌站新架構輪定案）
+## SSH-only 遠端站建置路線（2026-08-19 實戰定案）
 
-繼 8/18「無 SSH 走 Novamira MCP」之後的第三種環境：**有 SSH，但沒有 MCP、也沒有 php／wp-cli／mysql**。主機商（品牌站 wpsite.pro 型）給的是只掛網站目錄的側車容器，`command -v php wp mysql` 全空——只有 tar/gzip/unzip/find/grep/sed/wget/scp/nano。
+繼 8/18「無 SSH 走 Novamira MCP」之後的第三種環境：**有 SSH，但沒有 MCP、也沒有 php／wp-cli／mysql**。有些代管主機商給的是只掛網站目錄的側車容器，`command -v php wp mysql` 全空——只有 tar/gzip/unzip/find/grep/sed/wget/scp/nano。
 
 判別：`ssh <alias> 'for c in wp php mysql; do command -v $c || echo -; done'` 全空 ＝ 走本節；有 wp-cli ＝ 走既有 WP-CLI 路線。
 
@@ -69,20 +69,20 @@ Elementor 頁面在資料庫（`_elementor_data` post meta），SSH 只給檔案
 
 ### B. 三個必踩的坑（每一條都實測撞過）
 
-1. **SSH 路徑 ≠ PHP 路徑**。同一份檔案，SSH 看到 `/data/...`，PHP 的 `ABSPATH` 是 `/var/www/html/`（兩個容器掛同一卷、掛載點不同）。結果檔的寫入路徑**一律用 `ABSPATH . '檔名'`**，本機再從 SSH 的網站根目錄讀。硬編 SSH 路徑進 PHP＝檔案寫到不存在的地方，症狀是「HTTP 200 但永遠等不到結果」。
+1. **SSH 路徑 ≠ PHP 路徑**。同一份檔案，SSH 看到的是一個路徑（例 `/<網站卷>/...`），PHP 的 `ABSPATH` 是另一個（例 `/var/www/html/`）（兩個容器掛同一卷、掛載點不同）。結果檔的寫入路徑**一律用 `ABSPATH . '檔名'`**，本機再從 SSH 的網站根目錄讀。硬編 SSH 路徑進 PHP＝檔案寫到不存在的地方，症狀是「HTTP 200 但永遠等不到結果」。
 2. **WP Rocket 快取會讓觸發無效**。打首頁若命中快取，PHP 根本不執行，mu-plugin 不會被載入。觸發網址**固定帶隨機參數**（`?wpx=<token>`）繞開快取。
 3. **mu-plugin 載入極早**，外掛常數尚未定義。邏輯掛在 `add_action('init', …, 1)` 裡跑，才拿得到 `ELEMENTOR_VERSION`／`FLUENTFORM_VERSION`／已註冊的 CPT。
 
-### C. 安全契約（你 2026-08-19 授權範圍）
+### C. 安全契約
 
-- 一次性程式**跑完必須自刪**，結果檔取回後立刻 `rm`；收工前 `ls /data/wp-content/mu-plugins/` 確認沒有殘留 `.wpx-*`。
+- 一次性程式**跑完必須自刪**，結果檔取回後立刻 `rm`；收工前 `ls <SSH 看到的網站根目錄>/wp-content/mu-plugins/` 確認沒有殘留 `.wpx-*`。
 - 腳本正本留本機重用，**網站上不留任何常駐檔**。
-- 「能寫檔進網站目錄」＝「能執行 PHP」。所以 SSH 面板的「停止 SSH」不是可有可無：維運結束就請 你 按掉，這比 Novamira 常駐權杖更容易被忽略。
-- 主機商重啟 SSH 後 IP／port 可能改變，但 `authorized_keys` 在網站持久卷（`$HOME=/data`）不會掉——只需更新 `~/.ssh/config` 的 HostName/Port，不必重跑 ssh-copy-id。
+- 「能寫檔進網站目錄」＝「能執行 PHP」。所以 SSH 面板的「停止 SSH」不是可有可無：維運結束就請你按掉，這比 Novamira 常駐權杖更容易被忽略。
+- 主機商重啟 SSH 後 IP／port 可能改變，但 `authorized_keys` 若放在網站持久卷上的家目錄就不會掉——只需更新 `~/.ssh/config` 的 HostName/Port，不必重跑 ssh-copy-id。
 
 ### D. 跨站搬運前的相容性閘（先驗版本，再動工）
 
-來源站與目標站的 Elementor 大版本可能不同（實案：funnel 站 4.2.2／Pro 4.2.1 → 學院站 3.34.3／Pro 3.32.1）。**動工前先數元件**：
+來源站與目標站的 Elementor 大版本可能不同（實案：來源站 4.2.2／Pro 4.2.1 → 目標站 3.34.3／Pro 3.32.1）。**動工前先數元件**：
 
 ```
 preg_match_all('/"widgetType":"([a-z0-9_\-]+)"/i', $data, $m);  // 統計用到哪些 widget
@@ -90,7 +90,7 @@ preg_match_all('/"widgetType":"([a-z0-9_\-]+)"/i', $data, $m);  // 統計用到�
 
 只用到 `container` ＋ `text-editor`／`image`／`heading`／`shortcode` ＝ 3.6+ 全支援，跨大版本安全（本輪即是此情況）。出現 v4 atomic widgets（`e-heading`、`e-div-block` 等）＝ 3.x 吃不下，必須先在來源站降級重建或改走 HTML 重轉。
 
-另查目標站缺哪些外掛：來源表單掛了 FluentCRM／ActiveCampaign feed，目標站沒裝就會斷——搬運前逐項確認要不要一起帶，你 明確說不用的就從 form_meta 剔除，不要整包照搬。
+另查目標站缺哪些外掛：來源表單掛了 FluentCRM／ActiveCampaign feed，目標站沒裝就會斷——搬運前逐項確認要不要一起帶，你明確說不用的就從 form_meta 剔除，不要整包照搬。
 
 ### E. 視覺驗收：文字檢查不算驗證（2026-08-19，學院站輪實測）
 
@@ -121,9 +121,9 @@ preg_match_all('/"widgetType":"([a-z0-9_\-]+)"/i', $data, $m);  // 統計用到�
 
 ### F. SSH 連線頻率會被主機端掐斷（2026-08-19）
 
-`wp-exec.sh` 每次執行開 4 條 SSH 連線（scp、輪詢、取回、清除）。密集連續執行約 20 次後，品牌站端開始在 kex 階段直接 reset：**port 仍通（`nc` 成功）但 `ssh` 握手被拒**，且不會自行恢復。判別＝`kex_exchange_identification: read: Connection reset by peer`。
+`wp-exec.sh` 每次執行開 4 條 SSH 連線（scp、輪詢、取回、清除）。密集連續執行約 20 次後，主機端開始在 kex 階段直接 reset：**port 仍通（`nc` 成功）但 `ssh` 握手被拒**，且不會自行恢復。判別＝`kex_exchange_identification: read: Connection reset by peer`。
 
-處理：不要重試轟炸（會延長封鎖）。請 你 到面板停止再啟動 SSH；`authorized_keys` 在 `$HOME=/data` 的持久卷上不會掉，重啟後只需確認 IP／port 有無變動並更新 `~/.ssh/config`，金鑰不必重設。
+處理：不要重試轟炸（會延長封鎖）。請你到面板停止再啟動 SSH；`authorized_keys` 在持久卷上不會掉，重啟後只需確認 IP／port 有無變動並更新 `~/.ssh/config`，金鑰不必重設。
 
 預防（已內建於 `wp-exec.sh`，不需要另外設定）：連線重用參數直接寫在腳本裡，不依賴 `~/.ssh/config`——
 
@@ -134,4 +134,3 @@ preg_match_all('/"widgetType":"([a-z0-9_\-]+)"/i', $data, $m);  // 統計用到�
 
 多次 ssh/scp 共用同一條實體連線；「取回結果」與「清除暫存」也合併成一次遠端指令。此外仍應把多個步驟合併成單一 payload，不要一個小查詢就跑一次。
 
-跨代理版本（Codex 也讀得到）記在 作者的經驗筆記（未隨技能附上）「SSH 連客戶站：每次操作開多條連線會被主機端限流鎖死」；工具說明書在 `<作者本機工具，未隨技能附上>`。

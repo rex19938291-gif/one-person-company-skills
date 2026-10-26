@@ -1,6 +1,6 @@
-// 用法：ZBTAG＝備份標籤。先完整檢查備份，再逐頁寫回，逐值核對資料與頁面設定。
-$tag='ZBTAG';
-$bf=get_option('zb_native_backup_'.$tag); if(!$bf||!is_file($bf)) return ['err'=>'no backup'];
+// 用法：NRTAG＝備份標籤。先完整檢查備份，再逐頁寫回，逐值核對資料與頁面設定。
+$tag='NRTAG';
+$bf=get_option('nr_native_backup_'.$tag); if(!$bf||!is_file($bf)) return ['err'=>'no backup'];
 $b=unserialize(substr(file_get_contents($bf),14),['allowed_classes'=>false]);
 if(!is_array($b)||!$b) return ['err'=>'bad backup'];
 foreach($b as $id=>$x){
