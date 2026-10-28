@@ -34,14 +34,14 @@
   "goals": {
     "result_target": 200,
     "sessions": [
-      { "label": "第一場", "date": "2026-02-10", "capacity": 50 },
-      { "label": "第二場", "date": "2026-02-12", "capacity": 50 },
-      { "label": "第三場", "date": "2026-02-15", "capacity": 50 },
-      { "label": "第四場", "date": "2026-02-22", "capacity": 50 }
+      { "label": "第一場", "date": "2026-02-10", "capacity": 30 },
+      { "label": "第二場", "date": "2026-02-12", "capacity": 30 },
+      { "label": "第三場", "date": "2026-02-15", "capacity": 30 },
+      { "label": "第四場", "date": "2026-02-22", "capacity": 30 }
     ],
-    "cost_cap_per_result": 125,
+    "cost_cap_per_result": 150,
     "total_budget": 25000,
-    "hard_cap": 22400,
+    "hard_cap": 15000,
     "non_session_options": ["其他場次（有新場次時通知我）"],
     "roi_rule": null
   },
