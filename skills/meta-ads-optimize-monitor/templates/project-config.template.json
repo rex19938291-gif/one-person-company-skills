@@ -36,6 +36,7 @@
     "cost_cap_per_result": null,
     "total_budget": null,
     "hard_cap": null,
+    "non_session_options": [],
     "roi_rule": "<例如 近 30 天營收 >= 廣告費 才加預算；沒有就 null>"
   },
   "thresholds": {
@@ -48,9 +49,28 @@
     "raise_max_per_day": 2,
     "brake_enabled": false,
     "brake_window": "12:00-21:59",
-    "brake_spend_ratio": 0.5,
-    "brake_cost_threshold": null,
     "brake_floor_budget": null,
+    "brake_zero_spend_multiple": 2,
+    "brake_evening_check": "21:00",
+    "brake_cost_multiple": 1.6,
+    "cap_raise_enabled": false,
+    "cap_raise_window": "12:00-20:59",
+    "cap_raise_spend_ratio": 0.9,
+    "cap_raise_min_results": 2,
+    "cap_raise_cost_ratio": 0.65,
+    "settle_time": "09:00",
+    "settle_catchup_until": "12:00",
+    "settle_window_days": 3,
+    "settle_raise_cost_ratio": 0.8,
+    "settle_lower_cost_ratio": 1.3,
+    "settle_raise_min_days": 3,
+    "front_load": {
+      "enabled": false,
+      "unit_ceiling": null,
+      "reserve_amount": null,
+      "reserve_from_date": null,
+      "stop_raise_other_ratio": 0.8
+    },
     "lower_pct": 20,
     "unit_budget_ceiling": null,
     "insight": {
