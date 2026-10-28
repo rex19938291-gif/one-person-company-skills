@@ -40,7 +40,7 @@
       { "label": "第四場", "date": "2026-02-22", "capacity": 30 }
     ],
     "cost_cap_per_result": 150,
-    "total_budget": 25000,
+    "total_budget": 20000,
     "hard_cap": 15000,
     "non_session_options": ["其他場次（有新場次時通知我）"],
     "roi_rule": null
