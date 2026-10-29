@@ -66,6 +66,7 @@
     "settle_raise_min_days": 3,
     "pace_relax": { "enabled": false, "slack_multiplier": 1.2, "window_days": 3 },
     "target_basis": "registrations",
+    "migrate_check": { "enabled": true, "after_full_days": 3, "min_spend_share": 0.10, "test_max_active": 5, "require_approval": false },
     "front_load": {
       "enabled": false,
       "unit_ceiling": null,
