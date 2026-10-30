@@ -87,6 +87,13 @@
       "starved_impressions": 50,
       "fatigue_cost_multiple": 2,
       "fatigue_frequency": 2.5,
+      "fatigue_min_impressions": 500,
+      "fatigue_ctr_drop": 0.3,
+      "fatigue_ctr_frequency": 2.0,
+      "cooling_ctr_drop": 0.25,
+      "lead_drop_check_hours": [14, 20],
+      "lead_drop_day_ratio": 0.6,
+      "lead_drop_3d_ratio": 0.3,
       "cpc_spike_multiple": 1.5,
       "landing_drop_ratio": 0.5,
       "tracking_gap_results": 3
