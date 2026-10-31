@@ -1,6 +1,7 @@
 {
   "project": {
-    "skill_version_applied": "v5.20",
+    "skill_version_applied": "v5.21",
+    "skill_auto_apply": false,
     "id": "<小寫英數代號，用於排程與儀表板>",
     "name": "<專案中文名>",
     "timezone": "Asia/Taipei",

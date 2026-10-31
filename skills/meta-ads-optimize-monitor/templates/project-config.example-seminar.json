@@ -1,6 +1,7 @@
 {
   "project": {
-    "skill_version_applied": "v5.20",
+    "skill_version_applied": "v5.21",
+    "skill_auto_apply": false,
     "id": "seminar-demo",
     "name": "示範講座招生",
     "timezone": "Asia/Taipei",
