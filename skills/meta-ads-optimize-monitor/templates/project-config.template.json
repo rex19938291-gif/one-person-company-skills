@@ -1,5 +1,6 @@
 {
   "project": {
+    "skill_version_applied": "v5.20",
     "id": "<小寫英數代號，用於排程與儀表板>",
     "name": "<專案中文名>",
     "timezone": "Asia/Taipei",
@@ -25,6 +26,7 @@
     "test_data_rule": "<測試資料怎麼辨識與排除>"
   },
   "records": {
+    "experience_log": "docs/經驗沉澱待同步.md",
     "sheet_id": "<紀錄試算表編號，沒有就 null>",
     "log_tabs": { "ops": "<操作紀錄分頁>", "daily": "<每日數字分頁>", "adjust": "<調整紀錄分頁>" },
     "local_log": "<本機紀錄檔路徑，沒有試算表時用>",

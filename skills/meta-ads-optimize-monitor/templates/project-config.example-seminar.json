@@ -1,5 +1,6 @@
 {
   "project": {
+    "skill_version_applied": "v5.20",
     "id": "seminar-demo",
     "name": "示範講座招生",
     "timezone": "Asia/Taipei",
@@ -26,6 +27,7 @@
     "test_data_rule": "試算表「測試名單」分頁＋姓名含「測試」或 test"
   },
   "records": {
+    "experience_log": "docs/經驗沉澱待同步.md",
     "sheet_id": "<試算表編號>",
     "log_tabs": { "ops": "審查監控", "daily": "每日數字", "adjust": "每日調整紀錄" },
     "local_log": null,
