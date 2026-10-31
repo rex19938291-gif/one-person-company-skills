@@ -75,6 +75,7 @@
     "settle_raise_min_days": 3,
     "pace_relax": { "enabled": false, "slack_multiplier": 1.2, "window_days": 3 },
     "target_basis": "registrations",
+    "reject_split": { "enabled": false, "review_adset_id": null, "max_rounds": 3, "daily_submit_cap": 8, "passed_to": "main" },
     "daily_target": { "enabled": false, "skew_window_days": 7, "min_other_share": 0.2, "alert_consecutive_days": 2 },
     "migrate_check": { "enabled": true, "after_full_days": 3, "min_spend_share": 0.10, "test_max_active": 5, "require_approval": false },
     "front_load": {
