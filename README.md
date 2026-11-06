@@ -33,6 +33,7 @@ Agent 會自己把內容抓下來、放到正確的位置，然後照著執行�
 | `meta-ads-optimize-monitor` | 廣告開跑後的監控與優化：先讀專案策略再規劃、盤中加預算與每日結算規則、操作與回報排程範本、多專案儀表板 | 補充 |
 | `vsl-meta-ads-material-workflow` | 從 VSL 腳本產出 24 個切角的廣告素材需求 | 5-4 |
 | `annual-content-funnel-system` | 一年 96 篇的社群內容矩陣、Email 與 LINE 跟進序列 | 5-9、5-10、5-11 |
+| `webinar-vsl-follow-up-emails` | 用你自己的講座或 VSL 腳本與品牌資料庫，寫一組報名後跟進信：一封拆掉一個卡點、用講者真實故事共鳴、去 AI 化 | 5-10 |
 | `seo-reading-experience` | 文章重新編排、加關鍵字 | X-2 |
 | `seo-gsc-ubersuggest-analysis` | 看懂自己網站的搜尋成效 | X-2 |
 | `seo-draft-review` | 文章上線前的驗收排查 | X-2 |
